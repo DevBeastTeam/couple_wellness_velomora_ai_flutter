@@ -1,0 +1,136 @@
+import React, { useState } from 'react';
+import {
+    Box,
+    Card,
+    CardContent,
+    TextField,
+    Button,
+    Typography,
+    Alert,
+    CircularProgress,
+    InputAdornment,
+    IconButton
+} from '@mui/material';
+import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
+import { authService } from '../services/authService';
+import { useNavigate } from 'react-router-dom';
+
+const LoginPage: React.FC = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
+
+        try {
+            await authService.login(email, password);
+            navigate('/');
+        } catch (err: any) {
+            setError(err.message || 'Failed to login. Please check your credentials.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Box
+            sx={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)'
+            }}
+        >
+            <Card sx={{ maxWidth: 400, width: '90%', borderRadius: 3, boxShadow: 10 }}>
+                <CardContent sx={{ p: 4, textAlign: 'center' }}>
+                    <Box sx={{ mb: 3 }}>
+                        <Box
+                            sx={{
+                                width: 60,
+                                height: 60,
+                                bgcolor: 'primary.main',
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                margin: '0 auto',
+                                mb: 2
+                            }}
+                        >
+                            <LockOutlined sx={{ color: 'white' }} />
+                        </Box>
+                        <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold' }}>
+                            Velmora Admin
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Sign in to manage the Velmora ecosystem
+                        </Typography>
+                    </Box>
+
+                    {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+                    <form onSubmit={handleLogin}>
+                        <TextField
+                            fullWidth
+                            label="Email Address"
+                            variant="outlined"
+                            margin="normal"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            type="email"
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            variant="outlined"
+                            margin="normal"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            type={showPassword ? 'text' : 'password'}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+
+                        <Button
+                            fullWidth
+                            type="submit"
+                            variant="contained"
+                            size="large"
+                            disabled={loading}
+                            sx={{
+                                mt: 4,
+                                py: 1.5,
+                                fontWeight: 'bold',
+                                borderRadius: 2
+                            }}
+                        >
+                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                        </Button>
+                    </form>
+
+                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 3 }}>
+                        &copy; {new Date().getFullYear()} Velmora AI. All rights reserved.
+                    </Typography>
+                </CardContent>
+            </Card>
+        </Box>
+    );
+};
+
+export default LoginPage;
