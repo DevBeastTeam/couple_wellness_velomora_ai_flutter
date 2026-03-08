@@ -19,12 +19,16 @@ interface LegalDocument {
 
 interface AppSettings {
     supportEmail: string;
+    adminEmail: string;
+    adminPassword: string;
     termsOfService: LegalDocument;
     privacyPolicy: LegalDocument;
 }
 
 const defaultSettings: AppSettings = {
     supportEmail: 'support@velmora.com',
+    adminEmail: 'admin@gmail.com',
+    adminPassword: '12345678',
     termsOfService: {
         sections: [
             {
@@ -64,6 +68,15 @@ const SettingsPage: React.FC = () => {
             const settingsDoc = await getDoc(doc(db, 'admin_settings', 'general'));
             const supportEmail = settingsDoc.exists() ? settingsDoc.data()?.supportEmail : defaultSettings.supportEmail;
 
+            // Load admin credentials
+            const adminCredentialsDoc = await getDoc(doc(db, 'admin', 'credentials'));
+            const adminEmail = adminCredentialsDoc.exists()
+                ? (adminCredentialsDoc.data()?.adminEmail || defaultSettings.adminEmail)
+                : defaultSettings.adminEmail;
+            const adminPassword = adminCredentialsDoc.exists()
+                ? (adminCredentialsDoc.data()?.adminPassword || defaultSettings.adminPassword)
+                : defaultSettings.adminPassword;
+
             // Load Terms of Service
             const termsDoc = await getDoc(doc(db, 'admin', 'legal_docs', 'items', 'terms_of_service'));
             const termsOfService = termsDoc.exists() ? termsDoc.data() as LegalDocument : defaultSettings.termsOfService;
@@ -74,9 +87,14 @@ const SettingsPage: React.FC = () => {
 
             setSettings({
                 supportEmail,
+                adminEmail,
+                adminPassword,
                 termsOfService,
                 privacyPolicy,
             });
+
+            localStorage.setItem('adminCredentialsEmail', adminEmail);
+            localStorage.setItem('adminCredentialsPassword', adminPassword);
         } catch (e: any) {
             setError(e.message);
         } finally {
@@ -95,6 +113,16 @@ const SettingsPage: React.FC = () => {
                 supportEmail: settings.supportEmail,
                 updatedAt: serverTimestamp(),
             });
+
+            // Save admin credentials
+            await setDoc(doc(db, 'admin', 'credentials'), {
+                adminEmail: settings.adminEmail,
+                adminPassword: settings.adminPassword,
+                updatedAt: serverTimestamp(),
+            }, { merge: true });
+
+            localStorage.setItem('adminCredentialsEmail', settings.adminEmail);
+            localStorage.setItem('adminCredentialsPassword', settings.adminPassword);
 
             // Save Terms of Service
             await setDoc(doc(db, 'admin', 'legal_docs', 'items', 'terms_of_service'), {
@@ -193,6 +221,7 @@ const SettingsPage: React.FC = () => {
             <Paper sx={{ borderRadius: 3 }}>
                 <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} variant="scrollable" scrollButtons="auto" sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tab label="General Settings" />
+                    <Tab label="Admin Credentials" />
                     <Tab label="Terms of Service" />
                     <Tab label="Privacy Policy" />
                 </Tabs>
@@ -223,8 +252,42 @@ const SettingsPage: React.FC = () => {
                         </Grid>
                     )}
 
-                    {/* Terms of Service Tab */}
+                    {/* Admin Credentials Tab */}
                     {tabValue === 1 && (
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}>
+                                <Typography variant="h6" gutterBottom>Admin Login Credentials</Typography>
+                                <Divider sx={{ mb: 3 }} />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Admin Email"
+                                    type="email"
+                                    value={settings.adminEmail}
+                                    onChange={(e) => setSettings({ ...settings, adminEmail: e.target.value })}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    fullWidth
+                                    label="Admin Password"
+                                    type="text"
+                                    value={settings.adminPassword}
+                                    onChange={(e) => setSettings({ ...settings, adminPassword: e.target.value })}
+                                    helperText="Used for reference and login page hint only"
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Alert severity="info">
+                                    This updates admin credential metadata stored in <strong>admin/credentials</strong>. Ensure Firebase Auth password is kept in sync manually if changed.
+                                </Alert>
+                            </Grid>
+                        </Grid>
+                    )}
+
+                    {/* Terms of Service Tab */}
+                    {tabValue === 2 && (
                         <Box>
                             <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1.5} sx={{ mb: 3 }}>
                                 <Typography variant="h6">Terms of Service Sections</Typography>
@@ -275,7 +338,7 @@ const SettingsPage: React.FC = () => {
                     )}
 
                     {/* Privacy Policy Tab */}
-                    {tabValue === 2 && (
+                    {tabValue === 3 && (
                         <Box>
                             <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1.5} sx={{ mb: 3 }}>
                                 <Typography variant="h6">Privacy Policy Sections</Typography>

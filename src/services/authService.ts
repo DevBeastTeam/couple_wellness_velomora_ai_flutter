@@ -19,7 +19,7 @@ export const authService = {
     getCurrentUser: () => auth.currentUser,
 
     getAdminRole: async (uid: string): Promise<'Super Admin' | 'Moderator' | undefined> => {
-        const adminDoc = await getDoc(doc(db, 'admins', uid));
+        const adminDoc = await getDoc(doc(db, 'admin', uid));
         if (adminDoc.exists()) {
             return adminDoc.data().role;
         }

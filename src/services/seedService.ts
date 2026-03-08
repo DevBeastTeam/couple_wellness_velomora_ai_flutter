@@ -6,183 +6,244 @@ import {
     getDocs,
     deleteDoc,
     serverTimestamp,
-    query
+    query,
+    Timestamp,
 } from 'firebase/firestore';
-import {
-    createUserWithEmailAndPassword
-} from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { db, auth } from './firebase';
+import {
+    migrationData,
+    type UploadMode,
+    type CollectionSeedDefinition,
+    type SubcollectionSeedDefinition,
+} from '../data/migrationData';
 
-// Helper to clear all documents in a collection
-const clearCollection = async (collectionName: string) => {
-    const snap = await getDocs(query(collection(db, collectionName)));
-    const deletes = snap.docs.map(d => deleteDoc(doc(db, collectionName, d.id)));
+export type SeedMode = 'full' | 'append-users' | 'configs-only';
+
+export const DEFAULT_ADMIN_EMAIL = 'admin@gmail.com';
+export const DEFAULT_ADMIN_PASSWORD = '12345678';
+
+const clearCollectionByPath = async (collectionPath: string) => {
+    const snap = await getDocs(query(collection(db, collectionPath)));
+    const deletes = snap.docs.map((d) => deleteDoc(doc(db, collectionPath, d.id)));
     await Promise.all(deletes);
+};
+
+const convertSpecialValues = (value: unknown): unknown => {
+    if (Array.isArray(value)) {
+        return value.map((item) => convertSpecialValues(item));
+    }
+
+    if (value && typeof value === 'object') {
+        const asRecord = value as Record<string, unknown>;
+        if (
+            asRecord.__type === 'Timestamp' &&
+            typeof asRecord.seconds === 'number' &&
+            typeof asRecord.nanoseconds === 'number'
+        ) {
+            return new Timestamp(asRecord.seconds, asRecord.nanoseconds);
+        }
+
+        const converted: Record<string, unknown> = {};
+        Object.entries(asRecord).forEach(([key, nested]) => {
+            converted[key] = convertSpecialValues(nested);
+        });
+        return converted;
+    }
+
+    return value;
+};
+
+const writeDocument = async (
+    collectionPath: string,
+    uploadMode: UploadMode,
+    entry: { id?: string; data: Record<string, any> }
+) => {
+    const data = convertSpecialValues(entry.data) as Record<string, any>;
+
+    if (uploadMode === 'add') {
+        await addDoc(collection(db, collectionPath), data);
+        return;
+    }
+
+    if (entry.id) {
+        await setDoc(doc(db, collectionPath, entry.id), data, {
+            merge: uploadMode === 'merge',
+        });
+        return;
+    }
+
+    await addDoc(collection(db, collectionPath), data);
+};
+
+const seedCollection = async (
+    definition: CollectionSeedDefinition,
+    progressCallback: (msg: string) => void
+) => {
+    progressCallback(`Seeding ${definition.path}...`);
+    for (const entry of definition.documents) {
+        await writeDocument(definition.path, definition.uploadMode, entry);
+    }
+};
+
+const seedSubcollection = async (
+    definition: SubcollectionSeedDefinition,
+    progressCallback: (msg: string) => void
+) => {
+    progressCallback(`Seeding users/*/${definition.path}...`);
+
+    for (const [userId, entries] of Object.entries(definition.documentsByUserId)) {
+        const collectionPath = `users/${userId}/${definition.path}`;
+        for (const entry of entries) {
+            await writeDocument(collectionPath, definition.uploadMode, entry);
+        }
+    }
+};
+
+const clearFullDataset = async (progressCallback: (msg: string) => void) => {
+    progressCallback('Clearing previous migration data...');
+
+    const collectionsToClear = [
+        migrationData.collections.userGames.path,
+        migrationData.collections.userGameProgress.path,
+        migrationData.collections.gameQuestions.path,
+        migrationData.collections.games.path,
+        migrationData.collections.subscriptionPlans.path,
+        migrationData.collections.faqs.path,
+        migrationData.collections.users.path,
+    ];
+
+    for (const collectionPath of collectionsToClear) {
+        await clearCollectionByPath(collectionPath);
+    }
+
+    const userIds = migrationData.collections.users.documents
+        .map((entry) => entry.id)
+        .filter((id): id is string => Boolean(id));
+
+    const userSubcollections = Object.values(migrationData.userSubcollections);
+
+    for (const userId of userIds) {
+        for (const subDefinition of userSubcollections) {
+            await clearCollectionByPath(`users/${userId}/${subDefinition.path}`);
+        }
+    }
+};
+
+const runFullMigration = async (progressCallback: (msg: string) => void) => {
+    await seedCollection(migrationData.collections.users, progressCallback);
+
+    await seedSubcollection(migrationData.userSubcollections.chatMessages, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.kegelDailyCompletions, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.kegelSessions, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.notifications, progressCallback);
+
+    await seedCollection(migrationData.collections.games, progressCallback);
+    await seedCollection(migrationData.collections.gameQuestions, progressCallback);
+    await seedCollection(migrationData.collections.userGameProgress, progressCallback);
+    await seedCollection(migrationData.collections.userGames, progressCallback);
+    await seedCollection(migrationData.collections.subscriptionPlans, progressCallback);
+    await seedCollection(migrationData.collections.faqs, progressCallback);
+
+    progressCallback('Seeding singleton documents...');
+    for (const singleton of migrationData.singletonDocs) {
+        const data = convertSpecialValues(singleton.data) as Record<string, any>;
+        const [collectionId, documentId, ...nestedPath] = singleton.pathSegments;
+        await setDoc(doc(db, collectionId, documentId, ...nestedPath), data, { merge: true });
+    }
+};
+
+const runAppendUsers = async (progressCallback: (msg: string) => void) => {
+    await seedCollection(migrationData.collections.users, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.chatMessages, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.kegelDailyCompletions, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.kegelSessions, progressCallback);
+    await seedSubcollection(migrationData.userSubcollections.notifications, progressCallback);
+    await seedCollection(migrationData.collections.userGameProgress, progressCallback);
+    await seedCollection(migrationData.collections.userGames, progressCallback);
+};
+
+const runConfigsOnly = async (progressCallback: (msg: string) => void) => {
+    await seedCollection(migrationData.collections.subscriptionPlans, progressCallback);
+    await seedCollection(migrationData.collections.faqs, progressCallback);
+
+    progressCallback('Seeding singleton documents...');
+    for (const singleton of migrationData.singletonDocs) {
+        const data = convertSpecialValues(singleton.data) as Record<string, any>;
+        const [collectionId, documentId, ...nestedPath] = singleton.pathSegments;
+        await setDoc(doc(db, collectionId, documentId, ...nestedPath), data, { merge: true });
+    }
 };
 
 export const seedService = {
     seedAdmin: async () => {
-        const email = 'admin@gmail.com';
-        const password = '12345678';
-
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                DEFAULT_ADMIN_EMAIL,
+                DEFAULT_ADMIN_PASSWORD
+            );
             const uid = userCredential.user.uid;
-            await setDoc(doc(db, 'admins', uid), {
-                uid, email, role: 'Super Admin', createdAt: serverTimestamp()
-            });
+
+            await setDoc(
+                doc(db, 'admin', uid),
+                {
+                    uid,
+                    email: DEFAULT_ADMIN_EMAIL,
+                    role: 'Super Admin',
+                    createdAt: serverTimestamp(),
+                },
+                { merge: true }
+            );
+
             return { success: true, message: 'Admin user created successfully.' };
         } catch (error: any) {
-            if (error.code === 'auth/email-already-in-use') {
+            if (error?.code === 'auth/email-already-in-use') {
                 const currentUser = auth.currentUser;
                 if (currentUser) {
-                    await setDoc(doc(db, 'admins', currentUser.uid), {
-                        uid: currentUser.uid, email: currentUser.email,
-                        role: 'Super Admin', createdAt: serverTimestamp()
-                    }, { merge: true });
+                    await setDoc(
+                        doc(db, 'admin', currentUser.uid),
+                        {
+                            uid: currentUser.uid,
+                            email: currentUser.email || DEFAULT_ADMIN_EMAIL,
+                            role: 'Super Admin',
+                            createdAt: serverTimestamp(),
+                        },
+                        { merge: true }
+                    );
+                    return { success: true, message: 'Admin already exists, role ensured.' };
                 }
-                return { success: true, message: 'Admin already existed, roles ensured.' };
+
+                return {
+                    success: true,
+                    message: 'Admin already exists in Auth. Log in once to auto-link the admin role document.',
+                };
             }
+
             throw error;
         }
     },
 
+    migrateData: async (mode: SeedMode, progressCallback: (msg: string) => void) => {
+        progressCallback('Starting migration...');
+
+        if (mode === 'full') {
+            await clearFullDataset(progressCallback);
+            await runFullMigration(progressCallback);
+        }
+
+        if (mode === 'append-users') {
+            await runAppendUsers(progressCallback);
+        }
+
+        if (mode === 'configs-only') {
+            await runConfigsOnly(progressCallback);
+        }
+
+        progressCallback('Migration complete! ✅');
+    },
+
     seedDummyData: async (progressCallback: (msg: string) => void) => {
-        // ── AI Config ──────────────────────────────────────────────────────────
-        progressCallback('Seeding AI Configuration...');
-        await setDoc(doc(db, 'ai_config', 'settings'), {
-            apiKey: 'PLACEHOLDER_KEY',
-            model: 'gemini-2.0-flash',
-            temperature: 0.7,
-            maxTokens: 500,
-            topK: 40,
-            topP: 0.95,
-            systemInstruction: 'You are Velmora AI, a helpful relationship coach.',
-            safetySettings: {
-                harassment: 'BLOCK_MEDIUM_AND_ABOVE',
-                hateSpeech: 'BLOCK_MEDIUM_AND_ABOVE',
-                sexuallyExplicit: 'BLOCK_MEDIUM_AND_ABOVE',
-                dangerousContent: 'BLOCK_MEDIUM_AND_ABOVE'
-            },
-            updatedAt: serverTimestamp()
-        });
-
-        // ── Dummy Users ────────────────────────────────────────────────────────
-        progressCallback('Seeding Dummy Users...');
-        const dummyUsers = [
-            { displayName: 'John Doe', email: 'john@example.com', subscriptionStatus: 'premium', preferredLanguage: 'en' },
-            { displayName: 'Jane Smith', email: 'jane@example.com', subscriptionStatus: 'trial', preferredLanguage: 'fr' },
-            { displayName: 'Ahmed Ali', email: 'ahmed@example.com', subscriptionStatus: 'free', preferredLanguage: 'ar' },
-        ];
-        for (const user of dummyUsers) {
-            await addDoc(collection(db, 'users'), {
-                ...user,
-                createdAt: serverTimestamp(),
-                lastLoginAt: serverTimestamp(),
-                featuresAccess: { games: true, kegel: true, chat: true }
-            });
-        }
-
-        // ── Games ──────────────────────────────────────────────────────────────
-        progressCallback('Seeding Game Definitions...');
-        const games = [
-            { id: 'truth_or_truth', name: 'Truth or Truth', description: 'Deep questions for couples', premium: false },
-            { id: 'love_language', name: 'Love Language Quiz', description: 'Discover your love language', premium: true },
-            { id: 'reflection', name: 'Reflection & Discussion', description: 'Monthly relationship check-in', premium: true },
-        ];
-        for (const game of games) {
-            await setDoc(doc(db, 'games', game.id), { ...game, isActive: true, updatedAt: serverTimestamp() });
-        }
-
-        // ── Legal ──────────────────────────────────────────────────────────────
-        progressCallback('Seeding Legal Documents...');
-        await setDoc(doc(db, 'admin', 'legal_docs', 'items', 'privacy_policy'), {
-            content: 'Privacy Policy content here...', updatedAt: serverTimestamp()
-        });
-
-        // ── Subscription Plans ─────────────────────────────────────────────────
-        // Matches EXACTLY what the Flutter app's subscription screen displays.
-        progressCallback('Clearing old subscription plans...');
-        await clearCollection('subscription_plans');
-
-        progressCallback('Seeding Subscription Plans...');
-        const subscriptionPlans = [
-            {
-                name: 'Monthly Plan',
-                productId: 'velmora_premium_monthly',
-                durationMonths: 1,
-                pricePerMonth: 4.99,
-                totalPrice: 4.99,
-                currency: 'USD',
-                badge: '',
-                badgeColor: '',
-                savingsText: '',
-                bottomNote: 'Free for 48 hours, then $4.99/month. Cancel anytime.',
-                features: [
-                    'Full AI Chat',
-                    'All Games',
-                    'Kegel Exercises',
-                    'Priority Support'
-                ],
-                isActive: true,
-                isPopular: false,
-                sortOrder: 1
-            },
-            {
-                name: '3-Month Plan',
-                productId: 'velmora_premium_quarterly',
-                durationMonths: 3,
-                pricePerMonth: 3.33,
-                totalPrice: 9.99,
-                currency: 'USD',
-                badge: 'SAVE 33%',
-                badgeColor: '#FF8A00',
-                savingsText: 'Save 33% compared to monthly',
-                bottomNote: '',
-                features: [
-                    'Full AI Chat',
-                    'All Games',
-                    'Kegel Exercises',
-                    'Priority Support',
-                    'Exclusive Content'
-                ],
-                isActive: true,
-                isPopular: false,
-                sortOrder: 2
-            },
-            {
-                name: 'Yearly Plan',
-                productId: 'velmora_premium_yearly',
-                durationMonths: 12,
-                pricePerMonth: 2.50,
-                totalPrice: 29.99,
-                currency: 'USD',
-                badge: 'BEST VALUE',
-                badgeColor: '#FF8A00',
-                savingsText: 'Save 50% compared to monthly',
-                bottomNote: '',
-                features: [
-                    'Full AI Chat',
-                    'All Games',
-                    'Kegel Exercises',
-                    'Priority Support',
-                    'Exclusive Content',
-                    'Early Access'
-                ],
-                isActive: true,
-                isPopular: true,
-                sortOrder: 3
-            }
-        ];
-
-        for (const plan of subscriptionPlans) {
-            await addDoc(collection(db, 'subscription_plans'), {
-                ...plan,
-                createdAt: serverTimestamp(),
-                updatedAt: serverTimestamp()
-            });
-        }
-
-        progressCallback('Migration Complete! ✅');
-    }
+        await seedService.migrateData('full', progressCallback);
+    },
 };

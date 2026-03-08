@@ -4,7 +4,6 @@ import {
     Toolbar,
     Typography,
     IconButton,
-    Badge,
     Avatar,
     Box,
     Menu,
@@ -12,7 +11,6 @@ import {
     Tooltip
 } from '@mui/material';
 import {
-    Notifications as NotificationsIcon,
     Menu as MenuIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
@@ -61,15 +59,10 @@ const Header: React.FC<HeaderProps> = ({ onDrawerToggle }) => {
                 </IconButton>
 
                 <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
-                    {/* Breadcrumbs or Page Title could go here */}
+                    Admin Panel
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="error">
-                            <NotificationsIcon />
-                        </Badge>
-                    </IconButton>
 
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Box sx={{ textAlign: 'right', display: { xs: 'none', sm: 'block' } }}>

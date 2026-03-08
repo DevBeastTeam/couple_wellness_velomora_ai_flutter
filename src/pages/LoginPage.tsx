@@ -16,8 +16,8 @@ import { authService } from '../services/authService';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState(localStorage.getItem('adminCredentialsEmail') || 'admin@gmail.com');
+    const [password, setPassword] = useState(localStorage.getItem('adminCredentialsPassword') || '12345678');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -71,6 +71,9 @@ const LoginPage: React.FC = () => {
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             Sign in to manage the Velmora ecosystem
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                            Default: admin@gmail.com / 12345678
                         </Typography>
                     </Box>
 
