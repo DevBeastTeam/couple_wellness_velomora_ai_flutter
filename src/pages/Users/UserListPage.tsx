@@ -28,15 +28,16 @@ import {
     Visibility,
     FilterList,
     Delete,
-    Block,
-    CheckCircle,
-    Close
+    Close,
+    SportsEsports,
+    FitnessCenter
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
 
 const UserListPage: React.FC = () => {
     const [users, setUsers] = useState<UserProfile[]>([]);
+    const [deleting, setDeleting] = useState(false);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -85,22 +86,29 @@ const UserListPage: React.FC = () => {
         }
     };
 
-    const handleDeleteClick = (user: UserProfile) => {
+    const handleDeleteClick = (user: UserProfile, triggerElement?: HTMLButtonElement | null) => {
+        triggerElement?.blur();
         setSelectedUser(user);
         setDeleteDialogOpen(true);
     };
 
     const handleDeleteConfirm = async () => {
-        if (!selectedUser) return;
+        if (!selectedUser || deleting) return;
+
         try {
+            setDeleting(true);
             await userService.deleteUser(selectedUser.uid);
             setSuccess('User deleted successfully!');
             setDeleteDialogOpen(false);
+            setSelectedUser(null);
+
             // Refresh users
             const data = await userService.getUsers(50);
             setUsers(data);
         } catch (err: any) {
             setError(err.message || 'Failed to delete user');
+        } finally {
+            setDeleting(false);
         }
     };
 
@@ -233,6 +241,22 @@ const UserListPage: React.FC = () => {
                                     <TableCell align="right">
                                         <IconButton
                                             size="small"
+                                            color="info"
+                                            onClick={() => navigate(`/users/${user.uid}/game-progress`)}
+                                            title="Game Progress"
+                                        >
+                                            <SportsEsports fontSize="small" />
+                                        </IconButton>
+                                        <IconButton
+                                            size="small"
+                                            color="secondary"
+                                            onClick={() => navigate(`/users/${user.uid}/kegel-progress`)}
+                                            title="Kegel Progress"
+                                        >
+                                            <FitnessCenter fontSize="small" />
+                                        </IconButton>
+                                        <IconButton
+                                            size="small"
                                             color="primary"
                                             onClick={() => navigate(`/users/${user.uid}`)}
                                             title="View Details"
@@ -242,7 +266,7 @@ const UserListPage: React.FC = () => {
                                         <IconButton
                                             size="small"
                                             color="error"
-                                            onClick={() => handleDeleteClick(user)}
+                                            onClick={(event) => handleDeleteClick(user, event.currentTarget)}
                                             title="Delete User"
                                         >
                                             <Delete fontSize="small" />
@@ -256,7 +280,7 @@ const UserListPage: React.FC = () => {
             </TableContainer>
 
             {/* Delete Dialog */}
-            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} maxWidth="sm" fullWidth>
+            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} maxWidth="sm" fullWidth keepMounted>
                 <DialogTitle>Delete User Account</DialogTitle>
                 <DialogContent>
                     <Alert severity="error" sx={{ mb: 2 }}>
@@ -267,9 +291,9 @@ const UserListPage: React.FC = () => {
                     </Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                    <Button onClick={handleDeleteConfirm} variant="contained" color="error">
-                        Delete Account
+                    <Button onClick={() => setDeleteDialogOpen(false)} disabled={deleting}>Cancel</Button>
+                    <Button onClick={handleDeleteConfirm} variant="contained" color="error" disabled={deleting}>
+                        {deleting ? 'Deleting...' : 'Delete Account'}
                     </Button>
                 </DialogActions>
             </Dialog>

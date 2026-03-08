@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import SeedPage from './pages/SeedPage'
 import UserListPage from './pages/Users/UserListPage'
 import UserDetailsPage from './pages/Users/UserDetailsPage'
+import UserGameProgressPage from './pages/Users/UserGameProgressPage'
+import UserKegelProgressPage from './pages/Users/UserKegelProgressPage'
 import SubscriptionsPage from './pages/Subscriptions/SubscriptionsPage'
 import AIConfigPage from './pages/AIConfig/AIConfigPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
@@ -26,6 +28,8 @@ function App() {
 
                     <Route path="users" element={<UserListPage />} />
                     <Route path="users/:uid" element={<UserDetailsPage />} />
+                    <Route path="users/:uid/game-progress" element={<UserGameProgressPage />} />
+                    <Route path="users/:uid/kegel-progress" element={<UserKegelProgressPage />} />
 
                     <Route path="subscriptions" element={<SubscriptionsPage />} />
                     <Route path="ai-config" element={<AIConfigPage />} />
