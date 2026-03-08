@@ -12,6 +12,7 @@ import NotificationsPage from './pages/Notifications/NotificationsPage'
 import SupportPage from './pages/Support/SupportPage'
 import SettingsPage from './pages/Settings/SettingsPage'
 import GamesPage from './pages/Games/GamesPage'
+import KegelPage from './pages/Kegel/KegelPage'
 
 function App() {
     return (
@@ -29,7 +30,7 @@ function App() {
                     <Route path="subscriptions" element={<SubscriptionsPage />} />
                     <Route path="ai-config" element={<AIConfigPage />} />
                     <Route path="games" element={<GamesPage />} />
-                    <Route path="kegel" element={<div className="p-4">Kegel Exercises Page</div>} />
+                    <Route path="kegel" element={<KegelPage />} />
                     <Route path="notifications" element={<NotificationsPage />} />
                     <Route path="support" element={<SupportPage />} />
                     <Route path="settings" element={<SettingsPage />} />
