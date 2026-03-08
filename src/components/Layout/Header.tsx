@@ -12,12 +12,17 @@ import {
     Tooltip
 } from '@mui/material';
 import {
-    Notifications as NotificationsIcon
+    Notifications as NotificationsIcon,
+    Menu as MenuIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 import { authService } from '../../services/authService';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+    onDrawerToggle: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onDrawerToggle }) => {
     const { user, role } = useAuth();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -46,6 +51,15 @@ const Header: React.FC = () => {
             }}
         >
             <Toolbar>
+                <IconButton
+                    color="inherit"
+                    edge="start"
+                    onClick={onDrawerToggle}
+                    sx={{ mr: 1, display: { xs: 'inline-flex', sm: 'none' } }}
+                >
+                    <MenuIcon />
+                </IconButton>
+
                 <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
                     {/* Breadcrumbs or Page Title could go here */}
                 </Typography>

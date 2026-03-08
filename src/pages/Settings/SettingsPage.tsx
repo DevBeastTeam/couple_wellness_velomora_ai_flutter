@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Paper, Tabs, Tab, TextField, Button,
-    CircularProgress, Alert, Grid, Divider, IconButton
+    CircularProgress, Alert, Grid, Divider, IconButton, Stack
 } from '@mui/material';
 import { Save, Refresh, Add, Delete } from '@mui/icons-material';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -170,9 +170,9 @@ const SettingsPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>App Settings</Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ width: { xs: '100%', sm: 'auto' } }}>
                     <Button variant="outlined" startIcon={<Refresh />} onClick={loadSettings}>
                         Refresh
                     </Button>
@@ -184,20 +184,20 @@ const SettingsPage: React.FC = () => {
                     >
                         {saving ? 'Saving...' : 'Save All Changes'}
                     </Button>
-                </Box>
-            </Box>
+                </Stack>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
 
             <Paper sx={{ borderRadius: 3 }}>
-                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} variant="scrollable" scrollButtons="auto" sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tab label="General Settings" />
                     <Tab label="Terms of Service" />
                     <Tab label="Privacy Policy" />
                 </Tabs>
 
-                <Box sx={{ p: 4 }}>
+                <Box sx={{ p: { xs: 2, sm: 4 } }}>
                     {/* General Settings Tab */}
                     {tabValue === 0 && (
                         <Grid container spacing={3}>
@@ -226,16 +226,17 @@ const SettingsPage: React.FC = () => {
                     {/* Terms of Service Tab */}
                     {tabValue === 1 && (
                         <Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1.5} sx={{ mb: 3 }}>
                                 <Typography variant="h6">Terms of Service Sections</Typography>
                                 <Button
                                     variant="outlined"
                                     startIcon={<Add />}
                                     onClick={() => addSection('termsOfService')}
+                                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
                                 >
                                     Add Section
                                 </Button>
-                            </Box>
+                            </Stack>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                                 Last Updated: {settings.termsOfService.lastUpdated}
                             </Typography>
@@ -276,16 +277,17 @@ const SettingsPage: React.FC = () => {
                     {/* Privacy Policy Tab */}
                     {tabValue === 2 && (
                         <Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1.5} sx={{ mb: 3 }}>
                                 <Typography variant="h6">Privacy Policy Sections</Typography>
                                 <Button
                                     variant="outlined"
                                     startIcon={<Add />}
                                     onClick={() => addSection('privacyPolicy')}
+                                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
                                 >
                                     Add Section
                                 </Button>
-                            </Box>
+                            </Stack>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                                 Last Updated: {settings.privacyPolicy.lastUpdated}
                             </Typography>

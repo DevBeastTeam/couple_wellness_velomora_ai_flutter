@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, TextField, Button, Paper, Grid,
-    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton, Switch, FormControlLabel
+    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton, Switch, FormControlLabel, Stack
 } from '@mui/material';
 import { Save, Refresh, Visibility, VisibilityOff } from '@mui/icons-material';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -109,21 +109,22 @@ const AIConfigPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>AI Configuration</Typography>
                 <Button
                     variant="outlined"
                     startIcon={<Refresh />}
                     onClick={loadConfig}
+                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
                 >
                     Refresh
                 </Button>
-            </Box>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
 
-            <Paper sx={{ p: 4, borderRadius: 3 }}>
+            <Paper sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
                 <Grid container spacing={3}>
                     {/* AI Enable/Disable */}
                     <Grid item xs={12}>

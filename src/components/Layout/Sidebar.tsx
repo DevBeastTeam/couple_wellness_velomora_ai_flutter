@@ -37,24 +37,17 @@ const menuItems = [
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    mobileOpen: boolean;
+    onClose: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onClose }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    return (
-        <Drawer
-            variant="permanent"
-            sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                [`& .MuiDrawer-paper`]: {
-                    width: drawerWidth,
-                    boxSizing: 'border-box',
-                    backgroundColor: '#1E1B4B', // indigo-950
-                    color: 'white'
-                },
-            }}
-        >
+    const drawerContent = (
+        <>
             <Toolbar>
                 <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: '#A78BFA' }}>
                     Velmora Admin
@@ -65,7 +58,10 @@ const Sidebar: React.FC = () => {
                     {menuItems.map((item) => (
                         <ListItem key={item.text} disablePadding>
                             <ListItemButton
-                                onClick={() => navigate(item.path)}
+                                onClick={() => {
+                                    navigate(item.path);
+                                    onClose();
+                                }}
                                 selected={location.pathname === item.path}
                                 sx={{
                                     '&.Mui-selected': {
@@ -90,7 +86,47 @@ const Sidebar: React.FC = () => {
                     ))}
                 </List>
             </Box>
-        </Drawer>
+        </>
+    );
+
+    return (
+        <>
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={onClose}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                    display: { xs: 'block', sm: 'none' },
+                    '& .MuiDrawer-paper': {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                        backgroundColor: '#1E1B4B',
+                        color: 'white'
+                    },
+                }}
+            >
+                {drawerContent}
+            </Drawer>
+
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: {
+                        width: drawerWidth,
+                        boxSizing: 'border-box',
+                        backgroundColor: '#1E1B4B',
+                        color: 'white'
+                    },
+                }}
+                open
+            >
+                {drawerContent}
+            </Drawer>
+        </>
     );
 };
 

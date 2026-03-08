@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, TextField, Button, Paper, Grid,
     CircularProgress, Alert, MenuItem, Radio, RadioGroup,
-    FormControlLabel, FormControl, FormLabel, Chip, Autocomplete
+    FormControlLabel, FormControl, FormLabel, Chip, Autocomplete, Stack
 } from '@mui/material';
 import { Send, Refresh, NotificationsActive } from '@mui/icons-material';
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
@@ -185,7 +185,7 @@ const NotificationsPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Send Notifications</Typography>
                 <Button
                     variant="outlined"
@@ -194,10 +194,11 @@ const NotificationsPage: React.FC = () => {
                         loadUsers();
                         loadHistory();
                     }}
+                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
                 >
                     Refresh
                 </Button>
-            </Box>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
@@ -205,7 +206,7 @@ const NotificationsPage: React.FC = () => {
             <Grid container spacing={3}>
                 {/* Send Notification Form */}
                 <Grid item xs={12} md={7}>
-                    <Paper sx={{ p: 4, borderRadius: 3 }}>
+                    <Paper sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                             <NotificationsActive sx={{ fontSize: 32, color: '#7C3AED' }} />
                             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Create Notification</Typography>
@@ -265,6 +266,7 @@ const NotificationsPage: React.FC = () => {
                                     <FormLabel component="legend">Target Audience</FormLabel>
                                     <RadioGroup
                                         row
+                                        sx={{ flexWrap: 'wrap' }}
                                         value={targetType}
                                         onChange={(e) => setTargetType(e.target.value as 'all' | 'specific')}
                                     >
@@ -331,7 +333,7 @@ const NotificationsPage: React.FC = () => {
 
                 {/* Notification History */}
                 <Grid item xs={12} md={5}>
-                    <Paper sx={{ p: 3, borderRadius: 3 }}>
+                    <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>Recent Notifications</Typography>
                         {history.length === 0 ? (
                             <Box sx={{ textAlign: 'center', py: 4 }}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Button, Paper, Grid, TextField, Switch,
     FormControlLabel, IconButton, Dialog, DialogTitle, DialogContent,
-    DialogActions, Chip, Divider, CircularProgress, Alert
+    DialogActions, Chip, Divider, CircularProgress, Alert, Stack
 } from '@mui/material';
 import {
     Add, Edit, Delete, Refresh, Star, Check
@@ -106,9 +106,9 @@ const SubscriptionsPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Subscription Plans</Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ width: { xs: '100%', sm: 'auto' } }}>
                     {plans.length === 0 && (
                         <Button
                             variant="outlined"
@@ -122,8 +122,8 @@ const SubscriptionsPage: React.FC = () => {
                     <Button variant="contained" startIcon={<Add />} onClick={openCreateDialog}>
                         Add Plan
                     </Button>
-                </Box>
-            </Box>
+                </Stack>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
@@ -204,35 +204,35 @@ const SubscriptionsPage: React.FC = () => {
             )}
 
             {/* Edit/Create Dialog */}
-            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
                 <DialogTitle sx={{ fontWeight: 'bold' }}>{isEditing ? 'Edit Plan' : 'Create New Plan'}</DialogTitle>
                 <DialogContent dividers>
                     <Grid container spacing={2}>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth label="Plan Name" value={editingPlan.name || ''} onChange={e => setEditingPlan(p => ({ ...p, name: e.target.value }))} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth label="Product ID (IAP)" value={editingPlan.productId || ''} onChange={e => setEditingPlan(p => ({ ...p, productId: e.target.value }))} helperText="Must match App Store / Play Store" />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} sm={4}>
                             <TextField fullWidth type="number" label="Duration (months)" value={editingPlan.durationMonths || 1} onChange={e => setEditingPlan(p => ({ ...p, durationMonths: Number(e.target.value) }))} />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} sm={4}>
                             <TextField fullWidth type="number" label="Price/Month ($)" value={editingPlan.pricePerMonth || 0} onChange={e => setEditingPlan(p => ({ ...p, pricePerMonth: Number(e.target.value) }))} />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={12} sm={4}>
                             <TextField fullWidth type="number" label="Total Price ($)" value={editingPlan.totalPrice || 0} onChange={e => setEditingPlan(p => ({ ...p, totalPrice: Number(e.target.value) }))} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth label="Badge Text (optional)" placeholder="e.g. Best Value" value={editingPlan.badge || ''} onChange={e => setEditingPlan(p => ({ ...p, badge: e.target.value }))} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth label="Savings Text (optional)" placeholder="e.g. Save 50% vs monthly" value={editingPlan.savingsText || ''} onChange={e => setEditingPlan(p => ({ ...p, savingsText: e.target.value }))} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth type="number" label="Sort Order" value={editingPlan.sortOrder || 1} onChange={e => setEditingPlan(p => ({ ...p, sortOrder: Number(e.target.value) }))} />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
                                 <FormControlLabel control={<Switch checked={editingPlan.isActive ?? true} onChange={e => setEditingPlan(p => ({ ...p, isActive: e.target.checked }))} />} label="Active" />
                                 <FormControlLabel control={<Switch checked={editingPlan.isPopular ?? false} onChange={e => setEditingPlan(p => ({ ...p, isPopular: e.target.checked }))} />} label="Popular" />

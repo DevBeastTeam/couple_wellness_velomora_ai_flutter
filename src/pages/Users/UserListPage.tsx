@@ -21,7 +21,8 @@ import {
     DialogContent,
     DialogActions,
     Button,
-    Alert
+    Alert,
+    Stack
 } from '@mui/material';
 import {
     Search,
@@ -117,9 +118,9 @@ const UserListPage: React.FC = () => {
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
 
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>User Management</Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Stack direction="row" spacing={1.5} sx={{ width: { xs: '100%', sm: 'auto' } }}>
                     <TextField
                         variant="outlined"
                         size="small"
@@ -133,23 +134,23 @@ const UserListPage: React.FC = () => {
                                 </InputAdornment>
                             ),
                         }}
-                        sx={{ bgcolor: 'white', borderRadius: 1, width: 300 }}
+                        sx={{ bgcolor: 'white', borderRadius: 1, width: { xs: '100%', sm: 300 } }}
                     />
-                    <IconButton sx={{ bgcolor: 'white', border: '1px solid #E2E8F0' }}>
+                    <IconButton sx={{ bgcolor: 'white', border: '1px solid #E2E8F0', alignSelf: { xs: 'flex-start', sm: 'center' } }}>
                         <FilterList />
                     </IconButton>
-                </Box>
-            </Box>
+                </Stack>
+            </Stack>
 
-            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}>
-                <Table sx={{ minWidth: 650 }}>
+            <TableContainer component={Paper} sx={{ borderRadius: 3, boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 700 }}>
                     <TableHead sx={{ bgcolor: '#F8FAFC' }}>
                         <TableRow>
                             <TableCell sx={{ fontWeight: '600' }}>User</TableCell>
                             <TableCell sx={{ fontWeight: '600' }}>Status</TableCell>
-                            <TableCell sx={{ fontWeight: '600' }}>Plan Expiry</TableCell>
-                            <TableCell sx={{ fontWeight: '600' }}>Language</TableCell>
-                            <TableCell sx={{ fontWeight: '600' }}>Created</TableCell>
+                            <TableCell sx={{ fontWeight: '600', display: { xs: 'none', md: 'table-cell' } }}>Plan Expiry</TableCell>
+                            <TableCell sx={{ fontWeight: '600', display: { xs: 'none', lg: 'table-cell' } }}>Language</TableCell>
+                            <TableCell sx={{ fontWeight: '600', display: { xs: 'none', lg: 'table-cell' } }}>Created</TableCell>
                             <TableCell sx={{ fontWeight: '600' }}>Ban/Unban</TableCell>
                             <TableCell align="right" sx={{ fontWeight: '600' }}>Actions</TableCell>
                         </TableRow>
@@ -188,7 +189,7 @@ const UserListPage: React.FC = () => {
                                             getStatusChip(user.subscriptionStatus)
                                         )}
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
                                         <Box>
                                             {user.subscriptionExpiryDate?.seconds ? (
                                                 <>
@@ -208,10 +209,10 @@ const UserListPage: React.FC = () => {
                                             )}
                                         </Box>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
                                         <Typography variant="body2">{user.preferredLanguage.toUpperCase()}</Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    <TableCell sx={{ display: { xs: 'none', lg: 'table-cell' } }}>
                                         <Typography variant="body2">
                                             {user.createdAt?.seconds ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
                                         </Typography>

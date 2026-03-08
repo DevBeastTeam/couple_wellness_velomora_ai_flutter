@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Toolbar } from '@mui/material';
 import Sidebar from './Sidebar';
 import Header from './Header';
@@ -7,6 +7,22 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const MainLayout: React.FC = () => {
     const { user, loading } = useAuth();
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(prev => !prev);
+    };
+
+    const handleDrawerClose = () => {
+        setMobileOpen(false);
+    };
+
+    const handleContentClick = () => {
+        if (mobileOpen) {
+            setMobileOpen(false);
+        }
+    };
+
 
     if (loading) return null; // Or a full-screen spinner
 
@@ -16,9 +32,17 @@ const MainLayout: React.FC = () => {
 
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F8FAFC' }}>
-            <Header />
-            <Sidebar />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, width: '100%' }}>
+            <Header onDrawerToggle={handleDrawerToggle} />
+            <Sidebar mobileOpen={mobileOpen} onClose={handleDrawerClose} />
+            <Box
+                component="main"
+                onClick={handleContentClick}
+                sx={{
+                    flexGrow: 1,
+                    p: { xs: 2, sm: 3 },
+                    width: '100%'
+                }}
+            >
                 <Toolbar />
                 <Outlet />
             </Box>

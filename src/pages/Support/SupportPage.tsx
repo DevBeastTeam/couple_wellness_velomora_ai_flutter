@@ -3,7 +3,7 @@ import {
     Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell,
     TableContainer, TableHead, TableRow, Chip, IconButton, Dialog,
     DialogTitle, DialogContent, DialogActions, Button, TextField,
-    CircularProgress, Alert, MenuItem, Grid, Divider
+    CircularProgress, Alert, MenuItem, Grid, Divider, Stack
 } from '@mui/material';
 import {
     Visibility, Delete, Refresh, CheckCircle, Add, Edit as EditIcon
@@ -210,18 +210,18 @@ const SupportPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Support & Help</Typography>
-                <Button variant="outlined" startIcon={<Refresh />} onClick={loadData}>
+                <Button variant="outlined" startIcon={<Refresh />} onClick={loadData} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}>
                     Refresh
                 </Button>
-            </Box>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
 
-            <Paper sx={{ borderRadius: 3 }}>
-                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Paper sx={{ borderRadius: 3, overflow: 'hidden' }}>
+                <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} variant="scrollable" scrollButtons="auto" sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tab label={`Support Messages (${supportMessages.length})`} />
                     <Tab label={`Bug Reports (${bugReports.length})`} />
                     <Tab label={`FAQs (${faqs.length})`} />
@@ -236,14 +236,14 @@ const SupportPage: React.FC = () => {
                         <>
                             {/* Support Messages Tab */}
                             {tabValue === 0 && (
-                                <TableContainer>
-                                    <Table>
+                                <TableContainer sx={{ overflowX: 'auto' }}>
+                                    <Table sx={{ minWidth: 760 }}>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>Name</TableCell>
                                                 <TableCell>Email</TableCell>
                                                 <TableCell>Message</TableCell>
-                                                <TableCell>Date</TableCell>
+                                                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>Date</TableCell>
                                                 <TableCell>Status</TableCell>
                                                 <TableCell>Actions</TableCell>
                                             </TableRow>
@@ -261,7 +261,7 @@ const SupportPage: React.FC = () => {
                                                         <TableCell sx={{ maxWidth: 300 }}>
                                                             {msg.message.substring(0, 50)}...
                                                         </TableCell>
-                                                        <TableCell>{formatDate(msg.timestamp)}</TableCell>
+                                                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{formatDate(msg.timestamp)}</TableCell>
                                                         <TableCell>
                                                             <TextField
                                                                 select
@@ -303,13 +303,13 @@ const SupportPage: React.FC = () => {
 
                             {/* Bug Reports Tab */}
                             {tabValue === 1 && (
-                                <TableContainer>
-                                    <Table>
+                                <TableContainer sx={{ overflowX: 'auto' }}>
+                                    <Table sx={{ minWidth: 700 }}>
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell>Title</TableCell>
                                                 <TableCell>Description</TableCell>
-                                                <TableCell>Date</TableCell>
+                                                <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>Date</TableCell>
                                                 <TableCell>Status</TableCell>
                                                 <TableCell>Actions</TableCell>
                                             </TableRow>
@@ -326,7 +326,7 @@ const SupportPage: React.FC = () => {
                                                         <TableCell sx={{ maxWidth: 300 }}>
                                                             {bug.description.substring(0, 50)}...
                                                         </TableCell>
-                                                        <TableCell>{formatDate(bug.timestamp)}</TableCell>
+                                                        <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>{formatDate(bug.timestamp)}</TableCell>
                                                         <TableCell>
                                                             <TextField
                                                                 select
@@ -525,7 +525,7 @@ const FAQDialog: React.FC<FAQDialogProps> = ({ open, faq, onClose, onSave }) => 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>{faq ? 'Edit FAQ' : 'Add FAQ'}</DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{ px: { xs: 2, sm: 3 } }}>
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                     <Grid item xs={12}>
                         <TextField

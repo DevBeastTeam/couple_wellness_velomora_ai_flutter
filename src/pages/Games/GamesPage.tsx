@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, Paper, Grid, CircularProgress, Alert,
-    Switch, FormControlLabel, Chip, Button
+    Switch, FormControlLabel, Chip, Button, Stack
 } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import { collection, getDocs, doc, updateDoc, setDoc } from 'firebase/firestore';
@@ -203,18 +203,17 @@ const GamesPage: React.FC = () => {
 
     return (
         <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Games Management</Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<Refresh />}
-                        onClick={loadGames}
-                    >
-                        Refresh
-                    </Button>
-                </Box>
-            </Box>
+                <Button
+                    variant="outlined"
+                    startIcon={<Refresh />}
+                    onClick={loadGames}
+                    sx={{ alignSelf: { xs: 'flex-start', sm: 'center' } }}
+                >
+                    Refresh
+                </Button>
+            </Stack>
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}

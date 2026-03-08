@@ -23,7 +23,8 @@ import {
     MenuItem,
     Select,
     FormControl,
-    InputLabel
+    InputLabel,
+    Stack
 } from '@mui/material';
 import {
     ArrowBack,
@@ -254,7 +255,7 @@ const UserDetailsPage: React.FC = () => {
 
     if (!user) {
         return (
-            <Box sx={{ p: 4, textAlign: 'center' }}>
+            <Box sx={{ p: { xs: 2, sm: 4 }, textAlign: 'center' }}>
                 <Typography variant="h6" color="error">User not found</Typography>
                 <Button onClick={() => navigate('/users')} startIcon={<ArrowBack />} sx={{ mt: 2 }}>
                     Back to Users
@@ -275,7 +276,7 @@ const UserDetailsPage: React.FC = () => {
                     <Typography color="text.primary">Details</Typography>
                 </Breadcrumbs>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Stack direction={{ xs: 'column', sm: 'row' }} alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={1.5}>
                     <IconButton onClick={() => navigate('/users')} size="small">
                         <ArrowBack />
                     </IconButton>
@@ -283,13 +284,13 @@ const UserDetailsPage: React.FC = () => {
                     {user?.isBanned && (
                         <Chip label="BANNED" color="error" size="small" />
                     )}
-                </Box>
+                </Stack>
             </Box>
 
             <Grid container spacing={3}>
                 {/* Profile Overview */}
                 <Grid item xs={12} md={4}>
-                    <Card sx={{ borderRadius: 3, textAlign: 'center', py: 2 }}>
+                    <Card sx={{ borderRadius: 3, textAlign: 'center', py: 2, height: '100%' }}>
                         <CardContent>
                             <Avatar
                                 src={user?.photoURL}
@@ -336,7 +337,7 @@ const UserDetailsPage: React.FC = () => {
 
                 {/* User Stats & Info */}
                 <Grid item xs={12} md={8}>
-                    <Grid container spacing={3}>
+                    <Grid container spacing={3} alignItems="stretch">
                         <Grid item xs={12}>
                             <Paper sx={{ p: 3, borderRadius: 3 }}>
                                 <Typography variant="h6" gutterBottom sx={{ fontWeight: '600' }}>Account Information</Typography>
