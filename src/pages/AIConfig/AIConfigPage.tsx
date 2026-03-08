@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, TextField, Button, Paper, Grid,
-    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton
+    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton, Switch, FormControlLabel
 } from '@mui/material';
 import { Save, Refresh, Visibility, VisibilityOff } from '@mui/icons-material';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -15,6 +15,7 @@ interface SafetySettings {
 }
 
 interface AIConfig {
+    enabled: boolean;
     apiKey: string;
     maxTokens: number;
     model: string;
@@ -26,6 +27,7 @@ interface AIConfig {
 }
 
 const defaultConfig: AIConfig = {
+    enabled: true,
     apiKey: 'PLACEHOLDER_KEY',
     maxTokens: 500,
     model: 'gemini-2.0-flash',
@@ -123,6 +125,24 @@ const AIConfigPage: React.FC = () => {
 
             <Paper sx={{ p: 4, borderRadius: 3 }}>
                 <Grid container spacing={3}>
+                    {/* AI Enable/Disable */}
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                            <Typography variant="h6">AI Service Status</Typography>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={config.enabled}
+                                        onChange={(e) => setConfig({ ...config, enabled: e.target.checked })}
+                                        color="primary"
+                                    />
+                                }
+                                label={config.enabled ? 'Enabled' : 'Disabled'}
+                            />
+                        </Box>
+                        <Divider sx={{ mb: 2 }} />
+                    </Grid>
+
                     {/* API Key */}
                     <Grid item xs={12}>
                         <Typography variant="h6" gutterBottom>API Configuration</Typography>
