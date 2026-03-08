@@ -497,7 +497,7 @@ const UserDetailsPage: React.FC = () => {
                                             <Box>
                                                 <Typography variant="caption" color="text.secondary">Plan Type</Typography>
                                                 <Typography variant="body2">
-                                                    {user.subscriptionStatus === 'premium' ? 'Premium' : 'Free'}
+                                                    {user.subscriptionStatus === 'premium' ? 'Premium' : user.subscriptionStatus === 'trial' ? 'Trial' : 'Free'}
                                                 </Typography>
                                             </Box>
                                         </Box>
@@ -511,7 +511,8 @@ const UserDetailsPage: React.FC = () => {
                                                     <Typography variant="body2">
                                                         {user.subscriptionType.includes('monthly') ? 'Monthly' :
                                                          user.subscriptionType.includes('quarterly') ? 'Quarterly' :
-                                                         user.subscriptionType.includes('yearly') ? 'Yearly' : 'N/A'}
+                                                         user.subscriptionType.includes('yearly') ? 'Yearly' :
+                                                         user.subscriptionType.includes('trial') ? '48-Hour Trial' : 'N/A'}
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -528,6 +529,41 @@ const UserDetailsPage: React.FC = () => {
                                                     </Typography>
                                                 </Box>
                                             </Box>
+                                        </Grid>
+                                    )}
+                                    {user.cancellationRequested && (
+                                        <Grid item xs={12}>
+                                            <Alert severity="warning" sx={{ mt: 1 }}>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <Box>
+                                                        <Typography variant="body2" fontWeight="600">Cancellation Requested</Typography>
+                                                        <Typography variant="caption">
+                                                            {user.cancellationRequestedAt?.seconds
+                                                                ? `Requested on ${new Date(user.cancellationRequestedAt.seconds * 1000).toLocaleString()}`
+                                                                : 'Pending review'}
+                                                        </Typography>
+                                                    </Box>
+                                                    <Button
+                                                        size="small"
+                                                        variant="outlined"
+                                                        onClick={async () => {
+                                                            try {
+                                                                await userService.updateUser(user.uid, {
+                                                                    cancellationRequested: false,
+                                                                    cancellationRequestedAt: null
+                                                                });
+                                                                setSuccess('Cancellation request cleared');
+                                                                const data = await userService.getUserById(user.uid);
+                                                                setUser(data);
+                                                            } catch (err: any) {
+                                                                setError(err.message || 'Failed to clear request');
+                                                            }
+                                                        }}
+                                                    >
+                                                        Clear Request
+                                                    </Button>
+                                                </Box>
+                                            </Alert>
                                         </Grid>
                                     )}
                                 </Grid>

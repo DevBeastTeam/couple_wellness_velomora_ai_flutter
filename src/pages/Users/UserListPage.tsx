@@ -29,7 +29,8 @@ import {
     FilterList,
     Delete,
     Block,
-    CheckCircle
+    CheckCircle,
+    Close
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
@@ -218,6 +219,15 @@ const UserListPage: React.FC = () => {
                                             <Typography variant="caption" color="text.secondary">
                                                 {user.isBanned ? 'Banned' : 'Active'}
                                             </Typography>
+                                            {user.cancellationRequested && (
+                                                <Chip
+                                                    icon={<Close fontSize="small" />}
+                                                    label="Cancel Req"
+                                                    color="error"
+                                                    size="small"
+                                                    variant="outlined"
+                                                />
+                                            )}
                                         </Box>
                                     </TableCell>
                                     <TableCell align="right">

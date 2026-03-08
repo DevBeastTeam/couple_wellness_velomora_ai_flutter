@@ -21,6 +21,8 @@ export interface UserProfile {
     trialEndTime?: any;
     isPremium?: boolean;
     hasUsed48HourTrial?: boolean;
+    cancellationRequested?: boolean;
+    cancellationRequestedAt?: any;
     preferredLanguage: string;
     lastLoginAt: any;
     createdAt: any;
