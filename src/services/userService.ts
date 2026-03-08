@@ -15,10 +15,18 @@ export interface UserProfile {
     email: string;
     photoURL?: string;
     subscriptionStatus: 'free' | 'trial' | 'premium';
+    subscriptionType?: string;
+    subscriptionExpiryDate?: any;
+    trialStartTime?: any;
+    trialEndTime?: any;
+    isPremium?: boolean;
+    hasUsed48HourTrial?: boolean;
     preferredLanguage: string;
     lastLoginAt: any;
     createdAt: any;
     featuresAccess?: Record<string, boolean>;
+    isBanned?: boolean;
+    authProvider?: string;
 }
 
 export const userService = {
@@ -38,5 +46,13 @@ export const userService = {
 
     updateUserSubscription: async (uid: string, status: 'free' | 'trial' | 'premium') => {
         await updateDoc(doc(db, 'users', uid), { subscriptionStatus: status });
+    },
+
+    updateUser: async (uid: string, data: Partial<UserProfile>) => {
+        await updateDoc(doc(db, 'users', uid), data);
+    },
+
+    deleteUser: async (uid: string) => {
+        await updateDoc(doc(db, 'users', uid), { deleted: true });
     }
 };

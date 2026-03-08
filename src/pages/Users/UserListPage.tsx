@@ -14,12 +14,22 @@ import {
     IconButton,
     TextField,
     InputAdornment,
-    CircularProgress
+    CircularProgress,
+    Switch,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Alert
 } from '@mui/material';
 import {
     Search,
     Visibility,
-    FilterList
+    FilterList,
+    Delete,
+    Block,
+    CheckCircle
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
@@ -28,6 +38,10 @@ const UserListPage: React.FC = () => {
     const [users, setUsers] = useState<UserProfile[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -57,8 +71,43 @@ const UserListPage: React.FC = () => {
         }
     };
 
+    const handleBanToggle = async (user: UserProfile) => {
+        try {
+            const newBanStatus = !user.isBanned;
+            await userService.updateUser(user.uid, { isBanned: newBanStatus });
+            setSuccess(newBanStatus ? 'User banned successfully!' : 'User unbanned successfully!');
+            // Refresh users
+            const data = await userService.getUsers(50);
+            setUsers(data);
+        } catch (err: any) {
+            setError(err.message || 'Failed to update ban status');
+        }
+    };
+
+    const handleDeleteClick = (user: UserProfile) => {
+        setSelectedUser(user);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!selectedUser) return;
+        try {
+            await userService.deleteUser(selectedUser.uid);
+            setSuccess('User deleted successfully!');
+            setDeleteDialogOpen(false);
+            // Refresh users
+            const data = await userService.getUsers(50);
+            setUsers(data);
+        } catch (err: any) {
+            setError(err.message || 'Failed to delete user');
+        }
+    };
+
     return (
         <Box>
+            {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
+            {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>User Management</Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
@@ -89,21 +138,23 @@ const UserListPage: React.FC = () => {
                         <TableRow>
                             <TableCell sx={{ fontWeight: '600' }}>User</TableCell>
                             <TableCell sx={{ fontWeight: '600' }}>Status</TableCell>
+                            <TableCell sx={{ fontWeight: '600' }}>Plan Expiry</TableCell>
                             <TableCell sx={{ fontWeight: '600' }}>Language</TableCell>
                             <TableCell sx={{ fontWeight: '600' }}>Created</TableCell>
+                            <TableCell sx={{ fontWeight: '600' }}>Ban/Unban</TableCell>
                             <TableCell align="right" sx={{ fontWeight: '600' }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
                                     <CircularProgress size={30} />
                                 </TableCell>
                             </TableRow>
                         ) : filteredUsers.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
                                     <Typography color="text.secondary">No users found</Typography>
                                 </TableCell>
                             </TableRow>
@@ -121,7 +172,33 @@ const UserListPage: React.FC = () => {
                                             </Box>
                                         </Box>
                                     </TableCell>
-                                    <TableCell>{getStatusChip(user.subscriptionStatus)}</TableCell>
+                                    <TableCell>
+                                        {user.isBanned ? (
+                                            <Chip label="BANNED" color="error" size="small" />
+                                        ) : (
+                                            getStatusChip(user.subscriptionStatus)
+                                        )}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Box>
+                                            {user.subscriptionExpiryDate?.seconds ? (
+                                                <>
+                                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>
+                                                        {new Date(user.subscriptionExpiryDate.seconds * 1000).toLocaleDateString()}
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        {user.subscriptionType?.includes('monthly') ? 'Monthly' :
+                                                         user.subscriptionType?.includes('quarterly') ? 'Quarterly' :
+                                                         user.subscriptionType?.includes('yearly') ? 'Yearly' : 'Premium'}
+                                                    </Typography>
+                                                </>
+                                            ) : (
+                                                <Typography variant="body2" color="text.secondary">
+                                                    No expiry (Free)
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </TableCell>
                                     <TableCell>
                                         <Typography variant="body2">{user.preferredLanguage.toUpperCase()}</Typography>
                                     </TableCell>
@@ -129,6 +206,19 @@ const UserListPage: React.FC = () => {
                                         <Typography variant="body2">
                                             {user.createdAt?.seconds ? new Date(user.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}
                                         </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Switch
+                                                checked={!user.isBanned}
+                                                onChange={() => handleBanToggle(user)}
+                                                color={user.isBanned ? 'error' : 'success'}
+                                                size="small"
+                                            />
+                                            <Typography variant="caption" color="text.secondary">
+                                                {user.isBanned ? 'Banned' : 'Active'}
+                                            </Typography>
+                                        </Box>
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton
@@ -139,6 +229,14 @@ const UserListPage: React.FC = () => {
                                         >
                                             <Visibility fontSize="small" />
                                         </IconButton>
+                                        <IconButton
+                                            size="small"
+                                            color="error"
+                                            onClick={() => handleDeleteClick(user)}
+                                            title="Delete User"
+                                        >
+                                            <Delete fontSize="small" />
+                                        </IconButton>
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -146,6 +244,25 @@ const UserListPage: React.FC = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {/* Delete Dialog */}
+            <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} maxWidth="sm" fullWidth>
+                <DialogTitle>Delete User Account</DialogTitle>
+                <DialogContent>
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        This action cannot be undone!
+                    </Alert>
+                    <Typography>
+                        Are you sure you want to delete <strong>{selectedUser?.displayName || selectedUser?.email}</strong>? All user data will be permanently removed.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+                    <Button onClick={handleDeleteConfirm} variant="contained" color="error">
+                        Delete Account
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
