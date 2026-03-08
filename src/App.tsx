@@ -9,6 +9,9 @@ import UserDetailsPage from './pages/Users/UserDetailsPage'
 import SubscriptionsPage from './pages/Subscriptions/SubscriptionsPage'
 import AIConfigPage from './pages/AIConfig/AIConfigPage'
 import NotificationsPage from './pages/Notifications/NotificationsPage'
+import SupportPage from './pages/Support/SupportPage'
+import SettingsPage from './pages/Settings/SettingsPage'
+import GamesPage from './pages/Games/GamesPage'
 
 function App() {
     return (
@@ -25,13 +28,11 @@ function App() {
 
                     <Route path="subscriptions" element={<SubscriptionsPage />} />
                     <Route path="ai-config" element={<AIConfigPage />} />
-                    <Route path="games" element={<div className="p-4">Games Page</div>} />
+                    <Route path="games" element={<GamesPage />} />
                     <Route path="kegel" element={<div className="p-4">Kegel Exercises Page</div>} />
                     <Route path="notifications" element={<NotificationsPage />} />
-                    <Route path="support" element={<div className="p-4">Support Page</div>} />
-                    <Route path="content" element={<div className="p-4">Content Page</div>} />
-                    <Route path="analytics" element={<div className="p-4">Analytics Page</div>} />
-                    <Route path="settings" element={<div className="p-4">Settings Page</div>} />
+                    <Route path="support" element={<SupportPage />} />
+                    <Route path="settings" element={<SettingsPage />} />
                 </Route>
             </Routes>
         </AuthProvider>

@@ -19,8 +19,6 @@ import {
     FitnessCenter as KegelIcon,
     Notifications as NotifyIcon,
     SupportAgent as SupportIcon,
-    Article as ContentIcon,
-    Assessment as AnalyticsIcon,
     Settings as SettingsIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -36,8 +34,6 @@ const menuItems = [
     { text: 'Kegel Exercises', icon: <KegelIcon />, path: '/kegel' },
     { text: 'Notifications', icon: <NotifyIcon />, path: '/notifications' },
     { text: 'Support', icon: <SupportIcon />, path: '/support' },
-    { text: 'Content', icon: <ContentIcon />, path: '/content' },
-    { text: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
