@@ -4,7 +4,6 @@ import {
     Box,
     Breadcrumbs,
     Chip,
-    CircularProgress,
     IconButton,
     Link,
     Paper,
@@ -16,6 +15,7 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
     ArrowBack,
     AssignmentTurnedIn,
@@ -97,11 +97,7 @@ const UserGameProgressPage: React.FC = () => {
     );
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="list" count={5} />;
     }
 
     return (

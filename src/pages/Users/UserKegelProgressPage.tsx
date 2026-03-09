@@ -3,7 +3,6 @@ import {
     Alert,
     Box,
     Breadcrumbs,
-    CircularProgress,
     IconButton,
     Link,
     Paper,
@@ -15,6 +14,7 @@ import {
     TableRow,
     Typography
 } from '@mui/material';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
     ArrowBack,
     CheckCircle,
@@ -93,11 +93,7 @@ const UserKegelProgressPage: React.FC = () => {
     );
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="list" count={5} />;
     }
 
     return (

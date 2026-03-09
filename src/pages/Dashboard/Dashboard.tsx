@@ -96,14 +96,14 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, icon, a
                         {title}
                     </Typography>
                     {loading ? (
-                        <Skeleton width="55%" height={44} sx={{ my: 0.5 }} />
+                        <Skeleton animation="wave" width="55%" height={44} sx={{ my: 0.5 }} />
                     ) : (
                         <Typography variant="h4" sx={{ fontWeight: 800, lineHeight: 1.1, my: 0.5 }}>
                             {value}
                         </Typography>
                     )}
                     {loading ? (
-                        <Skeleton width="70%" height={20} />
+                        <Skeleton animation="wave" width="70%" height={20} />
                     ) : (
                         <Typography variant="body2" color="text.secondary">
                             {subtitle}
@@ -129,6 +129,8 @@ const MetricCard: React.FC<MetricCardProps> = ({ title, value, subtitle, icon, a
         </CardContent>
     </Card>
 );
+
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 
 const Dashboard: React.FC = () => {
     const [loading, setLoading] = useState(true);
@@ -265,48 +267,52 @@ const Dashboard: React.FC = () => {
 
             {error && <Alert severity="error">{error}</Alert>}
 
-            <Grid container spacing={2.5}>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <MetricCard
-                        title="Total Users"
-                        value={numberFormatter.format(stats.totalUsers)}
-                        subtitle={`${numberFormatter.format(stats.freeUsers)} free • ${numberFormatter.format(stats.trialUsers)} trial`}
-                        icon={<PeopleAlt />}
-                        accent="#4F46E5"
-                        loading={loading}
-                    />
+            {loading ? (
+                <SkeletonLoader type="dashboard" />
+            ) : (
+                <Grid container spacing={2.5}>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <MetricCard
+                            title="Total Users"
+                            value={numberFormatter.format(stats.totalUsers)}
+                            subtitle={`${numberFormatter.format(stats.freeUsers)} free • ${numberFormatter.format(stats.trialUsers)} trial`}
+                            icon={<PeopleAlt />}
+                            accent="#4F46E5"
+                            loading={loading}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <MetricCard
+                            title="Premium Users"
+                            value={numberFormatter.format(stats.premiumUsers)}
+                            subtitle={`${premiumUserRate.toFixed(1)}% conversion`}
+                            icon={<Star />}
+                            accent="#F59E0B"
+                            loading={loading}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <MetricCard
+                            title="Total Games"
+                            value={numberFormatter.format(stats.totalGames)}
+                            subtitle={`${numberFormatter.format(stats.premiumGames)} premium games`}
+                            icon={<SportsEsports />}
+                            accent="#2563EB"
+                            loading={loading}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6} lg={3}>
+                        <MetricCard
+                            title="Total Kegels"
+                            value={numberFormatter.format(stats.totalKegels)}
+                            subtitle={`${numberFormatter.format(stats.premiumKegels)} premium kegels`}
+                            icon={<FitnessCenter />}
+                            accent="#DB2777"
+                            loading={loading}
+                        />
+                    </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <MetricCard
-                        title="Premium Users"
-                        value={numberFormatter.format(stats.premiumUsers)}
-                        subtitle={`${premiumUserRate.toFixed(1)}% conversion`}
-                        icon={<Star />}
-                        accent="#F59E0B"
-                        loading={loading}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <MetricCard
-                        title="Total Games"
-                        value={numberFormatter.format(stats.totalGames)}
-                        subtitle={`${numberFormatter.format(stats.premiumGames)} premium games`}
-                        icon={<SportsEsports />}
-                        accent="#2563EB"
-                        loading={loading}
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6} lg={3}>
-                    <MetricCard
-                        title="Total Kegels"
-                        value={numberFormatter.format(stats.totalKegels)}
-                        subtitle={`${numberFormatter.format(stats.premiumKegels)} premium kegels`}
-                        icon={<FitnessCenter />}
-                        accent="#DB2777"
-                        loading={loading}
-                    />
-                </Grid>
-            </Grid>
+            )}
 
             <Grid container spacing={2.5}>
                 <Grid item xs={12} lg={4}>

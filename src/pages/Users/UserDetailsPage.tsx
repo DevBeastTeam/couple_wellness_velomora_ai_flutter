@@ -7,7 +7,6 @@ import {
     Avatar,
     Divider,
     Button,
-    CircularProgress,
     Card,
     CardContent,
     Chip,
@@ -43,6 +42,7 @@ import {
 } from '@mui/icons-material';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 
 const UserDetailsPage: React.FC = () => {
     const { uid } = useParams<{ uid: string }>();
@@ -71,13 +71,15 @@ const UserDetailsPage: React.FC = () => {
             if (!uid) return;
             try {
                 const data = await userService.getUserById(uid);
+                if (!data) {
+                    setLoading(false);
+                    return;
+                }
                 setUser(data);
-                const currentPlan = data.subscriptionStatus === 'premium' && data.subscriptionType
-                    ? data.subscriptionType
-                    : 'free';
+
                 setEditForm({
                     displayName: data.displayName || '',
-                    subscriptionStatus: data.subscriptionStatus || 'free',
+                    subscriptionStatus: (data.subscriptionStatus === 'trial' ? 'free' : data.subscriptionStatus) as 'free' | 'premium',
                     subscriptionType: data.subscriptionType || '',
                     subscriptionExpiryDate: data.subscriptionExpiryDate?.seconds
                         ? new Date(data.subscriptionExpiryDate.seconds * 1000).toISOString().split('T')[0]
@@ -246,11 +248,7 @@ const UserDetailsPage: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="details" />;
     }
 
     if (!user) {
@@ -511,9 +509,9 @@ const UserDetailsPage: React.FC = () => {
                                                     <Typography variant="caption" color="text.secondary">Subscription Period</Typography>
                                                     <Typography variant="body2">
                                                         {user.subscriptionType.includes('monthly') ? 'Monthly' :
-                                                         user.subscriptionType.includes('quarterly') ? 'Quarterly' :
-                                                         user.subscriptionType.includes('yearly') ? 'Yearly' :
-                                                         user.subscriptionType.includes('trial') ? '48-Hour Trial' : 'N/A'}
+                                                            user.subscriptionType.includes('quarterly') ? 'Quarterly' :
+                                                                user.subscriptionType.includes('yearly') ? 'Yearly' :
+                                                                    user.subscriptionType.includes('trial') ? '48-Hour Trial' : 'N/A'}
                                                     </Typography>
                                                 </Box>
                                             </Box>

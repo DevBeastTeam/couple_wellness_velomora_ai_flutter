@@ -123,7 +123,7 @@ const LoginPage: React.FC = () => {
                                 borderRadius: 2
                             }}
                         >
-                            {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+                            {loading ? <CircularProgress /> : 'Login'}
                         </Button>
                     </form>
 

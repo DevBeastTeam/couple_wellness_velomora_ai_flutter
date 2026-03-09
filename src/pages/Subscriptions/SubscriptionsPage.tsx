@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
     Box, Typography, Button, Paper, Grid, TextField, Switch,
     FormControlLabel, IconButton, Dialog, DialogTitle, DialogContent,
@@ -190,7 +191,7 @@ const SubscriptionsPage: React.FC = () => {
                 ))}
             </Grid>
 
-            {loading && <Box sx={{ textAlign: 'center', py: 4 }}><CircularProgress /></Box>}
+            {loading && <SkeletonLoader type="card" count={3} />}
             {!loading && plans.length === 0 && (
                 <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3 }}>
                     <Typography variant="h6" color="text.secondary" gutterBottom>No subscription plans yet</Typography>

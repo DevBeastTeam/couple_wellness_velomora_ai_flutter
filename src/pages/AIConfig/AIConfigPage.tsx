@@ -6,6 +6,7 @@ import {
 import { Save, Refresh, Visibility, VisibilityOff } from '@mui/icons-material';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../services/firebase';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 
 interface SafetySettings {
     dangerousContent: string;
@@ -100,11 +101,7 @@ const AIConfigPage: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="details" />;
     }
 
     return (

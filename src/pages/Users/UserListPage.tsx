@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Toast from '../../components/Common/Toast';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
     Box,
     Typography,
@@ -14,7 +16,6 @@ import {
     IconButton,
     TextField,
     InputAdornment,
-    CircularProgress,
     Switch,
     Dialog,
     DialogTitle,
@@ -115,8 +116,8 @@ const UserListPage: React.FC = () => {
 
     return (
         <Box>
-            {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
-            {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
+            {success && <Toast type="success" message={success} />}
+            {error && <Toast type="danger" message={error} />}
 
             <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={2} sx={{ mb: 4 }}>
                 <Typography variant="h5" sx={{ fontWeight: 'bold' }}>User Management</Typography>
@@ -159,7 +160,7 @@ const UserListPage: React.FC = () => {
                         {loading ? (
                             <TableRow>
                                 <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
-                                    <CircularProgress size={30} />
+                                    <SkeletonLoader type="table" />
                                 </TableCell>
                             </TableRow>
                         ) : filteredUsers.length === 0 ? (
@@ -198,8 +199,8 @@ const UserListPage: React.FC = () => {
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
                                                         {user.subscriptionType?.includes('monthly') ? 'Monthly' :
-                                                         user.subscriptionType?.includes('quarterly') ? 'Quarterly' :
-                                                         user.subscriptionType?.includes('yearly') ? 'Yearly' : 'Premium'}
+                                                            user.subscriptionType?.includes('quarterly') ? 'Quarterly' :
+                                                                user.subscriptionType?.includes('yearly') ? 'Yearly' : 'Premium'}
                                                     </Typography>
                                                 </>
                                             ) : (

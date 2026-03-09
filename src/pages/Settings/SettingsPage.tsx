@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
     Box, Typography, Paper, Tabs, Tab, TextField, Button,
     CircularProgress, Alert, Grid, Divider, IconButton, Stack
@@ -189,11 +190,7 @@ const SettingsPage: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="details" />;
     }
 
     return (

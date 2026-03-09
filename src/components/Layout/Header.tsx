@@ -22,6 +22,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onDrawerToggle }) => {
     const { user, role } = useAuth();
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {

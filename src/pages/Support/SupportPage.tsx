@@ -3,12 +3,13 @@ import {
     Box, Typography, Paper, Tabs, Tab, Table, TableBody, TableCell,
     TableContainer, TableHead, TableRow, Chip, IconButton, Dialog,
     DialogTitle, DialogContent, DialogActions, Button, TextField,
-    CircularProgress, Alert, MenuItem, Grid, Divider, Stack
+    Alert, MenuItem, Grid, Stack
 } from '@mui/material';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 import {
-    Visibility, Delete, Refresh, CheckCircle, Add, Edit as EditIcon
+    Visibility, Delete, Refresh, Add, Edit as EditIcon
 } from '@mui/icons-material';
-import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc, serverTimestamp, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 
 interface SupportMessage {
@@ -229,9 +230,7 @@ const SupportPage: React.FC = () => {
 
                 <Box sx={{ p: 3 }}>
                     {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                            <CircularProgress />
-                        </Box>
+                        <SkeletonLoader type="table" />
                     ) : (
                         <>
                             {/* Support Messages Tab */}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Box, Toolbar } from '@mui/material';
+import SkeletonLoader from './SkeletonLoader';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { useAuth } from '../../contexts/AuthContext';
@@ -44,7 +45,7 @@ const MainLayout: React.FC = () => {
                 }}
             >
                 <Toolbar />
-                <Outlet />
+                <Suspense fallback={<SkeletonLoader />}><Outlet /></Suspense>
             </Box>
         </Box>
     );

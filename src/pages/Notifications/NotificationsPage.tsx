@@ -7,6 +7,7 @@ import {
 import { Send, Refresh, NotificationsActive } from '@mui/icons-material';
 import { collection, getDocs, addDoc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../services/firebase';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 
 interface User {
     uid: string;
@@ -23,6 +24,7 @@ interface NotificationHistory {
     targetUsers?: string[];
     sentAt: any;
     sentBy: string;
+    recipientCount?: number;
 }
 
 const notificationTypes = [
@@ -182,6 +184,10 @@ const NotificationsPage: React.FC = () => {
             return 'N/A';
         }
     };
+
+    if (loading) {
+        return <SkeletonLoader type="table" />;
+    }
 
     return (
         <Box>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box, Typography, Paper, Grid, CircularProgress, Alert,
+    Box, Typography, Paper, Grid, Alert,
     Switch, FormControlLabel, Chip, Button, Stack
 } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import { collection, getDocs, doc, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../services/firebase';
+import SkeletonLoader from '../../components/Layout/SkeletonLoader';
 
 interface Game {
     id: string;
@@ -194,11 +195,7 @@ const GamesPage: React.FC = () => {
     };
 
     if (loading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
-                <CircularProgress />
-            </Box>
-        );
+        return <SkeletonLoader type="card" count={6} />;
     }
 
     return (

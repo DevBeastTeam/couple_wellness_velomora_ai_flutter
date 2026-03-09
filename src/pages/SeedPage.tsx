@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import SkeletonLoader from '../components/Layout/SkeletonLoader';
 import {
     Box,
     Typography,
@@ -148,7 +149,7 @@ const SeedPage: React.FC = () => {
                         size="large"
                         onClick={handleSeed}
                         disabled={loading}
-                        startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <PlayArrow />}
+                        startIcon={loading ? <SkeletonLoader /> : <PlayArrow />}
                     >
                         {loading ? 'Running Migration...' : 'Run Migration'}
                     </Button>
@@ -215,7 +216,7 @@ const SeedPage: React.FC = () => {
                                                 {isSuccess ? (
                                                     <CheckCircle color="success" fontSize="small" />
                                                 ) : (
-                                                    <CircularProgress size={14} />
+                                                    <SkeletonLoader />
                                                 )}
                                             </ListItemIcon>
                                             <ListItemText primary={log} />
