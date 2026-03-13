@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
+import 'package:velmora/services/error_cache_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
@@ -41,30 +42,105 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeGame();
+    // Initialize game after build is complete
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeGame();
+    });
   }
 
   Future<void> _initializeGame() async {
     try {
+      print('🎮 [TruthOrTruth] Starting initialization...');
+
       // Start game session
-      _sessionId = await _gameService.startGameSessionById('truth_or_truth');
+      print('🎮 [TruthOrTruth] Starting game session...');
+      try {
+        _sessionId = await _gameService.startGameSessionById('truth_or_truth');
+        print('🎮 [TruthOrTruth] Session ID: $_sessionId');
+      } catch (e) {
+        print('❌ [TruthOrTruth] Failed to start session: $e');
+        await ErrorCacheService().logGameError(
+          gameId: 'truth_or_truth',
+          phase: 'start_session',
+          error: e.toString(),
+          stack: StackTrace.current.toString(),
+        );
+        // Continue anyway - session is not critical for gameplay
+        _sessionId = null;
+      }
 
       // Load questions using the new service
+      print('🎮 [TruthOrTruth] Loading questions...');
       final questions = await _questionsService.getQuestions('truth_or_truth');
+      print('🎮 [TruthOrTruth] Loaded ${questions.length} questions');
+
+      // Validate questions
+      if (questions.isEmpty) {
+        throw Exception('No questions loaded for truth_or_truth');
+      }
+
+      if (!mounted) return;
 
       setState(() {
         _questions = questions;
         _isLoading = false;
       });
-    } catch (e) {
+
+      print('✅ [TruthOrTruth] Initialization complete');
+    } catch (e, stackTrace) {
+      print('❌ [TruthOrTruth] Initialization error: $e');
+      print('❌ [TruthOrTruth] Stack trace: $stackTrace');
+
+      // Cache the error
+      await ErrorCacheService().logGameError(
+        gameId: 'truth_or_truth',
+        phase: 'initialization',
+        error: e.toString(),
+        stack: stackTrace.toString(),
+      );
+
+      if (!mounted) return;
+
       setState(() {
         _isLoading = false;
       });
+
+      // Check if error contains user-friendly message
+      String errorMessage = e.toString();
+      bool isUserError =
+          errorMessage.contains('User not logged in') ||
+          errorMessage.contains('sign in');
+
       if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('${l10n.error}: $e')));
+        if (isUserError) {
+          // Show user-friendly message and navigate back
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Sign In Required'),
+              content: const Text(
+                'You need to be signed in to play games. Please sign in and try again.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close dialog
+                    Navigator.of(context).pop(); // Go back to games
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          final l10n = AppLocalizations.of(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${l10n.error}: $e'),
+              duration: const Duration(seconds: 5),
+            ),
+          );
+        }
       }
     }
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:velmora/firebase_options.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/screens/auth/sign_in_screen.dart';
@@ -9,33 +10,113 @@ import 'package:velmora/services/analytics_service.dart';
 import 'package:velmora/services/ai_service.dart';
 import 'package:velmora/services/subscription_service.dart';
 import 'package:velmora/services/ai_config_setup.dart';
+import 'package:velmora/services/error_cache_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize services
-  await AnalyticsService().initialize();
-  await AIService().initialize();
-  await SubscriptionService().initialize();
+  // ============================================================
+  // GLOBAL ERROR HANDLERS - CATCH ALL UNCAUGHT ERRORS
+  // ============================================================
 
-  // Auto-setup AI config if it doesn't exist
-  final configExists = await AIConfigSetup.configExists();
-  if (!configExists) {
-    debugPrint('AI config not found, setting up defaults...');
-    await AIConfigSetup.setupAIConfig(
-      apiKey: 'AIzaSyA9tO6byX7lOSuY3WW105nlLpdtnVenIgo',
-      // apiKey: 'REPLACE_WITH_REAL_KEY_IN_FIRESTORE',
+  // Catch all Flutter framework errors
+  FlutterError.onError = (FlutterErrorDetails details) {
+    final error = details.exception;
+    final stack = details.stack;
+    final timestamp = DateTime.now().toIso8601String();
+    print('❌ [FATAL FLUTTER ERROR] $timestamp');
+    print('❌ [FATAL FLUTTER ERROR] Type: ${error.runtimeType}');
+    print('❌ [FATAL FLUTTER ERROR] Error: $error');
+    print('❌ [FATAL FLUTTER ERROR] Stack trace:');
+    print('❌ [FATAL FLUTTER ERROR] $stack');
+    print('❌ [FATAL FLUTTER ERROR] Library: ${details.library}');
+    print('❌ [FATAL FLUTTER ERROR] Context: ${details.context}');
+    print('❌ [FATAL FLUTTER ERROR] ════════════════════════════════════════════');
+
+    // Store error using ErrorCacheService
+    ErrorCacheService().storeError(
+      'Flutter Error: $error',
+      stack.toString(),
+      location: 'Flutter: ${details.library}',
     );
-  }
+  };
 
-  runApp(const MyApp());
+  // Catch all platform/Dart errors (prevents app crashes)
+  PlatformDispatcher.instance.onError = (error, stack) {
+    final timestamp = DateTime.now().toIso8601String();
+    print('❌ [FATAL PLATFORM ERROR] $timestamp');
+    print('❌ [FATAL PLATFORM ERROR] Type: ${error.runtimeType}');
+    print('❌ [FATAL PLATFORM ERROR] Error: $error');
+    print('❌ [FATAL PLATFORM ERROR] Stack trace:');
+    print('❌ [FATAL PLATFORM ERROR] $stack');
+    print('❌ [FATAL PLATFORM ERROR] ════════════════════════════════════════════');
+
+    // Store error using ErrorCacheService
+    ErrorCacheService().storeError(
+      'Platform Error: $error',
+      stack.toString(),
+      location: 'Platform',
+    );
+
+    // Return true to prevent crash - let app continue running
+    return true;
+  };
+
+  // Catch all async errors that would otherwise crash the app
+  runZonedGuarded(() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+    // Initialize services
+    await AnalyticsService().initialize();
+    await AIService().initialize();
+    await SubscriptionService().initialize();
+
+    // Auto-setup AI config if it doesn't exist
+    final configExists = await AIConfigSetup.configExists();
+    if (!configExists) {
+      debugPrint('AI config not found, setting up defaults...');
+      await AIConfigSetup.setupAIConfig(
+        apiKey: 'AIzaSyA9tO6byX7lOSuY3WW105nlLpdtnVenIgo',
+        // apiKey: 'REPLACE_WITH_REAL_KEY_IN_FIRESTORE',
+      );
+    }
+
+    // Print any cached errors from previous runs
+    _printCachedErrors();
+
+    runApp(const MyApp());
+  }, (error, stack) {
+    final timestamp = DateTime.now().toIso8601String();
+    print('❌ [FATAL ZONE ERROR] $timestamp');
+    print('❌ [FATAL ZONE ERROR] Type: ${error.runtimeType}');
+    print('❌ [FATAL ZONE ERROR] Error: $error');
+    print('❌ [FATAL ZONE ERROR] Stack trace:');
+    print('❌ [FATAL ZONE ERROR] $stack');
+    print('❌ [FATAL ZONE ERROR] ════════════════════════════════════════════');
+
+    // Store error using ErrorCacheService
+    ErrorCacheService().storeError(
+      'Zone Error: $error',
+      stack.toString(),
+      location: 'Zone',
+    );
+  });
+}
+
+// Helper to print cached errors from previous runs
+Future<void> _printCachedErrors() async {
+  try {
+    await ErrorCacheService().printDiagnostics();
+  } catch (e) {
+    print('⚠️ [ERROR CACHE] Failed to print diagnostics: $e');
+  }
 }
 
 class MyApp extends StatefulWidget {

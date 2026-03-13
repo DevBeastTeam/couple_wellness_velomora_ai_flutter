@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
+import 'package:velmora/services/error_cache_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -60,26 +61,78 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
 
   Future<void> _initializeGame() async {
     try {
-      _sessionId = await _gameService.startGameSessionById(
-        'love_language_quiz',
-      );
+      print('🎮 [LoveLanguageQuiz] Starting initialization...');
+
+      // Start game session
+      print('🎮 [LoveLanguageQuiz] Starting game session...');
+      try {
+        _sessionId = await _gameService.startGameSessionById(
+          'love_language_quiz',
+        );
+        print('🎮 [LoveLanguageQuiz] Session ID: $_sessionId');
+      } catch (e) {
+        print('❌ [LoveLanguageQuiz] Session start failed: $e');
+        await ErrorCacheService().logGameError(
+          gameId: 'love_language_quiz',
+          phase: 'start_session',
+          error: e.toString(),
+          stack: StackTrace.current.toString(),
+        );
+        _sessionId = null; // Continue anyway
+      }
 
       // Load questions using the new service
+      print('🎮 [LoveLanguageQuiz] Loading questions...');
       final questions = await _questionsService.getQuestions(
         'love_language_quiz',
       );
+      print('🎮 [LoveLanguageQuiz] Loaded ${questions.length} questions');
+
+      // Validate questions have options
+      if (questions.isEmpty) {
+        throw Exception('No questions loaded for love_language_quiz');
+      }
+
+      // Check if questions have proper options
+      for (int i = 0; i < questions.length; i++) {
+        final q = questions[i];
+        if (q.options == null || q.options!.isEmpty) {
+          print('⚠️ [LoveLanguageQuiz] Question $i has no options!');
+        }
+      }
+
+      if (!mounted) return;
 
       setState(() {
         _questions = questions;
         _isLoading = false;
       });
-    } catch (e) {
+
+      print('✅ [LoveLanguageQuiz] Initialization complete');
+    } catch (e, stackTrace) {
+      print('❌ [LoveLanguageQuiz] Initialization error: $e');
+      print('❌ [LoveLanguageQuiz] Stack trace: $stackTrace');
+
+      // Cache the error
+      await ErrorCacheService().logGameError(
+        gameId: 'love_language_quiz',
+        phase: 'initialization',
+        error: e.toString(),
+        stack: stackTrace.toString(),
+      );
+
+      if (!mounted) return;
+
       setState(() {
         _isLoading = false;
       });
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${AppLocalizations.of(context).error}: $e')),
+          SnackBar(
+            content: Text('${AppLocalizations.of(context).error}: $e'),
+            duration: const Duration(seconds: 5),
+          ),
         );
       }
     }
@@ -482,6 +535,36 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
     // Game play screen
     final currentQuestion = _questions[_currentQuestionIndex];
     final options = currentQuestion.options ?? [];
+
+    // CRITICAL FIX: Check if options is empty
+    if (options.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: _primaryColor,
+          title: Text(l10n.loveLanguageQuiz),
+          elevation: 0,
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error_outline, size: 64.adaptSize, color: Colors.red),
+              SizedBox(height: 16.h),
+              Text(
+                'Question data is invalid',
+                style: TextStyle(fontSize: 18.fSize),
+              ),
+              SizedBox(height: 24.h),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(l10n.backToGames),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     final currentPlayer = _isPlayer1Turn ? _player1Name : _player2Name;
     final selectedAnswer = _isPlayer1Turn
         ? _player1SelectedAnswer

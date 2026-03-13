@@ -14,25 +14,45 @@ class GameQuestionsService {
   /// Returns AI-generated questions if available and not expired, otherwise default questions
   Future<List<GameQuestion>> getQuestions(String gameId) async {
     try {
+      print('🔍 [GameQuestions] Getting questions for: $gameId');
+
       // Check if we need to generate new questions
       final shouldGenerate = await _shouldGenerateNewQuestions(gameId);
+      print('🔍 [GameQuestions] Should generate new: $shouldGenerate');
 
       if (shouldGenerate) {
         // Try to generate new questions with AI
-        await _generateQuestionsWithAI(gameId);
+        try {
+          await _generateQuestionsWithAI(gameId);
+        } catch (e) {
+          print('⚠️ [GameQuestions] AI generation failed: $e');
+        }
       }
 
       // Load questions from local storage
       final storedQuestions = await _loadQuestionsFromLocal(gameId);
+      print('🔍 [GameQuestions] Stored questions: ${storedQuestions.length}');
+
       if (storedQuestions.isNotEmpty) {
+        print('✅ [GameQuestions] Returning ${storedQuestions.length} stored questions');
         return storedQuestions;
       }
 
       // Fallback to default questions
-      return _getDefaultQuestions(gameId);
-    } catch (e) {
-      print('Error getting questions: $e');
-      return _getDefaultQuestions(gameId);
+      final defaultQuestions = _getDefaultQuestions(gameId);
+      print('✅ [GameQuestions] Returning ${defaultQuestions.length} default questions');
+      return defaultQuestions;
+    } catch (e, stackTrace) {
+      print('❌ [GameQuestions] ERROR: $e');
+      print('❌ [GameQuestions] Stack: $stackTrace');
+
+      // Always return default questions on error
+      try {
+        return _getDefaultQuestions(gameId);
+      } catch (e2) {
+        print('❌ [GameQuestions] FATAL: Cannot load defaults: $e2');
+        return [];
+      }
     }
   }
 
@@ -169,24 +189,43 @@ Return as JSON array with format: [{"prompt": "...", "hint": "..."}]''';
   /// Load questions from local storage
   Future<List<GameQuestion>> _loadQuestionsFromLocal(String gameId) async {
     try {
+      print('🔍 [GameQuestions] Loading from local storage: $gameId');
       final prefs = await SharedPreferences.getInstance();
       final questionsJson = prefs.getString('$_questionsPrefix$gameId');
 
       if (questionsJson == null || questionsJson.isEmpty || questionsJson == 'null') {
+        print('⚠️ [GameQuestions] No local storage data found');
         return [];
       }
 
+      print('🔍 [GameQuestions] Decoding JSON (length: ${questionsJson.length})');
       final dynamic decoded = json.decode(questionsJson);
-      if (decoded is! List) return [];
-      
-      return decoded.map((q) {
-        if (q is Map) {
-          return GameQuestion.fromJson(Map<String, dynamic>.from(q));
+
+      if (decoded is! List) {
+        print('❌ [GameQuestions] Decoded data is not a List: ${decoded.runtimeType}');
+        return [];
+      }
+
+      print('🔍 [GameQuestions] Parsing ${decoded.length} items');
+      final questions = <GameQuestion>[];
+
+      for (int i = 0; i < decoded.length; i++) {
+        try {
+          final item = decoded[i];
+          if (item is Map) {
+            final question = GameQuestion.fromJson(Map<String, dynamic>.from(item));
+            questions.add(question);
+          }
+        } catch (e) {
+          print('⚠️ [GameQuestions] Failed to parse item $i: $e');
         }
-        return null;
-      }).whereType<GameQuestion>().toList();
-    } catch (e) {
-      print('Error loading questions from local storage: $e');
+      }
+
+      print('✅ [GameQuestions] Loaded ${questions.length} questions from local');
+      return questions;
+    } catch (e, stackTrace) {
+      print('❌ [GameQuestions] Error loading from local: $e');
+      print('❌ [GameQuestions] Stack: $stackTrace');
       return [];
     }
   }
@@ -229,16 +268,116 @@ Return as JSON array with format: [{"prompt": "...", "hint": "..."}]''';
 
       case 'love_language_quiz':
         return [
-          {'question': 'Do you prefer receiving gifts or spending quality time together?', 'category': 'preference'},
-          {'question': 'What makes you feel more appreciated: words of affirmation or acts of service?', 'category': 'appreciation'},
-          {'question': 'How important is physical touch in showing love?', 'category': 'physical_touch'},
-          {'question': 'Would you rather hear "I love you" or have someone do something helpful for you?', 'category': 'expression'},
-          {'question': 'What type of gift means the most to you?', 'category': 'gifts'},
-          {'question': 'How do you prefer to spend quality time with your partner?', 'category': 'quality_time'},
-          {'question': 'What acts of service make you feel most loved?', 'category': 'service'},
-          {'question': 'How do compliments and encouragement affect you?', 'category': 'words'},
-          {'question': 'What kind of physical affection do you value most?', 'category': 'touch'},
-          {'question': 'How do you show love to others?', 'category': 'giving'},
+          {
+            'question': 'Which scenario makes you feel more loved?',
+            'category': 'preference',
+            'options': [
+              {'text': 'Receiving a thoughtful gift', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Spending uninterrupted time together', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Hearing "I love you" and compliments', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Having someone help with tasks', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Physical affection like hugs', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What makes you feel most appreciated?',
+            'category': 'appreciation',
+            'options': [
+              {'text': 'Words of encouragement', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Help with responsibilities', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Undivided attention', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Surprise presents', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Physical closeness', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'How do you prefer to show love?',
+            'category': 'expression',
+            'options': [
+              {'text': 'Saying loving words', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Doing helpful things', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Giving meaningful gifts', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Spending quality time', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Physical touch', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What hurts you most when missing from your relationship?',
+            'category': 'needs',
+            'options': [
+              {'text': 'Not hearing appreciation', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Partner not helping out', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'No special gifts or gestures', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Lack of quality time together', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Not enough physical affection', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What would be your ideal date?',
+            'category': 'preference',
+            'options': [
+              {'text': 'Deep conversation over dinner', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Receiving a surprise gift', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Partner planning everything', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Cuddling and physical closeness', 'language': 'physical_touch', 'isCorrect': false},
+              {'text': 'Hearing how much they love you', 'language': 'words_of_affirmation', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'How do you feel most connected to your partner?',
+            'category': 'connection',
+            'options': [
+              {'text': 'When they tell me they love me', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'When they do things to help me', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'When we spend time together', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'When they give me gifts', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'When we are physically close', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What would make you feel most loved on a difficult day?',
+            'category': 'support',
+            'options': [
+              {'text': 'Encouraging words', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Partner handling my tasks', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'A thoughtful gift to cheer me up', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Spending time together', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'A warm hug', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What do you value most in a relationship?',
+            'category': 'values',
+            'options': [
+              {'text': 'Verbal affirmation and praise', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Partner being helpful', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Thoughtful gifts and gestures', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Quality time without distractions', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Physical intimacy and touch', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'What makes you feel secure in your relationship?',
+            'category': 'security',
+            'options': [
+              {'text': 'Hearing "I love you" regularly', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Partner helping with life tasks', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Receiving meaningful gifts', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Regular quality time together', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Physical affection daily', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
+          {
+            'question': 'How do you best receive love?',
+            'category': 'receiving',
+            'options': [
+              {'text': 'Through kind words', 'language': 'words_of_affirmation', 'isCorrect': false},
+              {'text': 'Through helpful actions', 'language': 'acts_of_service', 'isCorrect': false},
+              {'text': 'Through thoughtful gifts', 'language': 'receiving_gifts', 'isCorrect': false},
+              {'text': 'Through quality time', 'language': 'quality_time', 'isCorrect': false},
+              {'text': 'Through physical touch', 'language': 'physical_touch', 'isCorrect': false},
+            ],
+          },
         ];
 
       case 'reflection_game':
