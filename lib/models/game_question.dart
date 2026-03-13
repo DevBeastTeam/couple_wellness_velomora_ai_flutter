@@ -27,11 +27,12 @@ class GameQuestion {
 
   factory GameQuestion.fromJson(Map<String, dynamic> json, {String? id}) {
     // Determine the main text based on common keys
-    String qText = json['question'] ?? 
-                   json['prompt'] ?? 
-                   json['title'] ?? 
-                   json['description'] ?? 
-                   '';
+    String qText =
+        json['question'] ??
+        json['prompt'] ??
+        json['title'] ??
+        json['description'] ??
+        '';
 
     return GameQuestion(
       id: id ?? json['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
@@ -46,8 +47,8 @@ class GameQuestion {
       hint: json['hint'] as String?,
       options: json['options'] != null
           ? (json['options'] as List)
-              .map((i) => QuizOption.fromJson(Map<String, dynamic>.from(i)))
-              .toList()
+                .map((i) => QuizOption.fromJson(Map<String, dynamic>.from(i)))
+                .toList()
           : null,
     );
   }
@@ -85,10 +86,6 @@ class QuizOption {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'text': text,
-      'isCorrect': isCorrect,
-      'language': language,
-    };
+    return {'text': text, 'isCorrect': isCorrect, 'language': language};
   }
 }

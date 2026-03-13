@@ -132,7 +132,14 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
     const Color primaryColor = Color(0xFF673AB7);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          title: Text(l10n.translate('would_you_rather')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
     }
 
     if (_questions.isEmpty) {

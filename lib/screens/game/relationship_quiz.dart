@@ -136,7 +136,14 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
     const Color primaryColor = Color(0xFF00BCD4);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          title: Text(l10n.translate('relationship_quiz')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
     }
 
     if (_questions.isEmpty) {

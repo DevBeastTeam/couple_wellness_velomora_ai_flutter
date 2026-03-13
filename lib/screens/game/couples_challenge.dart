@@ -136,7 +136,14 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
     const Color primaryColor = Color(0xFFFF9800);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          title: Text(l10n.translate('couples_challenge')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
     }
 
     if (_challenges.isEmpty) {

@@ -122,7 +122,14 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
     const Color primaryColor = Color(0xFFE91E63);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          title: Text(l10n.translate('date_night_ideas')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
     }
 
     if (_ideas.isEmpty) {

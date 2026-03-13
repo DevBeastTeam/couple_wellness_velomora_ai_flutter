@@ -176,7 +176,25 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: _primaryColor,
+          title: Text(l10n.translate('truth_or_truth')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
+    }
+
+    if (_questions.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: _primaryColor,
+          title: Text(l10n.translate('truth_or_truth')),
+          elevation: 0,
+        ),
+        body: Center(child: Text(l10n.errorLoadingGame)),
+      );
     }
 
     // Player names input screen

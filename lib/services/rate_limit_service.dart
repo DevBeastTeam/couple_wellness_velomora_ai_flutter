@@ -300,11 +300,11 @@ class RateLimitService {
           .doc(_userId)
           .collection('counters')
           .doc(counterId)
-          .update({
+          .set({
         'count': FieldValue.increment(1),
         'lastUpdated': FieldValue.serverTimestamp(),
         'action': action,
-      });
+      }, SetOptions(merge: true));
     } catch (e) {
       print('Error updating counter: $e');
     }

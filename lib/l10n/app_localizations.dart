@@ -437,6 +437,7 @@ class AppLocalizations {
       'questions_together':
           'questions together and shared meaningful insights.',
       's_answer': '\'s Answer',
+      'question_count': 'Question',
     },
     'ar': {
       // Home Screen
@@ -642,6 +643,18 @@ class AppLocalizations {
       'view_challenge': 'عرض التحدي',
       'day': 'يوم',
       'kegel_plan': 'خطة كيجل',
+
+      // Reflection & Discussion Game
+      'welcome_to_reflection': 'مرحباً بك في التأمل والنقاش',
+      'reflection_welcome_desc':
+          'لعبة لتعميق صلتك من خلال محادثات هادفة وتأملات مشتركة.',
+      'your_turn': 'دورك',
+      'share_thoughts': 'شارك أفكارك...',
+      'congratulations': 'تهانينا!',
+      'game_completed_reflection': 'لقد أكملت لعبة التأمل والنقاش!',
+      'questions_answered': 'لقد أجبت على',
+      'questions_together': 'أسئلة معاً وشاركت رؤى هادفة.',
+      's_answer': 'إجابة',
 
       // Onboarding
       'next': 'التالي',

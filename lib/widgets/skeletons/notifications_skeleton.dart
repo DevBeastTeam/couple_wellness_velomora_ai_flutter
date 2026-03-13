@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'shimmer_widget.dart';
 
-import '../../../constants/app_colors.dart';
-
 class NotificationsScreenSkeleton extends StatelessWidget {
   const NotificationsScreenSkeleton({super.key});
 

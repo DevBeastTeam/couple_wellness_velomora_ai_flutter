@@ -216,7 +216,17 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.reflectionDiscussionGame)),
+        body: const GameScreenSkeleton(),
+      );
+    }
+
+    if (_questions.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(l10n.reflectionDiscussionGame)),
+        body: Center(child: Text(l10n.errorLoadingGame)),
+      );
     }
 
     if (!_namesSet) {

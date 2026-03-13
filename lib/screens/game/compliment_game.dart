@@ -136,7 +136,14 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
     const Color primaryColor = Color(0xFF9C27B0);
 
     if (_isLoading) {
-      return const GameScreenSkeleton();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: primaryColor,
+          title: Text(l10n.translate('compliment_game')),
+          elevation: 0,
+        ),
+        body: const GameScreenSkeleton(),
+      );
     }
 
     if (_prompts.isEmpty) {

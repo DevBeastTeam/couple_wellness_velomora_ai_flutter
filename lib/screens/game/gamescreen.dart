@@ -357,6 +357,9 @@ class _GamesScreenState extends State<GamesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const GamesScreenSkeleton();
+    }
     return _buildGamesContent(context);
   }
 
@@ -419,9 +422,7 @@ class _GamesScreenState extends State<GamesScreen> {
 
           // Scrollable Game Cards
           Expanded(
-            child: _isLoading
-                ? const GamesScreenSkeleton()
-                : _errorMessage != null
+            child: _errorMessage != null
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
