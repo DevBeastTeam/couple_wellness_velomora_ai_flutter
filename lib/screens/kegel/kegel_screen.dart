@@ -8,7 +8,7 @@ import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/kegel_skeleton.dart';
 
 class KegelScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;
@@ -171,99 +171,105 @@ class _KegelScreenState extends State<KegelScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FC),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _buildHeader(context),
-                Positioned(
-                  bottom: -190.h,
-                  left: 20.w,
-                  right: 20.w,
-                  child: _buildProgressCard(),
-                ),
-              ],
-            ),
-            RefreshIndicator(
-              onRefresh: _loadKegelData,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 220.h),
-                    if (_showChallengeBanner) _buildChallengePromoCard(),
-                    SizedBox(height: 24.h),
-                    Text(
-                      AppLocalizations.of(context).exerciseRoutines,
-                      style: TextStyle(
-                        fontSize: 18.fSize,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
+      body: (_isLoading)
+          ? const KegelScreenSkeleton()
+          : SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      _buildHeader(context),
+                      Positioned(
+                        bottom: -190.h,
+                        left: 20.w,
+                        right: 20.w,
+                        child: _buildProgressCard(),
                       ),
-                    ),
-                    SizedBox(height: 16.h),
-                    if (_isLoading)
-                      const KegelScreenSkeleton()
-                    else if (_exercises.isEmpty)
-                      Center(
-                        child: Text(
-                          AppLocalizations.of(context).noExercisesAvailable,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      )
-                    else
-                      ..._exercises.map(
-                        (exercise) => Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          child: _buildRoutineCard(
-                            title: exercise['name'],
-                            subtitle:
-                                '${exercise['duration']} ${AppLocalizations.of(context).minutes} • ${exercise['sets']} ${AppLocalizations.of(context).sets}',
-                            iconBg: _getExerciseColor(exercise['id']),
-                            playBtnColor: const Color(0xFF6B26FF),
-                            isPremium: exercise['isPremium'] ?? false,
-                            onTap: () => _navigateToKegelStartingScreen(
-                              exercise['name'],
-                              exercise['duration'],
-                              exercise['sets'],
-                              exercise['isPremium'] ?? false,
+                    ],
+                  ),
+                  RefreshIndicator(
+                    onRefresh: _loadKegelData,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 220.h),
+                          if (_showChallengeBanner) _buildChallengePromoCard(),
+                          SizedBox(height: 24.h),
+                          Text(
+                            AppLocalizations.of(context).exerciseRoutines,
+                            style: TextStyle(
+                              fontSize: 18.fSize,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
                           ),
-                        ),
+                          SizedBox(height: 16.h),
+                          if (_exercises.isEmpty)
+                            Center(
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).noExercisesAvailable,
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            )
+                          else
+                            ..._exercises.map(
+                              (exercise) => Padding(
+                                padding: EdgeInsets.only(bottom: 12.h),
+                                child: _buildRoutineCard(
+                                  title: exercise['name'],
+                                  subtitle:
+                                      '${exercise['duration']} ${AppLocalizations.of(context).minutes} • ${exercise['sets']} ${AppLocalizations.of(context).sets}',
+                                  iconBg: _getExerciseColor(exercise['id']),
+                                  playBtnColor: const Color(0xFF6B26FF),
+                                  isPremium: exercise['isPremium'] ?? false,
+                                  onTap: () => _navigateToKegelStartingScreen(
+                                    exercise['name'],
+                                    exercise['duration'],
+                                    exercise['sets'],
+                                    exercise['isPremium'] ?? false,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          SizedBox(height: 24.h),
+                          _buildInfoCard(
+                            icon: Icons.info_outline,
+                            bgColor: const Color.fromARGB(255, 246, 241, 255),
+                            iconBg: const Color(0xFF9B67FF),
+                            title: AppLocalizations.of(context).aboutKegel,
+                            content: AppLocalizations.of(
+                              context,
+                            ).aboutKegelContent,
+                          ),
+                          SizedBox(height: 12.h),
+                          _buildInfoCard(
+                            icon: Icons.female,
+                            iconBg: const Color(0xFFFF4D8D),
+                            title: AppLocalizations.of(context).targetMuscle,
+                            content: AppLocalizations.of(
+                              context,
+                            ).targetMuscleContent,
+                          ),
+                          SizedBox(height: 12.h),
+                          _buildHowToPerformCard(),
+                          SizedBox(height: 12.h),
+                          _buildTipsCard(),
+                          SizedBox(height: 12.h),
+                          _buildDisclaimerCard(),
+                          SizedBox(height: 40.h),
+                        ],
                       ),
-                    SizedBox(height: 24.h),
-                    _buildInfoCard(
-                      icon: Icons.info_outline,
-                      bgColor: const Color.fromARGB(255, 246, 241, 255),
-                      iconBg: const Color(0xFF9B67FF),
-                      title: AppLocalizations.of(context).aboutKegel,
-                      content: AppLocalizations.of(context).aboutKegelContent,
                     ),
-                    SizedBox(height: 12.h),
-                    _buildInfoCard(
-                      icon: Icons.female,
-                      iconBg: const Color(0xFFFF4D8D),
-                      title: AppLocalizations.of(context).targetMuscle,
-                      content: AppLocalizations.of(context).targetMuscleContent,
-                    ),
-                    SizedBox(height: 12.h),
-                    _buildHowToPerformCard(),
-                    SizedBox(height: 12.h),
-                    _buildTipsCard(),
-                    SizedBox(height: 12.h),
-                    _buildDisclaimerCard(),
-                    SizedBox(height: 40.h),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

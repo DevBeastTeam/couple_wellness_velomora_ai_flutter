@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class RelationshipQuizScreen extends StatefulWidget {
   const RelationshipQuizScreen({super.key});
@@ -135,16 +135,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
     const Color primaryColor = Color(0xFF00BCD4);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          title: Text(l10n.translate('relationship_quiz')),
-
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     if (_questions.isEmpty) {

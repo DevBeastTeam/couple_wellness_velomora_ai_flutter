@@ -1,7 +1,7 @@
 import 'package:velmora/constants/app_colors.dart';
 import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/kegel_achievements_skeleton.dart';
 import 'package:flutter/material.dart';
 
 class KegelAchievementsScreen extends StatefulWidget {

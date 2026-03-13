@@ -10,6 +10,7 @@ import 'package:velmora/screens/settings/subscription_screen.dart';
 import 'package:velmora/services/auth_service.dart';
 import 'package:velmora/services/user_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
+import 'package:velmora/widgets/skeletons/settings_skeleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -25,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Track selected language CODE ('en', 'ar', 'fr')
   String _selectedLanguage = "en";
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -46,6 +48,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } catch (e) {
       // Use default if error
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -93,102 +99,109 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF),
-      body: Column(
-        children: [
-          _buildHeader(l10n),
-          Expanded(
-            child: ListView(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 15.h),
+      body: _isLoading
+          ? const SettingsScreenSkeleton()
+          : Column(
               children: [
-                _buildSettingsGroup([
-                  _buildSettingsItem(
-                    icon: Icons.person_outline,
-                    title: l10n.account,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AccountScreen(),
+                _buildHeader(l10n),
+                Expanded(
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.w,
+                      vertical: 15.h,
+                    ),
+                    children: [
+                      _buildSettingsGroup([
+                        _buildSettingsItem(
+                          icon: Icons.person_outline,
+                          title: l10n.account,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const AccountScreen(),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                  _buildSettingsItem(
-                    icon: Icons.credit_card_outlined,
-                    title: l10n.subscription,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PremiumScreen(),
+                        _buildSettingsItem(
+                          icon: Icons.credit_card_outlined,
+                          title: l10n.subscription,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PremiumScreen(),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ]),
-                SizedBox(height: 20.h),
-                _buildSettingsGroup([
-                  _buildSettingsItem(
-                    icon: Icons.language_outlined,
-                    title: _getLanguageName(_selectedLanguage, l10n),
-                    onTap: () => _showLanguageDialog(context, l10n),
-                  ),
-                  _buildSettingsItem(
-                    icon: Icons.notifications_none_outlined,
-                    title: l10n.notifications,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NotificationsScreen(),
+                      ]),
+                      SizedBox(height: 20.h),
+                      _buildSettingsGroup([
+                        _buildSettingsItem(
+                          icon: Icons.language_outlined,
+                          title: _getLanguageName(_selectedLanguage, l10n),
+                          onTap: () => _showLanguageDialog(context, l10n),
                         ),
-                      );
-                    },
-                  ),
-                  _buildSettingsItem(
-                    icon: Icons.shield_outlined,
-                    title: l10n.privacySecurity,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const PrivacySecurityScreen(),
+                        _buildSettingsItem(
+                          icon: Icons.notifications_none_outlined,
+                          title: l10n.notifications,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
-                ]),
-                SizedBox(height: 20.h),
-                _buildSettingsGroup([
-                  _buildSettingsItem(
-                    icon: Icons.help_outline_rounded,
-                    title: l10n.helpSupport,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HelpSupportScreen(),
+                        _buildSettingsItem(
+                          icon: Icons.shield_outlined,
+                          title: l10n.privacySecurity,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const PrivacySecurityScreen(),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ]),
+                      SizedBox(height: 20.h),
+                      _buildSettingsGroup([
+                        _buildSettingsItem(
+                          icon: Icons.help_outline_rounded,
+                          title: l10n.helpSupport,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HelpSupportScreen(),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
+                      SizedBox(height: 20.h),
+                      _buildSettingsGroup([
+                        _buildSettingsItem(
+                          icon: Icons.logout_rounded,
+                          title: l10n.logout,
+                          isDestructive: true,
+                          onTap: () => _handleLogout(context, l10n),
+                        ),
+                      ]),
+                      SizedBox(height: 100.h),
+                    ],
                   ),
-                ]),
-                SizedBox(height: 20.h),
-                _buildSettingsGroup([
-                  _buildSettingsItem(
-                    icon: Icons.logout_rounded,
-                    title: l10n.logout,
-                    isDestructive: true,
-                    onTap: () => _handleLogout(context, l10n),
-                  ),
-                ]),
-                SizedBox(height: 100.h),
+                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 

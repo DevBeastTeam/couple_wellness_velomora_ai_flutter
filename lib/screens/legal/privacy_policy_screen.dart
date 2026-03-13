@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:velmora/constants/app_colors.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/legal_skeleton.dart';
 
 class PrivacyPolicyScreen extends StatefulWidget {
   const PrivacyPolicyScreen({super.key});

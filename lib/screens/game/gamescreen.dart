@@ -14,7 +14,7 @@ import 'package:velmora/screens/game/relationship_quiz.dart';
 import 'package:velmora/screens/game/compliment_game.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/games_skeleton.dart';
 
 class GamesScreen extends StatefulWidget {
   final VoidCallback? onBackToHome;

@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class WouldYouRatherScreen extends StatefulWidget {
   const WouldYouRatherScreen({super.key});
@@ -131,16 +131,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
     const Color primaryColor = Color(0xFF673AB7);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          title: Text(l10n.translate('would_you_rather')),
-
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     if (_questions.isEmpty) {

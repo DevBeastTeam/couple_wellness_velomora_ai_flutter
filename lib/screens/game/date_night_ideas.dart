@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class DateNightIdeasScreen extends StatefulWidget {
   const DateNightIdeasScreen({super.key});
@@ -121,15 +121,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
     const Color primaryColor = Color(0xFFE91E63);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          title: Text(l10n.translate('date_night_ideas')),
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     if (_ideas.isEmpty) {

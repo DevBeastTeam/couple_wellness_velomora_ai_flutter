@@ -4,7 +4,7 @@ import 'package:velmora/constants/app_colors.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/screens/settings/notification_details_screen.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/notifications_skeleton.dart';
 import 'package:flutter/material.dart';
 
 class NotificationsScreen extends StatefulWidget {

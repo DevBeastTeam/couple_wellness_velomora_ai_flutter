@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class ComplimentGameScreen extends StatefulWidget {
   const ComplimentGameScreen({super.key});
@@ -135,16 +135,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
     const Color primaryColor = Color(0xFF9C27B0);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          title: Text(l10n.translate('compliment_game')),
-
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     if (_prompts.isEmpty) {

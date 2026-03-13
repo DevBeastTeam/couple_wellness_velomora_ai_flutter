@@ -2,7 +2,7 @@ import 'package:velmora/constants/app_colors.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/kegel_challenge_skeleton.dart';
 import 'package:flutter/material.dart';
 
 class KegelChallengeScreen extends StatefulWidget {
@@ -74,7 +74,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
         ],
       ),
       body: _isLoading
-          ? const KegelScreenSkeleton()
+          ? const KegelChallengeSkeleton()
           : SingleChildScrollView(
               padding: EdgeInsets.all(20.adaptSize),
               child: Column(

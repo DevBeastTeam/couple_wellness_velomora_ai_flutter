@@ -4,7 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class LoveLanguageQuizScreen extends StatefulWidget {
   const LoveLanguageQuizScreen({super.key});
@@ -378,15 +378,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: _primaryColor,
-          title: Text(l10n.loveLanguageQuiz),
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     // Player names input screen

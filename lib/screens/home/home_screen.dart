@@ -7,7 +7,7 @@ import 'package:velmora/screens/kegel/kegel_screen.dart';
 import 'package:velmora/screens/settings/subscription_screen.dart';
 import 'package:velmora/services/auth_service.dart';
 import 'package:velmora/services/user_service.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/home_skeleton.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

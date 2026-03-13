@@ -5,6 +5,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/services/chat_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:flutter/material.dart';
+import 'package:velmora/widgets/skeletons/chat_skeleton.dart';
 import 'package:velmora/widgets/app_loading_widgets.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -98,7 +99,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 Widget? stateWidget;
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  stateWidget = const Center(child: AppCircularLoader());
+                  return const ChatScreenSkeleton();
                 } else if (snapshot.hasError) {
                   stateWidget = Center(
                     child: Text(

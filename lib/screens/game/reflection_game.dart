@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class ReflectionGameScreen extends StatefulWidget {
   const ReflectionGameScreen({super.key});
@@ -215,10 +215,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(title: Text(l10n.reflectionDiscussionGame)),
-        body: const GameScreenSkeleton(),
-      );
+      return const GameScreenSkeleton();
     }
 
     if (!_namesSet) {

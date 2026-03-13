@@ -3,7 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
-import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 
 class TruthOrTruthGameScreen extends StatefulWidget {
   const TruthOrTruthGameScreen({super.key});
@@ -175,15 +175,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return Scaffold(
-        backgroundColor: const Color(0xFFF9F9FF),
-        appBar: AppBar(
-          backgroundColor: _primaryColor,
-          title: Text(l10n.truthOrTruth),
-          elevation: 0,
-        ),
-        body: const GameScreenSkeleton(),
-      );
+      return GameScreenSkeleton();
     }
 
     // Player names input screen
