@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class ReflectionGameScreen extends StatefulWidget {
   const ReflectionGameScreen({super.key});
@@ -18,7 +19,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _questions = [];
+  List<GameQuestion> _questions = [];
   int _currentQuestionIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -332,7 +333,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
               child: Column(
                 children: [
                   Text(
-                    currentQuestion['question'],
+                    currentQuestion.question,
                     style: TextStyle(
                       fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
@@ -340,10 +341,10 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  if (currentQuestion['prompt'] != null) ...[
+                  if (currentQuestion.prompt != null) ...[
                     SizedBox(height: 20.h),
                     Text(
-                      currentQuestion['prompt'],
+                      currentQuestion.prompt!,
                       style: TextStyle(
                         fontSize: 18.fSize,
                         color: Colors.purple.shade700,

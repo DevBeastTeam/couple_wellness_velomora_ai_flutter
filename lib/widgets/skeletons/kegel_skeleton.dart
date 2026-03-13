@@ -15,6 +15,45 @@ class KegelScreenSkeleton extends StatelessWidget {
     return ShimmerWrap(
       Column(
         children: [
+          // Gradient header
+          Container(
+            height: height * 0.22,
+            width: width,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF7B5EE2), Color(0xFF9F8BF5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(width * 0.11),
+                bottomRight: Radius.circular(width * 0.11),
+              ),
+            ),
+            padding: EdgeInsets.fromLTRB(
+              width * 0.067,
+              height * 0.06,
+              width * 0.067,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 30),
+                ShimmerLine(
+                  height: height * 0.035,
+                  width: width * 0.35,
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
+                SizedBox(height: height * 0.015),
+                ShimmerLine(
+                  height: height * 0.02,
+                  width: width * 0.5,
+                  color: Colors.white.withValues(alpha: 0.3),
+                ),
+              ],
+            ),
+          ),
           // Content
           SizedBox(
             height: height * 0.65,
@@ -47,7 +86,7 @@ class KegelScreenSkeleton extends StatelessWidget {
 
   Widget _progressCard(double width, double height) {
     return Container(
-      padding: EdgeInsets.all(width * 0.056),
+      padding: EdgeInsets.all(width * 0.04),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(width * 0.056),
@@ -164,7 +203,7 @@ class KegelScreenSkeleton extends StatelessWidget {
 
   Widget _routineCard(double width, double height) {
     return Container(
-      padding: EdgeInsets.all(width * 0.044),
+      padding: EdgeInsets.all(width * 0.03),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(width * 0.044),

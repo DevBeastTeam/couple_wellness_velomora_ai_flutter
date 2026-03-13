@@ -422,6 +422,21 @@ class AppLocalizations {
       'you_completed': 'You completed',
       'duration': 'Duration',
       'sets_completed': 'Sets Completed',
+
+      // Reflection & Discussion Game
+      'reflection_discussion_game': 'Reflection & Discussion',
+      'welcome_to_reflection': 'Welcome to Reflection & Discussion',
+      'reflection_welcome_desc':
+          'A game to deepen your connection through meaningful conversations and shared reflections.',
+      'your_turn': 'Your Turn',
+      'share_thoughts': 'Share your thoughts...',
+      'congratulations': 'Congratulations!',
+      'game_completed_reflection':
+          'You have completed the Reflection & Discussion game!',
+      'questions_answered': 'You have answered',
+      'questions_together':
+          'questions together and shared meaningful insights.',
+      's_answer': '\'s Answer',
     },
     'ar': {
       // Home Screen

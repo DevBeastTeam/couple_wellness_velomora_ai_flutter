@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class DateNightIdeasScreen extends StatefulWidget {
   const DateNightIdeasScreen({super.key});
@@ -18,7 +19,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _ideas = [];
+  List<GameQuestion> _ideas = [];
   int _currentIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -344,7 +345,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                     child: Column(
                       children: [
                         Text(
-                          currentIdea['title'] ?? 'Date Idea',
+                          currentIdea.title ?? currentIdea.question,
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,
@@ -354,15 +355,15 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          currentIdea['description'] ?? '',
+                          currentIdea.description ?? '',
                           style: TextStyle(
                             fontSize: 16.fSize,
                             color: Colors.grey.shade600,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        if (currentIdea['budget'] != null) ...[
-                          SizedBox(height: 16.h),
+                        SizedBox(height: 24.h),
+                        if (currentIdea.budget != null)
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16.w,
@@ -373,7 +374,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
-                              'Budget: ${currentIdea['budget']}',
+                              '${l10n.translate('budget')}: ${currentIdea.budget}',
                               style: TextStyle(
                                 fontSize: 14.fSize,
                                 color: primaryColor,
@@ -381,7 +382,6 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                               ),
                             ),
                           ),
-                        ],
                       ],
                     ),
                   ),

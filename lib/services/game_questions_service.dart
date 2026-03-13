@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:velmora/models/game_question.dart';
 
 /// Service to manage game questions with AI generation and local storage
 class GameQuestionsService {
@@ -11,7 +12,7 @@ class GameQuestionsService {
 
   /// Get questions for a specific game
   /// Returns AI-generated questions if available and not expired, otherwise default questions
-  Future<List<Map<String, dynamic>>> getQuestions(String gameId) async {
+  Future<List<GameQuestion>> getQuestions(String gameId) async {
     try {
       // Check if we need to generate new questions
       final shouldGenerate = await _shouldGenerateNewQuestions(gameId);
@@ -66,7 +67,7 @@ class GameQuestionsService {
       // Get AI configuration
       final aiConfigDoc = await _firestore.collection('ai_config').doc('settings').get();
 
-      if (!aiConfigDoc.exists) {
+      if (!aiConfigDoc.exists || aiConfigDoc.data() == null) {
         print('AI config not found');
         return;
       }
@@ -107,7 +108,7 @@ class GameQuestionsService {
   }
 
   /// Call Gemini API to generate questions
-  Future<List<Map<String, dynamic>>> _callGeminiAPI(
+  Future<List<GameQuestion>> _callGeminiAPI(
     String apiKey,
     String prompt,
     Map<String, dynamic> aiConfig,
@@ -166,17 +167,24 @@ Return as JSON array with format: [{"prompt": "...", "hint": "..."}]''';
   }
 
   /// Load questions from local storage
-  Future<List<Map<String, dynamic>>> _loadQuestionsFromLocal(String gameId) async {
+  Future<List<GameQuestion>> _loadQuestionsFromLocal(String gameId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final questionsJson = prefs.getString('$_questionsPrefix$gameId');
 
-      if (questionsJson == null) {
+      if (questionsJson == null || questionsJson.isEmpty || questionsJson == 'null') {
         return [];
       }
 
-      final List<dynamic> decoded = json.decode(questionsJson);
-      return decoded.map((q) => q as Map<String, dynamic>).toList();
+      final dynamic decoded = json.decode(questionsJson);
+      if (decoded is! List) return [];
+      
+      return decoded.map((q) {
+        if (q is Map) {
+          return GameQuestion.fromJson(Map<String, dynamic>.from(q));
+        }
+        return null;
+      }).whereType<GameQuestion>().toList();
     } catch (e) {
       print('Error loading questions from local storage: $e');
       return [];
@@ -186,11 +194,11 @@ Return as JSON array with format: [{"prompt": "...", "hint": "..."}]''';
   /// Save questions to local storage
   Future<void> _saveQuestionsToLocal(
     String gameId,
-    List<Map<String, dynamic>> questions,
+    List<GameQuestion> questions,
   ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final questionsJson = json.encode(questions);
+      final questionsJson = json.encode(questions.map((q) => q.toJson()).toList());
       await prefs.setString('$_questionsPrefix$gameId', questionsJson);
     } catch (e) {
       print('Error saving questions to local storage: $e');
@@ -198,7 +206,12 @@ Return as JSON array with format: [{"prompt": "...", "hint": "..."}]''';
   }
 
   /// Get default hardcoded questions for each game
-  List<Map<String, dynamic>> _getDefaultQuestions(String gameId) {
+  List<GameQuestion> _getDefaultQuestions(String gameId) {
+    final List<Map<String, dynamic>> data = _getQuestionsData(gameId);
+    return data.map((q) => GameQuestion.fromJson(q)).toList();
+  }
+
+  List<Map<String, dynamic>> _getQuestionsData(String gameId) {
     switch (gameId) {
       case 'truth_or_truth':
         return [

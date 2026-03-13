@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class WouldYouRatherScreen extends StatefulWidget {
   const WouldYouRatherScreen({super.key});
@@ -18,7 +19,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _questions = [];
+  List<GameQuestion> _questions = [];
   int _currentQuestionIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -279,8 +280,8 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
     }
 
     final currentQuestion = _questions[_currentQuestionIndex];
-    final optionA = currentQuestion['optionA'] ?? 'Option A';
-    final optionB = currentQuestion['optionB'] ?? 'Option B';
+    final optionA = currentQuestion.optionA ?? 'Option A';
+    final optionB = currentQuestion.optionB ?? 'Option B';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF),
@@ -362,7 +363,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          currentQuestion['question'] ?? '',
+                          currentQuestion.question,
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,

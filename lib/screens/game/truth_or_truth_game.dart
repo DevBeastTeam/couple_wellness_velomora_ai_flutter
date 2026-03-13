@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class TruthOrTruthGameScreen extends StatefulWidget {
   const TruthOrTruthGameScreen({super.key});
@@ -18,7 +19,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _questions = [];
+  List<GameQuestion> _questions = [];
   int _currentQuestionIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -175,7 +176,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
     final l10n = AppLocalizations.of(context);
 
     if (_isLoading) {
-      return GameScreenSkeleton();
+      return const GameScreenSkeleton();
     }
 
     // Player names input screen
@@ -506,7 +507,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
                         ),
                         SizedBox(height: 24.h),
                         Text(
-                          currentQuestion['question'] ?? '',
+                          currentQuestion.question,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22.fSize,

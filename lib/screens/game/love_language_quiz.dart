@@ -5,6 +5,7 @@ import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class LoveLanguageQuizScreen extends StatefulWidget {
   const LoveLanguageQuizScreen({super.key});
@@ -19,7 +20,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _questions = [];
+  List<GameQuestion> _questions = [];
   int _currentQuestionIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -82,102 +83,6 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
         );
       }
     }
-  }
-
-  List<Map<String, dynamic>> _getDefaultQuestions() {
-    return [
-      {
-        'id': '1',
-        'question': 'What makes you feel most loved?',
-        'options': [
-          {
-            'text': 'Hearing "I love you" and compliments',
-            'language': 'words_of_affirmation',
-          },
-          {
-            'text': 'Spending quality time together',
-            'language': 'quality_time',
-          },
-          {'text': 'Receiving thoughtful gifts', 'language': 'receiving_gifts'},
-          {
-            'text': 'Having someone help with tasks',
-            'language': 'acts_of_service',
-          },
-          {
-            'text': 'Hugs, kisses, and physical closeness',
-            'language': 'physical_touch',
-          },
-        ],
-      },
-      {
-        'id': '2',
-        'question': 'How do you prefer to show love?',
-        'options': [
-          {
-            'text': 'Expressing feelings with words',
-            'language': 'words_of_affirmation',
-          },
-          {'text': 'Planning activities together', 'language': 'quality_time'},
-          {'text': 'Giving meaningful presents', 'language': 'receiving_gifts'},
-          {'text': 'Doing helpful things', 'language': 'acts_of_service'},
-          {'text': 'Physical affection', 'language': 'physical_touch'},
-        ],
-      },
-      {
-        'id': '3',
-        'question': 'What hurts you most in a relationship?',
-        'options': [
-          {
-            'text': 'Harsh or critical words',
-            'language': 'words_of_affirmation',
-          },
-          {
-            'text': 'Not spending enough time together',
-            'language': 'quality_time',
-          },
-          {
-            'text': 'Forgetting special occasions',
-            'language': 'receiving_gifts',
-          },
-          {'text': 'Not helping when needed', 'language': 'acts_of_service'},
-          {'text': 'Lack of physical affection', 'language': 'physical_touch'},
-        ],
-      },
-      {
-        'id': '4',
-        'question': 'What would be your ideal date?',
-        'options': [
-          {
-            'text': 'Deep conversation and sharing feelings',
-            'language': 'words_of_affirmation',
-          },
-          {'text': 'Doing an activity together', 'language': 'quality_time'},
-          {
-            'text': 'Exchanging thoughtful surprises',
-            'language': 'receiving_gifts',
-          },
-          {'text': 'Cooking a meal together', 'language': 'acts_of_service'},
-          {'text': 'Cuddling and being close', 'language': 'physical_touch'},
-        ],
-      },
-      {
-        'id': '5',
-        'question': 'What makes you feel appreciated?',
-        'options': [
-          {
-            'text': 'Being told I\'m valued',
-            'language': 'words_of_affirmation',
-          },
-          {'text': 'Having undivided attention', 'language': 'quality_time'},
-          {'text': 'Receiving a surprise gift', 'language': 'receiving_gifts'},
-          {
-            'text': 'Someone doing something for me',
-            'language': 'acts_of_service',
-          },
-          {'text': 'A warm hug or touch', 'language': 'physical_touch'},
-        ],
-      },
-    ];
   }
 
   void _setPlayerNames(AppLocalizations l10n) {
@@ -558,7 +463,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
 
     // Game play screen
     final currentQuestion = _questions[_currentQuestionIndex];
-    final options = currentQuestion['options'] as List<dynamic>;
+    final options = currentQuestion.options ?? [];
     final currentPlayer = _isPlayer1Turn ? _player1Name : _player2Name;
     final selectedAnswer = _isPlayer1Turn
         ? _player1SelectedAnswer
@@ -614,9 +519,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                 LinearProgressIndicator(
                   value: (_currentQuestionIndex + 1) / _questions.length,
                   backgroundColor: Colors.grey.shade200,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                    Color(0xFFB388FF),
-                  ),
+                  valueColor: AlwaysStoppedAnimation<Color>(_primaryColor),
                 ),
               ],
             ),
@@ -630,7 +533,8 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    currentQuestion['question'] ?? '',
+                    currentQuestion.question,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22.fSize,
                       fontWeight: FontWeight.bold,
@@ -640,8 +544,8 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                   ),
                   SizedBox(height: 24.h),
                   ...options.map((option) {
-                    final optionText = option['text'] as String;
-                    final language = option['language'] as String;
+                    final optionText = option.text;
+                    final language = option.language ?? '';
                     final isSelected = selectedAnswer == language;
 
                     return GestureDetector(

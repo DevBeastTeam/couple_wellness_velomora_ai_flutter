@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class RelationshipQuizScreen extends StatefulWidget {
   const RelationshipQuizScreen({super.key});
@@ -18,7 +19,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _questions = [];
+  List<GameQuestion> _questions = [];
   int _currentQuestionIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -278,10 +279,8 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
     }
 
     final currentQuestion = _questions[_currentQuestionIndex];
-    final question = currentQuestion['question'] ?? '';
-    final options = List<Map<String, dynamic>>.from(
-      currentQuestion['options'] ?? [],
-    );
+    final question = currentQuestion.question;
+    final options = currentQuestion.options ?? [];
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF),
@@ -367,8 +366,8 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
                   SizedBox(height: 32.h),
                   if (!_showResults) ...[
                     ...options.map((option) {
-                      final text = option['text'] as String;
-                      final isCorrect = option['isCorrect'] as bool? ?? false;
+                      final text = option.text;
+                      final isCorrect = option.isCorrect;
                       return Padding(
                         padding: EdgeInsets.only(bottom: 12.h),
                         child: _buildOption(text, isCorrect, primaryColor),
@@ -502,11 +501,11 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
     );
   }
 
-  Widget _buildResults(List<Map<String, dynamic>> options, Color color) {
+  Widget _buildResults(List<QuizOption> options, Color color) {
     return Column(
       children: options.map((option) {
-        final text = option['text'] as String;
-        final isCorrect = option['isCorrect'] as bool? ?? false;
+        final text = option.text;
+        final isCorrect = option.isCorrect;
         final p1Selected = _player1Answer == text;
         final p2Selected = _player2Answer == text;
 

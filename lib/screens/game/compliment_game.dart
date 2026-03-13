@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class ComplimentGameScreen extends StatefulWidget {
   const ComplimentGameScreen({super.key});
@@ -18,7 +19,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _prompts = [];
+  List<GameQuestion> _prompts = [];
   int _currentIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -369,7 +370,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          currentPrompt['prompt'] ?? '',
+                          currentPrompt.question,
                           style: TextStyle(
                             fontSize: 22.fSize,
                             fontWeight: FontWeight.bold,
@@ -378,9 +379,9 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 16.h),
-                        if (currentPrompt['hint'] != null)
+                        if (currentPrompt.hint != null)
                           Text(
-                            '${l10n.translate('hint')}: ${currentPrompt['hint']}',
+                            '${l10n.translate('hint')}: ${currentPrompt.hint}',
                             style: TextStyle(
                               fontSize: 14.fSize,
                               color: Colors.grey.shade600,

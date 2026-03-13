@@ -4,6 +4,7 @@ import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/models/game_question.dart';
 
 class CouplesChallengeScreen extends StatefulWidget {
   const CouplesChallengeScreen({super.key});
@@ -18,7 +19,7 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
   final TextEditingController _player1Controller = TextEditingController();
   final TextEditingController _player2Controller = TextEditingController();
 
-  List<Map<String, dynamic>> _challenges = [];
+  List<GameQuestion> _challenges = [];
   int _currentChallengeIndex = 0;
   String? _sessionId;
   bool _isLoading = true;
@@ -372,7 +373,7 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
                     child: Column(
                       children: [
                         Text(
-                          currentChallenge['question'] ?? '',
+                          currentChallenge.question,
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,
@@ -380,10 +381,10 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        if (currentChallenge['description'] != null) ...[
+                        if (currentChallenge.description != null) ...[
                           SizedBox(height: 16.h),
                           Text(
-                            currentChallenge['description'],
+                            currentChallenge.description ?? '',
                             style: TextStyle(
                               fontSize: 16.fSize,
                               color: Colors.grey.shade600,
