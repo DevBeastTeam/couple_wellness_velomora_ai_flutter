@@ -464,19 +464,19 @@ class GameService {
   }
 
   /// ISOLATED: Safely update sessions array
+  /// NOTE: Using DateTime.now() instead of FieldValue.serverTimestamp() inside arrays
+  /// to prevent iOS native crash when server timestamp is nested in array operations
   Future<void> _safeUpdateSessions(
     DocumentReference docRef,
     String gameId,
     String userId,
     String errorContextId,
   ) async {
+    final now = DateTime.now().toIso8601String();
     try {
       await docRef.update({
         'sessions': FieldValue.arrayUnion([
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -494,10 +494,7 @@ class GameService {
       try {
         await docRef.set({
           'sessions': [
-            {
-              'gameId': gameId,
-              'startedAt': FieldValue.serverTimestamp(),
-            },
+            {'gameId': gameId, 'startedAt': now},
           ],
         }, SetOptions(merge: true));
         print('✅ [GameService] Sessions set with merge fallback');
@@ -515,26 +512,24 @@ class GameService {
   }
 
   /// ISOLATED: Safely update playedGames and sessions arrays
+  /// NOTE: Using DateTime.now() instead of FieldValue.serverTimestamp() inside arrays
+  /// to prevent iOS native crash when server timestamp is nested in array operations
   Future<void> _safeUpdatePlayedGamesAndSessions(
     DocumentReference docRef,
     String gameId,
     String userId,
     String errorContextId,
   ) async {
+    final now = DateTime.now().toIso8601String();
+
     // STRATEGY 1: Try both fields
     try {
       await docRef.update({
         'playedGames': FieldValue.arrayUnion([
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ]),
         'sessions': FieldValue.arrayUnion([
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -555,10 +550,7 @@ class GameService {
     try {
       await docRef.update({
         'sessions': FieldValue.arrayUnion([
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -579,10 +571,7 @@ class GameService {
     try {
       await docRef.update({
         'playedGames': FieldValue.arrayUnion([
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ]),
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -605,16 +594,10 @@ class GameService {
       await docRef.set({
         'userId': userId,
         'playedGames': [
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ],
         'sessions': [
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ],
         'totalScore': 0,
         'favoriteGames': [],
@@ -635,26 +618,23 @@ class GameService {
   }
 
   /// ISOLATED: Safely create new progress document
+  /// NOTE: Using DateTime.now() instead of FieldValue.serverTimestamp() inside arrays
+  /// to prevent iOS native crash when server timestamp is nested in array operations
   Future<void> _safeCreateProgressDoc(
     DocumentReference docRef,
     String gameId,
     String userId,
     String errorContextId,
   ) async {
+    final now = DateTime.now().toIso8601String();
     try {
       await docRef.set({
         'userId': userId,
         'playedGames': [
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ],
         'sessions': [
-          {
-            'gameId': gameId,
-            'startedAt': FieldValue.serverTimestamp(),
-          },
+          {'gameId': gameId, 'startedAt': now},
         ],
         'totalScore': 0,
         'favoriteGames': [],

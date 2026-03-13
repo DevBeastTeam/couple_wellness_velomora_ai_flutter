@@ -20,8 +20,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   // ============================================================
   // GLOBAL ERROR HANDLERS - CATCH ALL UNCAUGHT ERRORS
   // ============================================================
@@ -71,6 +69,7 @@ void main() async {
 
   // Catch all async errors that would otherwise crash the app
   runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
     // Initialize services
