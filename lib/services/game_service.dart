@@ -367,7 +367,7 @@ class GameService {
     try {
       print('🎮 [GameService] Getting user progress doc...');
       doc = await userProgressDoc.get();
-      print('🎮 [GameService] Document exists: ${doc?.exists}');
+      print('🎮 [GameService] Document exists: ${doc.exists}');
     } catch (e) {
       print('❌ [GameService] ISOLATION 3 FAILED (fetch doc): $e');
       await ErrorCacheService().logGameError(
@@ -380,7 +380,7 @@ class GameService {
     }
 
     // ISOLATION LEVEL 4: Process document data
-    if (doc!.exists) {
+    if (doc.exists) {
       print('🎮 [GameService] User progress doc exists');
 
       Map<String, dynamic>? data;

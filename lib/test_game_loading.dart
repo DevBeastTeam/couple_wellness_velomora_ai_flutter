@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:velmora/services/game_questions_service.dart';
-import 'package:velmora/models/game_question.dart';
 
 /// Test script to verify game question loading
 /// Run this to diagnose issues with game data loading
@@ -118,7 +117,6 @@ class GameLoadingTest {
           print('✅ PASS: All validations passed');
           passed++;
         }
-
       } catch (e, stackTrace) {
         print('❌ FAIL: Exception thrown: $e');
         print('Stack trace: $stackTrace');
@@ -167,7 +165,9 @@ class GameLoadingTest {
           print('  Options (${q.options!.length}):');
           for (int j = 0; j < q.options!.length; j++) {
             final opt = q.options![j];
-            print('    ${j + 1}. ${opt.text} (language: ${opt.language ?? "N/A"})');
+            print(
+              '    ${j + 1}. ${opt.text} (language: ${opt.language ?? "N/A"})',
+            );
           }
         }
 
