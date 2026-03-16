@@ -287,8 +287,8 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
     }
 
     final currentQuestion = _questions[_currentQuestionIndex];
-    final optionA = currentQuestion.optionA ?? 'Option A';
-    final optionB = currentQuestion.optionB ?? 'Option B';
+    final optionA = currentQuestion.getLocalizedOptionA(Localizations.localeOf(context).languageCode) ?? 'Option A';
+    final optionB = currentQuestion.getLocalizedOptionB(Localizations.localeOf(context).languageCode) ?? 'Option B';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF),
@@ -369,8 +369,8 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        Text(
-                          currentQuestion.question,
+                          Text(
+                            currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,

@@ -286,7 +286,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
     }
 
     final currentQuestion = _questions[_currentQuestionIndex];
-    final question = currentQuestion.question;
+    final question = currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode);
     final options = currentQuestion.options ?? [];
 
     return Scaffold(
@@ -373,11 +373,10 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
                   SizedBox(height: 32.h),
                   if (!_showResults) ...[
                     ...options.map((option) {
-                      final text = option.text;
                       final isCorrect = option.isCorrect;
                       return Padding(
                         padding: EdgeInsets.only(bottom: 12.h),
-                        child: _buildOption(text, isCorrect, primaryColor),
+                        child: _buildOption(option.getLocalizedText(Localizations.localeOf(context).languageCode), isCorrect, primaryColor),
                       );
                     }),
                   ] else ...[
@@ -511,10 +510,9 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
   Widget _buildResults(List<QuizOption> options, Color color) {
     return Column(
       children: options.map((option) {
-        final text = option.text;
         final isCorrect = option.isCorrect;
-        final p1Selected = _player1Answer == text;
-        final p2Selected = _player2Answer == text;
+        final p1Selected = _player1Answer == option.text;
+        final p2Selected = _player2Answer == option.text;
 
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
@@ -534,7 +532,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
               SizedBox(width: 12.w),
               Expanded(
                 child: Text(
-                  text,
+                  option.getLocalizedText(Localizations.localeOf(context).languageCode),
                   style: TextStyle(
                     fontSize: 14.fSize,
                     color: isCorrect ? Colors.green : Colors.grey,

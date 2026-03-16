@@ -450,8 +450,12 @@ class _GamesScreenState extends State<GamesScreen> {
                             padding: EdgeInsets.only(bottom: 24.h),
                             child: _buildGameCard(
                               gameId: game['id'],
-                              title: game['name'],
-                              description: game['description'],
+                              title: AppLocalizations.of(
+                                context,
+                              ).translate(game['id']),
+                              description: AppLocalizations.of(
+                                context,
+                              ).translate('${game['id']}_desc'),
                               players: game['players'],
                               time: game['time'],
                               headerColor: _parseColor(game['headerColor']),

@@ -376,8 +376,8 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
                           ),
                         ),
                         SizedBox(height: 16.h),
-                        Text(
-                          currentPrompt.question,
+                         Text(
+                           currentPrompt.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                           style: TextStyle(
                             fontSize: 22.fSize,
                             fontWeight: FontWeight.bold,
@@ -387,8 +387,8 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
                         ),
                         SizedBox(height: 16.h),
                         if (currentPrompt.hint != null)
-                          Text(
-                            '${l10n.translate('hint')}: ${currentPrompt.hint}',
+                           Text(
+                             '${l10n.translate('hint')}: ${currentPrompt.getLocalizedHint(Localizations.localeOf(context).languageCode) ?? ''}',
                             style: TextStyle(
                               fontSize: 14.fSize,
                               color: Colors.grey.shade600,

@@ -352,7 +352,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                     child: Column(
                       children: [
                         Text(
-                          currentIdea.title ?? currentIdea.question,
+                          currentIdea.getLocalizedTitle(Localizations.localeOf(context).languageCode) ?? currentIdea.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,
@@ -362,7 +362,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
                         ),
                         SizedBox(height: 16.h),
                         Text(
-                          currentIdea.description ?? '',
+                          currentIdea.getLocalizedDescription(Localizations.localeOf(context).languageCode) ?? '',
                           style: TextStyle(
                             fontSize: 16.fSize,
                             color: Colors.grey.shade600,

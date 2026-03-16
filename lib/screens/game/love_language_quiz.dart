@@ -634,7 +634,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    currentQuestion.question,
+                    currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22.fSize,
@@ -645,7 +645,6 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                   ),
                   SizedBox(height: 24.h),
                   ...options.map((option) {
-                    final optionText = option.text;
                     final language = option.language ?? '';
                     final isSelected = selectedAnswer == language;
 
@@ -679,7 +678,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                             SizedBox(width: 12.w),
                             Expanded(
                               child: Text(
-                                optionText,
+                                option.getLocalizedText(Localizations.localeOf(context).languageCode),
                                 style: TextStyle(
                                   fontSize: 16.fSize,
                                   color: isSelected

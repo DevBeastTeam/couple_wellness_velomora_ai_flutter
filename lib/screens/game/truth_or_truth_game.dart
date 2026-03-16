@@ -601,7 +601,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
                         ),
                         SizedBox(height: 24.h),
                         Text(
-                          currentQuestion.question,
+                          currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22.fSize,

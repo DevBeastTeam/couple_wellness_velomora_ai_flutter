@@ -380,7 +380,7 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
                     child: Column(
                       children: [
                         Text(
-                          currentChallenge.question,
+                          currentChallenge.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                           style: TextStyle(
                             fontSize: 24.fSize,
                             fontWeight: FontWeight.bold,
@@ -391,7 +391,7 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
                         if (currentChallenge.description != null) ...[
                           SizedBox(height: 16.h),
                           Text(
-                            currentChallenge.description ?? '',
+                            currentChallenge.getLocalizedDescription(Localizations.localeOf(context).languageCode) ?? '',
                             style: TextStyle(
                               fontSize: 16.fSize,
                               color: Colors.grey.shade600,

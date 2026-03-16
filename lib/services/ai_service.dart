@@ -350,6 +350,7 @@ class AIService {
           {
             "id": "q1",
             "question": "The question text here",
+            "question_translations": {"en": "...", "ar": "...", "fr": "..."},
             "category": "connection",
             "difficulty": "medium"
           }
@@ -365,12 +366,13 @@ class AIService {
           {
             "id": "q1",
             "question": "Question text here",
+            "question_translations": {"en": "...", "ar": "...", "fr": "..."},
             "options": [
-              {"text": "Option text for words of affirmation", "language": "words_of_affirmation"},
-              {"text": "Option text for quality time", "language": "quality_time"},
-              {"text": "Option text for receiving gifts", "language": "receiving_gifts"},
-              {"text": "Option text for acts of service", "language": "acts_of_service"},
-              {"text": "Option text for physical touch", "language": "physical_touch"}
+              {"text": "Option text", "language": "words_of_affirmation", "text_translations": {"en": "...", "ar": "...", "fr": "..."}},
+              {"text": "Option text", "language": "quality_time", "text_translations": {"en": "...", "ar": "...", "fr": "..."}},
+              {"text": "Option text", "language": "receiving_gifts", "text_translations": {"en": "...", "ar": "...", "fr": "..."}},
+              {"text": "Option text", "language": "acts_of_service", "text_translations": {"en": "...", "ar": "...", "fr": "..."}},
+              {"text": "Option text", "language": "physical_touch", "text_translations": {"en": "...", "ar": "...", "fr": "..."}}
             ]
           }
         ]''';
@@ -383,6 +385,7 @@ class AIService {
           {
             "id": "q1",
             "question": "Reflection prompt text here",
+            "question_translations": {"en": "...", "ar": "...", "fr": "..."},
             "category": "reflection",
             "order": 1
           }

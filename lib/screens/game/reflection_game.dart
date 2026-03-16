@@ -343,7 +343,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
               child: Column(
                 children: [
                   Text(
-                    currentQuestion.question,
+                    currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
                     style: TextStyle(
                       fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
@@ -354,7 +354,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
                   if (currentQuestion.prompt != null) ...[
                     SizedBox(height: 20.h),
                     Text(
-                      currentQuestion.prompt!,
+                      currentQuestion.getLocalizedPrompt(Localizations.localeOf(context).languageCode) ?? '',
                       style: TextStyle(
                         fontSize: 18.fSize,
                         color: Colors.purple.shade700,
