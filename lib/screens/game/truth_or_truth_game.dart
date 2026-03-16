@@ -551,7 +551,9 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        '$currentPlayer${l10n.sTurn}',
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? '${l10n.sTurn} $currentPlayer'
+                            : '$currentPlayer ${l10n.sTurn}',
                         style: TextStyle(
                           fontSize: 12.fSize,
                           fontWeight: FontWeight.bold,
@@ -601,7 +603,9 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
                         ),
                         SizedBox(height: 24.h),
                         Text(
-                          currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
+                          currentQuestion.getLocalizedQuestion(
+                            Localizations.localeOf(context).languageCode,
+                          ),
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 22.fSize,

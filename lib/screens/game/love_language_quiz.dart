@@ -606,7 +606,9 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        '$currentPlayer${l10n.sTurn}',
+                        Localizations.localeOf(context).languageCode == 'ar'
+                            ? '${l10n.sTurn} $currentPlayer'
+                            : '$currentPlayer ${l10n.sTurn}',
                         style: TextStyle(
                           fontSize: 12.fSize,
                           fontWeight: FontWeight.bold,
@@ -634,7 +636,9 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
+                    currentQuestion.getLocalizedQuestion(
+                      Localizations.localeOf(context).languageCode,
+                    ),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 22.fSize,
@@ -678,7 +682,9 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
                             SizedBox(width: 12.w),
                             Expanded(
                               child: Text(
-                                option.getLocalizedText(Localizations.localeOf(context).languageCode),
+                                option.getLocalizedText(
+                                  Localizations.localeOf(context).languageCode,
+                                ),
                                 style: TextStyle(
                                   fontSize: 16.fSize,
                                   color: isSelected

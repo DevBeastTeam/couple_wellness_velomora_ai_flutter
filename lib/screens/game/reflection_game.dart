@@ -323,7 +323,9 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
-                '$currentPlayer${l10n.sTurn}',
+                Localizations.localeOf(context).languageCode == 'ar'
+                    ? '${l10n.sTurn} $currentPlayer'
+                    : '$currentPlayer ${l10n.sTurn}',
                 style: TextStyle(
                   fontSize: 18.fSize,
                   fontWeight: FontWeight.bold,
@@ -343,7 +345,9 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
               child: Column(
                 children: [
                   Text(
-                    currentQuestion.getLocalizedQuestion(Localizations.localeOf(context).languageCode),
+                    currentQuestion.getLocalizedQuestion(
+                      Localizations.localeOf(context).languageCode,
+                    ),
                     style: TextStyle(
                       fontSize: 18.fSize,
                       fontWeight: FontWeight.w600,
@@ -354,7 +358,10 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
                   if (currentQuestion.prompt != null) ...[
                     SizedBox(height: 20.h),
                     Text(
-                      currentQuestion.getLocalizedPrompt(Localizations.localeOf(context).languageCode) ?? '',
+                      currentQuestion.getLocalizedPrompt(
+                            Localizations.localeOf(context).languageCode,
+                          ) ??
+                          '',
                       style: TextStyle(
                         fontSize: 18.fSize,
                         color: Colors.purple.shade700,
