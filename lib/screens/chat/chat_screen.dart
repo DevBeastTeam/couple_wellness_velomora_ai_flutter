@@ -21,6 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ChatService _chatService = ChatService();
   final ScrollController _scrollController = ScrollController();
+  final FocusNode _messageFocusNode = FocusNode();
   bool _isSending = false;
   bool _showDisclaimer = true;
 
@@ -28,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
+    _messageFocusNode.dispose();
     super.dispose();
   }
 
@@ -126,7 +128,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: _scrollController,
                   slivers: [
                     SliverAppBar(
-                      expandedHeight: 180.h,
+                      expandedHeight: 160.h,
                       pinned: true,
                       backgroundColor: AppColors.brandPurple,
                       automaticallyImplyLeading: false,
@@ -162,6 +164,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               duration: const Duration(milliseconds: 200),
                               padding: EdgeInsets.only(
                                 left: isCollapsed ? 0 : 24.w,
+                                right: isCollapsed ? 0 : 24.w,
                                 bottom: isCollapsed ? 16.h : 24.h,
                               ),
                               alignment: isCollapsed
@@ -391,8 +394,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 Positioned(
-                  top: 5,
-                  right: 5,
+                  top: 1.5,
+                  right: 1.5,
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -421,6 +424,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                   child: TextField(
                     controller: _messageController,
+                    focusNode: _messageFocusNode,
+                    textAlign: TextAlign.start,
                     decoration: InputDecoration(
                       hintText: AppLocalizations.of(context).typeMessage,
                       hintStyle: TextStyle(
@@ -432,7 +437,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     maxLines: null,
                     textInputAction: TextInputAction.send,
-                    onSubmitted: (_) => _sendMessage(),
+                    onSubmitted: (_) {
+                      _sendMessage();
+                      _messageFocusNode.requestFocus();
+                    },
                   ),
                 ),
               ),

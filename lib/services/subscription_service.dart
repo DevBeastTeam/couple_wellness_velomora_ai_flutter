@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:velmora/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
 
 /// Subscription Service for managing in-app purchases
 class SubscriptionService {
@@ -182,6 +184,7 @@ class SubscriptionService {
         platform: platform,
       );
 
+
       if (backendSuccess) {
         // 2. Sync with Firebase Firestore
         await _syncWithFirebase(
@@ -194,9 +197,14 @@ class SubscriptionService {
         // 3. Save state locally
         await _saveSubscriptionState(purchaseDetails.productID);
 
+        // 4. Localized Notification
+        final prefs = await SharedPreferences.getInstance();
+        final langCode = prefs.getString('preferred_language') ?? 'en';
+        final l10n = AppLocalizations(Locale(langCode));
+
         NotificationService().addInAppNotification(
-          title: 'Subscription Activated',
-          body: 'Thank you for your purchase. Enjoy your premium features.',
+          title: l10n.subscriptionActivated,
+          body: l10n.subscriptionActivatedBody,
           type: 'subscription',
         );
       }

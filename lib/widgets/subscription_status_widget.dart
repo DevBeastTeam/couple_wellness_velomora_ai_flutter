@@ -1,4 +1,5 @@
 import 'package:velmora/constants/app_colors.dart';
+import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/screens/settings/subscription_screen.dart';
 import 'package:velmora/services/subscription_service.dart';
 import 'package:velmora/services/user_service.dart';
@@ -65,6 +66,7 @@ class SubscriptionStatusWidget extends StatelessWidget {
   }
 
   Widget _buildFreeCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -101,7 +103,7 @@ class SubscriptionStatusWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Free Plan',
+                    l10n.translate('free_plan'),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 16.fSize,
@@ -110,7 +112,7 @@ class SubscriptionStatusWidget extends StatelessWidget {
                   ),
                   SizedBox(height: 4.h),
                   Text(
-                    'Upgrade to unlock all features',
+                    l10n.translate('upgrade_to_unlock_all_features'),
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.9),
                       fontSize: 13.fSize,
@@ -131,9 +133,20 @@ class SubscriptionStatusWidget extends StatelessWidget {
   }
 
   Widget _buildTrialCard(BuildContext context, Map<String, dynamic> status) {
+    final l10n = AppLocalizations.of(context);
     final timeRemaining = status['timeRemaining'] as Duration?;
     final hoursRemaining = timeRemaining?.inHours ?? 0;
     final minutesRemaining = (timeRemaining?.inMinutes ?? 0) % 60;
+
+    final lang = l10n.locale.languageCode;
+    String timeText;
+    if (lang == 'ar') {
+      timeText = 'متبقي $hoursRemaining ساعة و $minutesRemaining دقيقة';
+    } else if (lang == 'fr') {
+      timeText = '$hoursRemaining h $minutesRemaining min restantes';
+    } else {
+      timeText = '$hoursRemaining h $minutesRemaining m remaining';
+    }
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
@@ -160,7 +173,7 @@ class SubscriptionStatusWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Free Trial Active',
+                  l10n.translate('free_trial_active'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16.fSize,
@@ -169,7 +182,7 @@ class SubscriptionStatusWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  '${hoursRemaining}h ${minutesRemaining}m remaining',
+                  timeText,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.9),
                     fontSize: 13.fSize,
@@ -185,23 +198,27 @@ class SubscriptionStatusWidget extends StatelessWidget {
   }
 
   Widget _buildPremiumCard(BuildContext context, Map<String, dynamic> status) {
+    final l10n = AppLocalizations.of(context);
     final subscriptionType = status['subscriptionType'] as String?;
     final expiryDate = status['expiryDate'] as DateTime?;
 
-    String planName = 'Premium';
+    String planName = l10n.premium;
     if (subscriptionType != null) {
       if (subscriptionType.contains('monthly')) {
-        planName = 'Monthly Premium';
+        planName = l10n.translate('premium_monthly');
       } else if (subscriptionType.contains('quarterly')) {
-        planName = 'Quarterly Premium';
+        planName = l10n.translate('premium_quarterly');
       } else if (subscriptionType.contains('yearly')) {
-        planName = 'Yearly Premium';
+        planName = l10n.translate('premium_yearly');
       }
     }
 
     String expiryText = '';
     if (expiryDate != null) {
-      expiryText = 'Expiry: ${DateFormat('MMM dd, yyyy').format(expiryDate)}';
+      final formattedDate = DateFormat.yMMMd(
+        l10n.locale.toString(),
+      ).format(expiryDate);
+      expiryText = '${l10n.translate('expiry')}: $formattedDate';
     }
 
     return Container(
@@ -244,7 +261,10 @@ class SubscriptionStatusWidget extends StatelessWidget {
             SizedBox(height: 8.h),
             Text(
               expiryText,
-              style: TextStyle(color: Colors.grey.shade300, fontSize: 12.fSize),
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 12.fSize,
+              ),
             ),
           ],
         ],

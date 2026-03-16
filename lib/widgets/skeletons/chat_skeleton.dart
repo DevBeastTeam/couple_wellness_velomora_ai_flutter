@@ -62,8 +62,7 @@ class ChatScreenSkeleton extends StatelessWidget {
               ),
             ),
             // Chat messages
-            SizedBox(
-              height: height * 0.65,
+            Expanded(
               child: ListView(
                 padding: EdgeInsets.fromLTRB(
                   width * 0.056,

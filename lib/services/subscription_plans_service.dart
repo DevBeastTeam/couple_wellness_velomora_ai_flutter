@@ -18,6 +18,13 @@ class SubscriptionPlan {
   final bool isPopular;
   final int sortOrder;
 
+  // New translation fields
+  final Map<String, String>? nameTranslations;
+  final Map<String, String>? badgeTranslations;
+  final Map<String, String>? savingsTranslations;
+  final Map<String, String>? bottomNoteTranslations;
+  final Map<String, dynamic>? featuresTranslations;
+
   const SubscriptionPlan({
     required this.id,
     required this.name,
@@ -34,6 +41,11 @@ class SubscriptionPlan {
     required this.isActive,
     required this.isPopular,
     required this.sortOrder,
+    this.nameTranslations,
+    this.badgeTranslations,
+    this.savingsTranslations,
+    this.bottomNoteTranslations,
+    this.featuresTranslations,
   });
 
   factory SubscriptionPlan.fromFirestore(DocumentSnapshot doc) {
@@ -54,7 +66,37 @@ class SubscriptionPlan {
       isActive: data['isActive'] ?? true,
       isPopular: data['isPopular'] ?? false,
       sortOrder: (data['sortOrder'] ?? 99).toInt(),
+      nameTranslations: data['name_translations'] != null
+          ? Map<String, String>.from(data['name_translations'])
+          : null,
+      badgeTranslations: data['badge_translations'] != null
+          ? Map<String, String>.from(data['badge_translations'])
+          : null,
+      savingsTranslations: data['savings_translations'] != null
+          ? Map<String, String>.from(data['savings_translations'])
+          : null,
+      bottomNoteTranslations: data['bottomNote_translations'] != null
+          ? Map<String, String>.from(data['bottomNote_translations'])
+          : null,
+      featuresTranslations: data['features_translations'] != null
+          ? Map<String, dynamic>.from(data['features_translations'])
+          : null,
     );
+  }
+
+  // Localization methods
+  String getLocalizedName(String lang) => nameTranslations?[lang] ?? name;
+  String? getLocalizedBadge(String lang) => badgeTranslations?[lang] ?? badge;
+  String? getLocalizedSavings(String lang) =>
+      savingsTranslations?[lang] ?? savingsText;
+  String? getLocalizedBottomNote(String lang) =>
+      bottomNoteTranslations?[lang] ?? bottomNote;
+
+  List<String> getLocalizedFeatures(String lang) {
+    if (featuresTranslations != null && featuresTranslations![lang] != null) {
+      return List<String>.from(featuresTranslations![lang]);
+    }
+    return features;
   }
 }
 

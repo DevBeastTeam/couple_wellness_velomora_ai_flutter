@@ -69,7 +69,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${AppLocalizations.of(context).translate('error_loading_plans')}: $e',
+              '${AppLocalizations.of(context).errorLoadingPlans}: $e',
             ),
             backgroundColor: Colors.red,
           ),
@@ -120,13 +120,13 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context).translate('processing_subscription'),
+              AppLocalizations.of(context).processingSubscription,
             ),
             backgroundColor: AppColors.brandPurple,
           ),
         );
       } else if (!success && mounted) {
-        throw Exception('Failed to initiate purchase. Please try again.');
+        throw Exception(AppLocalizations.of(context).failedToInitiatePurchase);
       }
     } catch (e) {
       if (mounted) {
@@ -149,7 +149,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context).translate('checking_purchases'),
+              AppLocalizations.of(context).checkingPurchases,
             ),
           ),
         );
@@ -159,7 +159,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '${AppLocalizations.of(context).translate('error_restoring_purchases')}: $e',
+              '${AppLocalizations.of(context).errorRestoringPurchases}: $e',
             ),
             backgroundColor: Colors.red,
           ),
@@ -182,9 +182,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context).translate(
-                'cancellation_request_submitted_admin_will_review_it',
-              ),
+              AppLocalizations.of(context).cancellationRequestSubmitted,
             ),
             backgroundColor: Colors.green,
           ),
@@ -293,7 +291,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
               SizedBox(height: 8.h),
               Text(
-                AppLocalizations.of(context).translate('choose_your_plan'),
+                AppLocalizations.of(context).chooseYourPlan,
                 style: TextStyle(
                   fontSize: 16.fSize,
                   color: AppColors.brandPurple,
@@ -314,7 +312,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     Text(
                       AppLocalizations.of(
                         context,
-                      ).translate('no_plans_available'),
+                      ).noPlansAvailable,
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16.fSize,
@@ -325,7 +323,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     Text(
                       AppLocalizations.of(
                         context,
-                      ).translate('unable_to_load_subscription_plans'),
+                      ).unableToLoadSubscriptionPlans,
                       style: TextStyle(
                         color: Colors.grey.shade500,
                         fontSize: 14.fSize,
@@ -379,7 +377,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           color: Colors.white,
                         )
                       : Text(
-                          AppLocalizations.of(context).translate('pay_now'),
+                          AppLocalizations.of(context).payNow,
                           style: TextStyle(
                             fontSize: 18.fSize,
                             fontWeight: FontWeight.w500,
@@ -395,7 +393,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   child: Text(
                     AppLocalizations.of(
                       context,
-                    ).translate('or_start_48_hour_free_trial'),
+                    ).orStart48HourFreeTrial,
                     style: TextStyle(
                       color: AppColors.brandPurple,
                       fontWeight: FontWeight.w500,
@@ -406,7 +404,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
               SizedBox(height: 16.h),
               // Show bottomNote from the selected plan (Firestore-managed)
               Builder(
-                builder: (_) {
+                builder: (context) {
+                  final lang = AppLocalizations.of(context).locale.languageCode;
                   // Get the cheapest plan price
                   final cheapestPrice = _plans.isNotEmpty
                       ? _plans
@@ -417,9 +416,20 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   final selectedPlan = _selectedPlanId != null
                       ? _plans.where((p) => p.id == _selectedPlanId).firstOrNull
                       : null;
-                  final note = (selectedPlan?.bottomNote?.isNotEmpty == true)
-                      ? selectedPlan!.bottomNote!
-                      : 'Free for 48 hours, then \$${cheapestPrice.toStringAsFixed(2)}/month. Cancel anytime.';
+                  
+                  String note;
+                  if (selectedPlan != null) {
+                    note = selectedPlan.getLocalizedBottomNote(lang) ?? '';
+                  } else {
+                    // Fallback to localized generic message
+                    final template = AppLocalizations.of(context).translate('subscription_trial_fallback');
+                    if (template == 'subscription_trial_fallback') {
+                       note = 'Free for 48 hours, then \$${cheapestPrice.toStringAsFixed(2)}/month. Cancel anytime.';
+                    } else {
+                       note = template.replaceAll('{price}', cheapestPrice.toStringAsFixed(2));
+                    }
+                  }
+
                   return Text(
                     note,
                     textAlign: TextAlign.center,
@@ -448,7 +458,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     child: Text(
                       AppLocalizations.of(
                         context,
-                      ).translate('request_cancellation'),
+                      ).requestCancellation,
                       style: TextStyle(
                         color: Colors.red.shade600,
                         fontSize: 14.fSize,
@@ -478,6 +488,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   Widget _buildPlanCard({required SubscriptionPlan plan}) {
     final isSelected = _selectedPlanId == plan.id;
+    final lang = AppLocalizations.of(context).locale.languageCode;
 
     return GestureDetector(
       onTap: () => setState(() => _selectedPlanId = plan.id),
@@ -524,14 +535,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       Row(
                         children: [
                           Text(
-                            plan.name,
+                            plan.getLocalizedName(lang),
                             style: TextStyle(
                               fontSize: 15.fSize,
                               fontWeight: FontWeight.w400,
                               color: const Color(0xFF1F2933),
                             ),
                           ),
-                          if (plan.badge != null && plan.badge!.isNotEmpty) ...[
+                          if (plan.getLocalizedBadge(lang) != null &&
+                              plan.getLocalizedBadge(lang)!.isNotEmpty) ...[
                             SizedBox(width: 8.w),
                             Container(
                               padding: EdgeInsets.symmetric(
@@ -545,7 +557,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 ),
                               ),
                               child: Text(
-                                plan.badge!,
+                                plan.getLocalizedBadge(lang)!,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 9.fSize,
@@ -569,7 +581,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             ),
                           ),
                           Text(
-                            '/mo',
+                            AppLocalizations.of(context).perMonth,
                             style: TextStyle(
                               fontSize: 12.fSize,
                               color: Colors.grey.shade600,
@@ -617,19 +629,21 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 ),
               ],
             ),
-            if (plan.savingsText != null && plan.savingsText!.isNotEmpty) ...[
-              SizedBox(height: 8.h),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  plan.savingsText!,
-                  style: TextStyle(
-                    color: Colors.green.shade600,
-                    fontSize: 11.fSize,
-                  ),
-                ),
-              ),
-            ],
+            ...([plan.getLocalizedSavings(lang)]
+                .where((s) => s != null && s.isNotEmpty)
+                .map((savings) => Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          savings!,
+                          style: TextStyle(
+                            color: Colors.green.shade600,
+                            fontSize: 11.fSize,
+                          ),
+                        ),
+                      ),
+                    ))),
           ],
         ),
       ),
