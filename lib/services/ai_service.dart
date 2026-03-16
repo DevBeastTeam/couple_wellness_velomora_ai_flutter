@@ -192,9 +192,13 @@ class AIService {
     final systemInstruction = _aiSettings['systemInstruction'] as String? ??
         'You are Velmora AI, a helpful relationship coach.';
 
+    // Get language name
+    final languageName = _getLanguageName(language);
+
     // Build conversation context
     final buffer = StringBuffer();
     buffer.writeln(systemInstruction);
+    buffer.writeln('IMPORTANT: You MUST respond in $languageName. This is the user\'s preferred language.');
     buffer.writeln();
 
     // Add recent history (sliding window)

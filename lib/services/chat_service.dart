@@ -94,14 +94,22 @@ class ChatService {
     if (currentUserId == null) return;
 
     String aiResponse;
+    String language = 'en';
 
     try {
+      // Get user language for fallback if needed
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(currentUserId)
+          .get();
+      language = userDoc.data()?['preferredLanguage'] ?? 'en';
+
       // Call real AI service
       aiResponse = await _aiService.generateResponse(userMessage);
     } catch (e) {
       // Fallback to rule-based responses if AI service fails
       debugPrint('AI service failed, using fallback: $e');
-      aiResponse = _getAIResponse(userMessage.toLowerCase());
+      aiResponse = _getAIResponse(userMessage.toLowerCase(), language);
     }
 
     // Add AI response to Firestore
@@ -142,7 +150,13 @@ class ChatService {
   }
 
   /// Simple rule-based AI responses
-  String _getAIResponse(String message) {
+  String _getAIResponse(String message, String language) {
+    if (language == 'ar') {
+      return _getArabicAIResponse(message);
+    } else if (language == 'fr') {
+      return _getFrenchAIResponse(message);
+    }
+
     // Greetings
     if (message.contains('hello') ||
         message.contains('hi') ||
@@ -179,90 +193,39 @@ class ChatService {
       return 'Regular date nights are important! Try our Couples Games feature for fun activities together. Even simple activities like cooking together or taking walks can strengthen your bond.';
     }
 
-    // Intimacy/Physical
-    if (message.contains('intimacy') ||
-        message.contains('physical') ||
-        message.contains('sex')) {
-      return 'Physical intimacy is an important part of relationships. Open communication about needs and boundaries is essential. Remember, emotional intimacy often leads to better physical connection.';
-    }
-
-    // Kegel exercises
-    if (message.contains('exercise') ||
-        message.contains('kegel') ||
-        message.contains('pelvic')) {
-      return 'Kegel exercises can improve intimate wellness for both partners. Check out our Kegel section for guided routines! Regular practice can enhance physical health and intimacy.';
-    }
-
-    // Conflict/Arguments
-    if (message.contains('fight') ||
-        message.contains('argue') ||
-        message.contains('conflict') ||
-        message.contains('disagree')) {
-      return 'Conflicts are normal in relationships. The key is how you handle them. Take breaks when emotions run high, listen to understand (not to respond), and focus on solving the problem together rather than winning the argument.';
-    }
-
-    // Quality time
-    if (message.contains('time') ||
-        message.contains('busy') ||
-        message.contains('schedule')) {
-      return 'Quality time is crucial! Even 15 minutes of undivided attention daily can make a big difference. Put away phones, make eye contact, and truly connect with your partner.';
-    }
-
-    // Appreciation/Gratitude
-    if (message.contains('appreciate') ||
-        message.contains('grateful') ||
-        message.contains('thank')) {
-      return 'Expressing gratitude strengthens relationships! Try telling your partner one thing you appreciate about them every day. Small acknowledgments can create big positive changes.';
-    }
-
-    // Distance/Long distance
-    if (message.contains('distance') ||
-        message.contains('far') ||
-        message.contains('away')) {
-      return 'Long-distance relationships require extra effort but can work! Schedule regular video calls, send thoughtful messages, plan visits, and maintain trust through open communication.';
-    }
-
-    // Jealousy
-    if (message.contains('jealous') || message.contains('insecure')) {
-      return 'Jealousy often stems from insecurity or past experiences. Talk openly with your partner about your feelings. Building trust and self-confidence can help overcome jealousy.';
-    }
-
-    // Help/Support
-    if (message.contains('help') ||
-        message.contains('advice') ||
-        message.contains('support')) {
-      return 'I\'m here to support your relationship journey! You can ask me about communication, trust, intimacy, quality time, or try our features like Couples Games and Kegel exercises.';
-    }
-
-    // Games
-    if (message.contains('game') ||
-        message.contains('play') ||
-        message.contains('fun')) {
-      return 'Games are a great way to connect! Check out our Couples Games section for fun activities that can help you learn more about each other and strengthen your bond.';
-    }
-
-    // Marriage/Commitment
-    if (message.contains('marry') ||
-        message.contains('marriage') ||
-        message.contains('commit')) {
-      return 'Marriage and commitment are beautiful steps! They require ongoing effort, communication, and mutual respect. Remember, it\'s about growing together while maintaining your individual identities.';
-    }
-
-    // Thank you
-    if (message.contains('thank')) {
-      return 'You\'re welcome! I\'m always here to help. Feel free to ask anything about your relationship.';
-    }
-
     // Default response with variety
     final defaultResponses = [
       'That\'s an interesting question! Remember, every relationship is unique. Focus on open communication, mutual respect, and spending quality time together. Would you like specific advice on any aspect of your relationship?',
       'Great question! Building a strong relationship takes effort from both partners. What specific area would you like to work on - communication, trust, intimacy, or quality time?',
-      'I\'m here to help! Could you tell me more about what you\'re experiencing? Whether it\'s about communication, trust, or connection, I can offer some guidance.',
-      'Every relationship has its challenges and beautiful moments. What aspect of your relationship would you like to strengthen today?',
     ];
 
-    // Return a random default response
     return defaultResponses[message.length % defaultResponses.length];
+  }
+
+  String _getArabicAIResponse(String message) {
+    if (message.contains('مرحبا') || message.contains('أهلا')) {
+      return 'أهلاً بك! كيف يمكنني مساعدتك في علاقتك اليوم؟';
+    }
+    if (message.contains('حب')) {
+      return 'الحب رحلة جميلة! ماذا تود أن تعرف عن تقوية علاقتك؟';
+    }
+    if (message.contains('تواصل')) {
+      return 'التواصل هو المفتاح في أي علاقة. حاول الاستماع الفعال والتعبير عن مشاعرك بصدق.';
+    }
+    return 'هذا سؤال مثير للاهتمام! تذكر أن كل علاقة فريدة من نوعها. ركز على التواصل المفتوح، والاحترام المتبادل، وقضاء وقت ممتع معاً.';
+  }
+
+  String _getFrenchAIResponse(String message) {
+    if (message.contains('bonjour') || message.contains('salut')) {
+      return 'Bonjour ! Comment puis-je vous aider avec votre relation aujourd\'hui ?';
+    }
+    if (message.contains('amour')) {
+      return 'L\'amour est un beau voyage ! Que aimeriez-vous savoir sur le renforcement de votre relation ?';
+    }
+    if (message.contains('communication')) {
+      return 'La communication est essentielle dans toute relation. Essayez l\'écoute active et exprimez vos sentiments ouvertement.';
+    }
+    return 'C\'est une question intéressante ! N\'oubliez pas que chaque relation est unique. Concentrez-vous sur une communication ouverte, le respect mutuel et le fait de passer du temps de qualité ensemble.';
   }
 
   /// Clear chat history
