@@ -1478,8 +1478,6 @@ class AppLocalizations {
       'pause': 'Pause',
       'set_of': 'Série {current} sur {total}',
       'thirty_days': '30 JOURS',
-    },
-    'fr': {
       'reflection_welcome_desc':
           'Un jeu pour approfondir votre connexion grâce à des conversations significatives et des réflexions partagées.',
       'your_turn': 'Votre tour',

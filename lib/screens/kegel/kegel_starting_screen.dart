@@ -270,7 +270,9 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                AppLocalizations.of(context).completedIntermediateBody,
+                                AppLocalizations.of(
+                                  context,
+                                ).completedIntermediateBody,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16.fSize,
@@ -293,7 +295,9 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                AppLocalizations.of(context).completedAdvancedBody,
+                                AppLocalizations.of(
+                                  context,
+                                ).completedAdvancedBody,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16.fSize,
@@ -382,8 +386,8 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
     final progressVal = (_elapsedSeconds / totalSeconds).clamp(0.0, 1.0);
 
     Widget circleContent = Container(
-      width: 220.adaptSize,
-      height: 220.adaptSize,
+      width: 200.adaptSize,
+      height: 200.adaptSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
@@ -465,17 +469,23 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                   ),
                 ),
                 SizedBox(height: 20.h),
-                Text(
-                  widget.routineType,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24.fSize,
-                    fontWeight: FontWeight.w700,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    widget.routineType,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.fSize,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  l10n.setOfLabel(_currentSet > widget.sets ? widget.sets : _currentSet, widget.sets),
+                  l10n.setOfLabel(
+                    _currentSet > widget.sets ? widget.sets : _currentSet,
+                    widget.sets,
+                  ),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14.fSize,
@@ -506,10 +516,10 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       child: Column(
                         children: [
-                          SizedBox(height: 48.h),
+                          SizedBox(height: 30.h),
                           // Big Timer Circle
                           circleContent,
-                          SizedBox(height: 40.h),
+                          SizedBox(height: 30.h),
                           Text(
                             _currentPhase == 1
                                 ? AppLocalizations.of(context).holdAndSqueeze
@@ -522,7 +532,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               color: const Color(0xFF111827),
                             ),
                           ),
-                          SizedBox(height: 24.h),
+                          SizedBox(height: 15.h),
                           // Cycle Dots Indicator (dynamic based on routine)
                           Wrap(
                             alignment: WrapAlignment.center,
@@ -574,7 +584,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                           //     color: Colors.grey.shade600,
                           //   ),
                           // ),
-                          SizedBox(height: 32.h),
+                          SizedBox(height: 20.h),
                           // Resume/Pause Button
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -601,9 +611,13 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                     ),
                                     SizedBox(width: 8.w),
                                     Text(
-                                      _isPlaying 
-                                          ? AppLocalizations.of(context).pauseLabel 
-                                          : AppLocalizations.of(context).resumeLabel,
+                                      _isPlaying
+                                          ? AppLocalizations.of(
+                                              context,
+                                            ).pauseLabel
+                                          : AppLocalizations.of(
+                                              context,
+                                            ).resumeLabel,
                                       style: TextStyle(
                                         fontSize: 16.fSize,
                                         fontWeight: FontWeight.w600,
@@ -615,7 +629,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 40.h),
+                          SizedBox(height: 20.h),
                           // Overall Progress Section
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -623,13 +637,13 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                    l10n.overallProgressLabel,
-                                    style: TextStyle(
-                                      fontSize: 13.fSize,
-                                      fontWeight: FontWeight.w600,
-                                      color: const Color(0xFF4B5563),
-                                    ),
+                                  l10n.overallProgressLabel,
+                                  style: TextStyle(
+                                    fontSize: 13.fSize,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF4B5563),
                                   ),
+                                ),
                                 Text(
                                   "${(progressVal * 100).toInt()}%",
                                   style: TextStyle(

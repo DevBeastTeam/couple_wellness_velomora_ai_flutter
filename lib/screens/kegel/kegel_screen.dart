@@ -63,9 +63,18 @@ class _KegelScreenState extends State<KegelScreen> {
 
       for (var doc in exercisesSnapshot.docs) {
         final data = doc.data();
+        String localizedName = data['name'] ?? 'Exercise';
+        if (doc.id == 'beginner') {
+          localizedName = AppLocalizations.of(context).beginnerLevelTitle;
+        } else if (doc.id == 'intermediate') {
+          localizedName = AppLocalizations.of(context).intermediateLevelTitle;
+        } else if (doc.id == 'advanced') {
+          localizedName = AppLocalizations.of(context).advancedLevelTitle;
+        }
+
         exercises.add({
           'id': doc.id,
-          'name': data['name'] ?? 'Exercise',
+          'name': localizedName,
           'duration': data['duration'] ?? 5,
           'sets': data['sets'] ?? 3,
           'isPremium': data['isPremium'] ?? false,

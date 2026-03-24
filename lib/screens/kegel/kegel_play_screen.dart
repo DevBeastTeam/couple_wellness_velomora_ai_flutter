@@ -190,7 +190,7 @@ class _KegelPlayScreenState extends State<KegelPlayScreen>
               ),
               SizedBox(height: 24.h),
               Padding(
-                padding: EdgeInsets.only(left: 16.w),
+                padding: EdgeInsets.only(left: 16.w, right: 16.w),
                 child: Text(
                   l10n.kegelExercise,
                   style: TextStyle(
