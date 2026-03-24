@@ -28,7 +28,8 @@ class AppLocalizations {
       'premium_feature': 'Premium Feature',
       'premium_message':
           'This feature requires a premium subscription. Start your free trial to access all features!',
-      'is_a_premium_feature_upgrade_to_unlock_full_access': 'is a premium feature. Upgrade to unlock full access.',
+      'is_a_premium_feature_upgrade_to_unlock_full_access':
+          'is a premium feature. Upgrade to unlock full access.',
       'upgrade_to_premium': 'Upgrade to Premium',
       'start_48_hour_free_trial': 'Start 48-Hour Free Trial',
       'last_updated': 'Last Updated',
@@ -115,6 +116,110 @@ class AppLocalizations {
       'view_challenge': 'View Challenge',
       'day': 'Day',
       'kegel_plan': 'Kegel Plan',
+      'beginner_level_title': 'Beginner Level – Build Control & Awareness',
+      'intermediate_level_title':
+          'Intermediate Level – Strength, Control & Endurance',
+      'advanced_level_title': 'Advanced Level – Maximum Control & Performance',
+      'beginner_subtitle': 'Identify and control correctly',
+      'intermediate_subtitle': 'Strength, control & endurance',
+      'advanced_subtitle': 'Master maximum control',
+      'start_session': 'Start Session',
+      'exercise_instructions': 'Exercise Instructions:',
+      'exercise_structure': 'Exercise Structure:',
+      'tips_colon': 'Tips:',
+      'goal': 'Goal:',
+      'beginner_desc':
+          'This level is designed to help you identify and control your pelvic floor muscles correctly.',
+      'beginner_inst_1':
+          'Gently contract your pelvic floor muscles for 3 seconds',
+      'beginner_inst_2': 'Relax completely for 3 seconds',
+      'beginner_inst_3': 'Repeat for 10–12 repetitions',
+      'beginner_inst_4': 'Last rep contract for 5 seconds',
+      'beginner_inst_5': 'Complete 2 sets per session',
+      'beginner_tip_1': 'Do not tighten your stomach, thighs, or glutes',
+      'beginner_tip_2': 'Breathe normally during the exercise',
+      'beginner_tip_3': 'Focus on smooth and controlled contractions',
+      'beginner_tip_4': 'Stay relaxed between repetitions',
+      'beginner_goal':
+          'Build basic muscle awareness and control before progressing to more advanced training.\nConsistency is key — try to practice daily for the best results.',
+      'intermediate_desc':
+          'This level is designed to improve your pelvic floor strength, control, and endurance through a combination of slow contractions, quick pulses, and longer holds.',
+      'int_struct_1': '1. Slow Contractions',
+      'int_inst_1_1': 'Contract for 5 seconds',
+      'int_inst_1_2': 'Relax for 5 seconds',
+      'int_inst_1_3': 'Repeat 10 times',
+      'int_struct_2': '2. Quick Pulses',
+      'int_inst_2_1': 'Contract quickly for 1 second',
+      'int_inst_2_2': 'Relax for 1 second',
+      'int_inst_2_3': 'Repeat 15–20 times',
+      'int_struct_3': '3. Endurance Hold',
+      'int_inst_3_1': 'Hold the contraction for 10–15 seconds',
+      'int_inst_3_2': 'Relax for 10 seconds',
+      'int_inst_3_3': 'Repeat 3 times',
+      'int_tip_1': 'Keep breathing naturally',
+      'int_tip_2': 'Focus on control, not tension',
+      'int_tip_3': 'Avoid engaging surrounding muscles (abs, thighs, glutes)',
+      'int_goal':
+          'Develop stronger control and increase endurance for better overall pelvic performance.\nStay consistent to unlock advanced training.',
+      'advanced_desc':
+          'This level is designed for users who want to master pelvic floor control, endurance, and responsiveness through advanced training techniques.',
+      'adv_struct_1': '1. Progressive Holds',
+      'adv_inst_1_1': 'Contract for 5 seconds then rest for 5 seconds',
+      'adv_inst_1_2': 'Then increase to 10, 15, and 20 seconds',
+      'adv_inst_1_3': 'Relax for the same duration',
+      'adv_inst_1_4': 'Complete 4 repetitions',
+      'adv_struct_2': '2. Pyramid Training',
+      'adv_inst_2_1': 'Contract for 3 seconds → relax',
+      'adv_inst_2_2': '5 seconds → relax',
+      'adv_inst_2_3': '7 seconds → relax',
+      'adv_inst_2_4': '10 seconds → relax',
+      'adv_inst_2_5': 'Then reverse: 7 → 5 → 3 seconds',
+      'adv_inst_2_6': 'Maintain full control throughout',
+      'adv_struct_3': '3. Explosive Pulses',
+      'adv_inst_3_1': 'Fast contractions (0.5–1 second)',
+      'adv_inst_3_2': 'Relax quickly',
+      'adv_inst_3_3': 'Repeat 25–30 times',
+      'adv_struct_4': '4. Mixed Control Set',
+      'adv_inst_4_1': 'Hold for 10 seconds',
+      'adv_inst_4_2': 'Perform 10 quick pulses without fully relaxing',
+      'adv_inst_4_3': 'Relax for 10 seconds',
+      'adv_inst_4_4': 'Repeat 3 times',
+      'adv_tip_1': 'Focus on precision and control, not just duration',
+      'adv_tip_2': 'Stay relaxed in surrounding muscles',
+      'adv_tip_3': 'Breathe naturally throughout the session',
+      'adv_goal':
+          'Achieve maximum control, endurance, and responsiveness for advanced pelvic floor performance.\nConsistency and control at this level lead to the best long-term results.',
+      'unlock_advanced_training': 'Unlock Advanced Training',
+      'premium_kegel_desc':
+          'Take your progress to the next level with structured and professional techniques designed to improve control, strength, and endurance.',
+      'premium_kegel_feat_1': 'Intermediate & Advanced levels',
+      'premium_kegel_feat_2': 'Real-life training modes',
+      'premium_kegel_feat_3': 'Faster progress tracking',
+      'premium_kegel_feat_4': 'Premium experience',
+      'start_upgrade': 'Start your upgrade today',
+      'completed_session': 'You completed your session!',
+      'keep_going_daily': 'Keep going daily to improve control.',
+      'ready_next_level': '• → You\'re ready for the next level',
+      'completed_intermediate':
+          'You completed intermediate training!\n✔ Strength improved\n✔ Control enhanced\n✔ Endurance increased\n\nYou\'re progressing to a stronger level of performance.',
+      'completed_advanced':
+          'You completed advanced training!\n✔ High control achieved\n✔ Strong endurance\n✔ Advanced responsiveness\n\nYou\'re training at a professional level.',
+      'elite_performance': 'Elite performance 💪🔥',
+      'great_work_emoji': 'Great work 🔥',
+      'great_job_emoji': 'Great job 👏',
+      'completed_intermediate_body':
+          "You completed intermediate training!\n✔ Strength improved\n✔ Control enhanced\n✔ Endurance increased\n\nYou're progressing to a stronger level of performance.",
+      'completed_advanced_body':
+          "You completed advanced training!\n✔ High control achieved\n✔ Strong endurance\n✔ Advanced responsiveness\n\nYou're training at a professional level.",
+      'hold_and_squeeze': 'Hold & Squeeze',
+      'rest_and_relax': 'Rest & Relax',
+      'rest_between_sets': 'Rest Between Sets',
+      'seconds': 'SECONDS',
+      'overall_progress': 'Overall Progress',
+      'resume': 'Resume',
+      'pause': 'Pause',
+      'set_of': 'Set {current} of {total}',
+      'thirty_days': '30 DAYS',
 
       // Chat Screen
       'chat': 'Chat',
@@ -248,10 +353,12 @@ class AppLocalizations {
       'help_us_improve_the_app': 'Help us improve the app',
       'read_our_terms_and_conditions': 'Read our terms and conditions',
       'how_we_handle_your_data': 'How we handle your data',
-      'strengthening_relationships_through_wellness': 'Strengthening relationships through wellness',
+      'strengthening_relationships_through_wellness':
+          'Strengthening relationships through wellness',
       'frequently_asked_questions': 'Frequently Asked Questions',
       'no_faqs_available_at_the_moment': 'No FAQs available at the moment.',
-      'send_us_a_message_and_well_get_back_to_you_soon': 'Send us a message and we\'ll get back to you soon.',
+      'send_us_a_message_and_well_get_back_to_you_soon':
+          'Send us a message and we\'ll get back to you soon.',
       'message_sent': 'Message sent!',
       'send': 'Send',
       'submit': 'Submit',
@@ -262,11 +369,13 @@ class AppLocalizations {
       'please_login_to_see_notifications': 'Please login to see notifications',
       'no_notifications_yet': 'No notifications yet',
       'delete_notification': 'Delete Notification',
-      'are_you_sure_you_want_to_delete_this_notification': 'Are you sure you want to delete this notification?',
+      'are_you_sure_you_want_to_delete_this_notification':
+          'Are you sure you want to delete this notification?',
       'read_our_privacy_policy_and_terms': 'Read our privacy policy and terms',
       'update_your_account_password': 'Update your account password',
       'permanently_delete_your_account': 'Permanently delete your account',
-      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data': 'Are you sure you want to permanently delete your account? This action cannot be undone and you will lose all your data.',
+      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data':
+          'Are you sure you want to permanently delete your account? This action cannot be undone and you will lose all your data.',
       'delete': 'Delete',
       'minutes_short_ago': 'm ago',
       'hours_short_ago': 'h ago',
@@ -291,7 +400,8 @@ class AppLocalizations {
       'both_answered': 'Both answered!',
       'would_you_rather_ellipsis': 'Would You Rather...',
       'found_favorite_ideas': 'Found {count} favorite ideas!',
-      'you_explored_date_night_ideas_together': 'You explored {count} date night ideas together!',
+      'you_explored_date_night_ideas_together':
+          'You explored {count} date night ideas together!',
       'favorites': 'favorites',
       'so_much_love': 'So Much Love!',
       'you_shared_compliments': 'You shared {count} compliments!',
@@ -300,7 +410,8 @@ class AppLocalizations {
       'give_a_compliment_prompt': '{name}, give a compliment!',
       'hint': 'Hint',
       'challenge_complete': 'Challenge Complete!',
-      'you_completed_challenges_out_of_total': 'You completed {done} out of {total} challenges!',
+      'you_completed_challenges_out_of_total':
+          'You completed {done} out of {total} challenges!',
       'challenge_completed': 'Challenge Completed!',
       'skip_challenge': 'Skip Challenge',
       'completed_count': 'completed',
@@ -308,37 +419,46 @@ class AppLocalizations {
       'refresh_schedule': 'Refresh Schedule',
       'frequency': 'Frequency',
       'next_refresh': 'Next Refresh',
-      'content_refreshes_automatically_every_30_days_with_new_questions': 'Content refreshes automatically every 30 days with new questions',
+      'content_refreshes_automatically_every_30_days_with_new_questions':
+          'Content refreshes automatically every 30 days with new questions',
       'truth_or_truth_desc': 'Deep questions to spark meaningful conversations',
       'love_language_quiz_desc': 'Discover how you both give and receive love',
       'reflection_game': 'Reflection & Discussion',
-      'reflection_game_desc': 'Deepen your connection through meaningful reflections',
+      'reflection_game_desc':
+          'Deepen your connection through meaningful reflections',
       'couples_challenge_desc': 'Fun challenges to strengthen your bond',
       'would_you_rather_desc': 'Fun scenarios to explore preferences together',
-      'date_night_ideas_desc': 'Discover new ways to spend quality time together',
+      'date_night_ideas_desc':
+          'Discover new ways to spend quality time together',
       'relationship_quiz_desc': 'Test how well you know each other',
       'compliment_game_desc': 'Share meaningful compliments with each other',
       'memory_lane': 'Memory Lane',
-      'memory_lane_desc': 'Reminisce about your favourite shared memories together',
+      'memory_lane_desc':
+          'Reminisce about your favourite shared memories together',
       'future_planning': 'Future Planning',
       'future_planning_desc': 'Plan your dreams and future goals as a couple',
       'new': 'NEW',
       'version_n': 'Version {version}',
       'refresh_available': 'Refresh Available',
       'refresh_content': 'Refresh Content',
-      'content_refreshed_successfully': '{name} content refreshed successfully!',
-      'all_game_content_refreshed_successfully': 'All game content refreshed successfully!',
+      'content_refreshed_successfully':
+          '{name} content refreshed successfully!',
+      'all_game_content_refreshed_successfully':
+          'All game content refreshed successfully!',
       'error_refreshing_content': 'Error refreshing content',
       'failed_to_send_message': 'Failed to send message',
       'error_loading_messages': 'Error loading messages',
-      'migration_confirmation_message': 'This will upload ALL data from the bundled migration.json backup (games, questions, your profile defaults, chat seed) to Firebase.\n\nExisting documents will be merged / updated.\n\nContinue?',
+      'migration_confirmation_message':
+          'This will upload ALL data from the bundled migration.json backup (games, questions, your profile defaults, chat seed) to Firebase.\n\nExisting documents will be merged / updated.\n\nContinue?',
       'upload': 'Upload',
       'uploading_to_firebase': 'Uploading to Firebase…',
-      'migration_syncing_collections': 'Reading migration.json and syncing all collections.',
+      'migration_syncing_collections':
+          'Reading migration.json and syncing all collections.',
       'migration_failed': 'Migration failed',
       'uploaded_with_warnings': 'Uploaded with Warnings',
       'upload_complete': 'Upload Complete',
-      'documents_uploaded_to_firebase': '{count} document(s) uploaded to Firebase.',
+      'documents_uploaded_to_firebase':
+          '{count} document(s) uploaded to Firebase.',
       'collections_synced': 'Collections synced:',
       'warnings': 'Warnings:',
       'source': 'Source',
@@ -346,10 +466,12 @@ class AppLocalizations {
       'uploading': 'Uploading…',
       'reset_challenge': 'Reset Challenge',
       'reset': 'Reset',
-      'reset_challenge_progress_confirmation': 'Are you sure you want to reset your 30-day challenge progress? This cannot be undone.',
+      'reset_challenge_progress_confirmation':
+          'Are you sure you want to reset your 30-day challenge progress? This cannot be undone.',
       'percent_complete': '{percent}% Complete',
       'days_completed_out_of_total': '{done} / {total} Days Completed',
-      'challenge_completion_message': 'Congratulations on completing 30 days of Kegel exercises. You have earned your Mastery badge!',
+      'challenge_completion_message':
+          'Congratulations on completing 30 days of Kegel exercises. You have earned your Mastery badge!',
       'restart_challenge': 'Restart Challenge',
 
       // Subscription Screen
@@ -363,7 +485,8 @@ class AppLocalizations {
       'free_trial_48h': 'Start your 48-hour free trial',
       'then_price': 'Free for 48 hours, then',
       'cancel_anytime': 'Cancel anytime',
-      'subscription_trial_fallback': 'Free for 48 hours, then \${price}/month. Cancel anytime.',
+      'subscription_trial_fallback':
+          'Free for 48 hours, then \${price}/month. Cancel anytime.',
       'free_plan': 'Free Plan',
       'upgrade_to_unlock_all_features': 'Upgrade to unlock all features',
       'free_trial_active': 'Free Trial Active',
@@ -384,10 +507,13 @@ class AppLocalizations {
       'processing_subscription': 'Processing your subscription...',
       'checking_purchases': 'Checking for previous purchases...',
       'error_restoring_purchases': 'Error restoring purchases',
-      'cancellation_request_submitted_admin_will_review_it': 'Cancellation request submitted. Our team will review it.',
-      'failed_to_initiate_purchase': 'Failed to initiate purchase. Please try again.',
+      'cancellation_request_submitted_admin_will_review_it':
+          'Cancellation request submitted. Our team will review it.',
+      'failed_to_initiate_purchase':
+          'Failed to initiate purchase. Please try again.',
       'subscription_activated': 'Subscription Activated',
-      'subscription_activated_body': 'Thank you for your purchase. Enjoy your premium features.',
+      'subscription_activated_body':
+          'Thank you for your purchase. Enjoy your premium features.',
 
       // Games
       'truth_or_truth': 'Truth or Truth',
@@ -472,7 +598,8 @@ class AppLocalizations {
       'premium_feature': 'ميزة مميزة',
       'premium_message':
           'تتطلب هذه الميزة اشتراكاً مميزاً. ابدأ تجربتك المجانية للوصول إلى جميع الميزات!',
-      'is_a_premium_feature_upgrade_to_unlock_full_access': 'هي ميزة مميزة. قم بالترقية لفتح الوصول الكامل.',
+      'is_a_premium_feature_upgrade_to_unlock_full_access':
+          'هي ميزة مميزة. قم بالترقية لفتح الوصول الكامل.',
       'upgrade_to_premium': 'الترقية إلى بريميوم',
       'start_48_hour_free_trial': 'ابدأ تجربة مجانية لمدة 48 ساعة',
       'last_updated': 'آخر تحديث',
@@ -667,6 +794,108 @@ class AppLocalizations {
       'view_challenge': 'عرض التحدي',
       'day': 'يوم',
       'kegel_plan': 'خطة كيجل',
+      'beginner_level_title': 'مستوى المبتدئين - بناء التحكم والوعي',
+      'intermediate_level_title': 'المستوى المتوسط - القوة والتحكم والتحمل',
+      'advanced_level_title': 'المستوى المتقدم - أقصى تحكم وأداء',
+      'beginner_subtitle': 'حدد وتحكم بشكل صحيح',
+      'intermediate_subtitle': 'القوة والتحكم والتحمل',
+      'advanced_subtitle': 'إتقان أقصى تحكم',
+      'start_session': 'ابدأ الجلسة',
+      'exercise_instructions': 'تعليمات التمرين:',
+      'exercise_structure': 'هيكل التمرين:',
+      'tips_colon': 'نصائح:',
+      'goal': 'الهدف:',
+      'beginner_desc':
+          'تم تصميم هذا المستوى لمساعدتك على تحديد عضلات قاع الحوض والتحكم فيها بشكل صحيح.',
+      'beginner_inst_1': 'اقبض عضلات قاع الحوض برفق لمدة 3 ثوانٍ',
+      'beginner_inst_2': 'استرخ تمامًا لمدة 3 ثوانٍ',
+      'beginner_inst_3': 'كرر ذلك 10-12 مرة',
+      'beginner_inst_4': 'في التكرار الأخير اقبض لمدة 5 ثوانٍ',
+      'beginner_inst_5': 'أكمل مجموعتين لكل جلسة',
+      'beginner_tip_1': 'لا تشد معدتك أو فخذيك أو أردافك',
+      'beginner_tip_2': 'تنفس بشكل طبيعي أثناء التمرين',
+      'beginner_tip_3': 'ركز على الانقباضات السلسة والمحكومة',
+      'beginner_tip_4': 'ابق مسترخياً بين التكرارات',
+      'beginner_goal':
+          'ابنِ وعيًا أساسيًا بالعضلات وتحكماً قبل الانتقال إلى تدريب أكثر تقدماً.\nالاستمرارية هي المفتاح — حاول التدرب يومياً للحصول على أفضل النتائج.',
+      'intermediate_desc':
+          'تم تصميم هذا المستوى لتحسين قوة قاع الحوض والتحكم فيه والتحمل من خلال مزيج من الانقباضات البطيئة والنبضات السريعة والاحتفاظ لفترات أطول.',
+      'int_struct_1': '1. انقباضات بطيئة',
+      'int_inst_1_1': 'اقبض لمدة 5 ثوانٍ',
+      'int_inst_1_2': 'استرخ لمدة 5 ثوانٍ',
+      'int_inst_1_3': 'كرر 10 مرات',
+      'int_struct_2': '2. نبضات سريعة',
+      'int_inst_2_1': 'اقبض بسرعة لمدة ثانية واحدة',
+      'int_inst_2_2': 'استرخ لمدة ثانية واحدة',
+      'int_inst_2_3': 'كرر 15-20 مرة',
+      'int_struct_3': '3. احتفاظ للتحمل',
+      'int_inst_3_1': 'احتفظ بالانقباض لمدة 10-15 ثانية',
+      'int_inst_3_2': 'استرخ لمدة 10 ثوانٍ',
+      'int_inst_3_3': 'كرر 3 مرات',
+      'int_tip_1': 'استمر في التنفس بشكل طبيعي',
+      'int_tip_2': 'ركز على التحكم، وليس التوتر',
+      'int_tip_3': 'تجنب إشراك العضلات المحيطة (البطن والفخذين والأرداف)',
+      'int_goal':
+          'طور تحكماً أقوى وزد من القدرة على التحمل لتحسين الأداء العام للحوض.\nابق متسقاً لفتح التدريب المتقدم.',
+      'advanced_desc':
+          'تم تصميم هذا المستوى للمستخدمين الذين يرغبون في إتقان التحكم في قاع الحوض والتحمل والاستجابة من خلال تقنيات التدريب المتقدمة.',
+      'adv_struct_1': '1. احتفاظ تدريجي',
+      'adv_inst_1_1': 'اقبض لمدة 5 ثوانٍ ثم استرخ لمدة 5 ثوانٍ',
+      'adv_inst_1_2': 'ثم زد إلى 10، 15، و 20 ثانية',
+      'adv_inst_1_3': 'استرخ لنفس المدة',
+      'adv_inst_1_4': 'أكمل 4 تكرارات',
+      'adv_struct_2': '2. تدريب هرمي',
+      'adv_inst_2_1': 'اقبض لمدة 3 ثوانٍ → استرخ',
+      'adv_inst_2_2': '5 ثوانٍ → استرخ',
+      'adv_inst_2_3': '7 ثوانٍ → استرخ',
+      'adv_inst_2_4': '10 ثوانٍ → استرخ',
+      'adv_inst_2_5': 'ثم اعكس: 7 → 5 → 3 ثوانٍ',
+      'adv_inst_2_6': 'حافظ على التحكم الكامل طوال الوقت',
+      'adv_struct_3': '3. نبضات متفجرة',
+      'adv_inst_3_1': 'انقباضات سريعة (0.5–1 ثانية)',
+      'adv_inst_3_2': 'استرخ بسرعة',
+      'adv_inst_3_3': 'كرر 25-30 مرة',
+      'adv_struct_4': '4. مجموعة تحكم مختلطة',
+      'adv_inst_4_1': 'احتفظ لمدة 10 ثوانٍ',
+      'adv_inst_4_2': 'قم بإجراء 10 نبضات سريعة دون الاسترخاء التام',
+      'adv_inst_4_3': 'استرخ لمدة 10 ثوانٍ',
+      'adv_inst_4_4': 'كرر 3 مرات',
+      'adv_tip_1': 'ركز على الدقة والتحكم، وليس فقط المدة',
+      'adv_tip_2': 'ابق مسترخياً في العضلات المحيطة',
+      'adv_tip_3': 'تنفس بشكل طبيعي طوال الجلسة',
+      'adv_goal':
+          'حقق أقصى تحكم وتحمل واستجابة لأداء متقدم لقاع الحوض.\nالاتساق والتحكم في هذا المستوى يؤديان إلى أفضل النتائج على المدى الطويل.',
+      'unlock_advanced_training': 'افتح التدريب المتقدم',
+      'premium_kegel_desc':
+          'ارتقِ بتقدمك إلى المستوى التالي مع تقنيات منظمة ومهنية مصممة لتحسين التحكم والقوة والقدرة على التحمل.',
+      'premium_kegel_feat_1': 'المستويات المتوسطة والمتقدمة',
+      'premium_kegel_feat_2': 'أوضاع تدريب واقعية',
+      'premium_kegel_feat_3': 'تتبع أسرع للتقدم',
+      'premium_kegel_feat_4': 'تجربة مميزة',
+      'start_upgrade': 'ابدأ ترقيتك اليوم',
+      'completed_session': 'لقد أكملت جلستك!',
+      'keep_going_daily': 'استمر يومياً لتحسين التحكم.',
+      'ready_next_level': '• → أنت مستعد للمستوى التالي',
+      'completed_intermediate':
+          'لقد أكملت التدريب المتوسط!\n✔ تحسنت القوة\n✔ تعزز التحكم\n✔ زادت القدرة على التحمل\n\nأنت تتقدم إلى مستوى أداء أقوى.',
+      'completed_advanced':
+          'لقد أكملت التدريب المتقدم!\n✔ تم تحقيق تحكم عالٍ\n✔ قدرة تحمل قوية\n✔ استجابة متقدمة\n\nأنت تتدرب بمستوى احترافي.',
+      'elite_performance': 'أداء نخبوي 💪🔥',
+      'great_work_emoji': 'عمل عظيم 🔥',
+      'great_job_emoji': 'عمل رائع 👏',
+      'completed_intermediate_body':
+          "لقد أكملت التدريب المتوسط!\n✔ تحسنت القوة\n✔ تعزز التحكم\n✔ زادت القدرة على التحمل\n\nأنت تتقدم إلى مستوى أداء أقوى.",
+      'completed_advanced_body':
+          "لقد أكملت التدريب المتقدم!\n✔ تم تحقيق تحكم عالٍ\n✔ قدرة تحمل قوية\n✔ استجابة متقدمة\n\nأنت تتدرب بمستوى احترافي.",
+      'hold_and_squeeze': 'انقباض واحتفاظ',
+      'rest_and_relax': 'استرخاء وراحة',
+      'rest_between_sets': 'راحة بين المجموعات',
+      'seconds': 'ثواني',
+      'overall_progress': 'التقدم العام',
+      'resume': 'استئناف',
+      'pause': 'إيقاف مؤقت',
+      'set_of': 'المجموعة {current} من {total}',
+      'thirty_days': '30 يوم',
 
       // Reflection & Discussion Game
       'welcome_to_reflection': 'مرحباً بك في التأمل والنقاش',
@@ -751,10 +980,12 @@ class AppLocalizations {
       'help_us_improve_the_app': 'ساعدنا في تحسين التطبيق',
       'read_our_terms_and_conditions': 'اقرأ الشروط والأحكام',
       'how_we_handle_your_data': 'كيف نتعامل مع بياناتك',
-      'strengthening_relationships_through_wellness': 'تقوية العلاقات من خلال العافية',
+      'strengthening_relationships_through_wellness':
+          'تقوية العلاقات من خلال العافية',
       'frequently_asked_questions': 'الأسئلة الشائعة',
       'no_faqs_available_at_the_moment': 'لا توجد أسئلة شائعة متاحة حالياً.',
-      'send_us_a_message_and_well_get_back_to_you_soon': 'أرسل لنا رسالة وسنرد عليك قريباً.',
+      'send_us_a_message_and_well_get_back_to_you_soon':
+          'أرسل لنا رسالة وسنرد عليك قريباً.',
       'message_sent': 'تم إرسال الرسالة!',
       'send': 'إرسال',
       'submit': 'إرسال',
@@ -765,11 +996,14 @@ class AppLocalizations {
       'please_login_to_see_notifications': 'يرجى تسجيل الدخول لرؤية الإشعارات',
       'no_notifications_yet': 'لا توجد إشعارات حتى الآن',
       'delete_notification': 'حذف الإشعار',
-      'are_you_sure_you_want_to_delete_this_notification': 'هل أنت متأكد أنك تريد حذف هذا الإشعار؟',
-      'read_our_privacy_policy_and_terms': 'اقرأ سياسة الخصوصية والشروط الخاصة بنا',
+      'are_you_sure_you_want_to_delete_this_notification':
+          'هل أنت متأكد أنك تريد حذف هذا الإشعار؟',
+      'read_our_privacy_policy_and_terms':
+          'اقرأ سياسة الخصوصية والشروط الخاصة بنا',
       'update_your_account_password': 'قم بتحديث كلمة مرور حسابك',
       'permanently_delete_your_account': 'احذف حسابك نهائياً',
-      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data': 'هل أنت متأكد أنك تريد حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء وستفقد جميع بياناتك.',
+      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data':
+          'هل أنت متأكد أنك تريد حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء وستفقد جميع بياناتك.',
       'delete': 'حذف',
       'minutes_short_ago': 'د قبل',
       'hours_short_ago': 'س قبل',
@@ -794,7 +1028,8 @@ class AppLocalizations {
       'both_answered': 'أجاب الاثنان!',
       'would_you_rather_ellipsis': 'ماذا تفضل...',
       'found_favorite_ideas': 'تم العثور على {count} فكرة مفضلة!',
-      'you_explored_date_night_ideas_together': 'استكشفتم {count} من أفكار المواعدة معاً!',
+      'you_explored_date_night_ideas_together':
+          'استكشفتم {count} من أفكار المواعدة معاً!',
       'favorites': 'مفضلات',
       'so_much_love': 'الكثير من الحب!',
       'you_shared_compliments': 'تبادلتما {count} مجاملة!',
@@ -803,7 +1038,8 @@ class AppLocalizations {
       'give_a_compliment_prompt': '{name}، قدّم مجاملة!',
       'hint': 'تلميح',
       'challenge_complete': 'اكتمل التحدي!',
-      'you_completed_challenges_out_of_total': 'أكملتما {done} من أصل {total} تحديات!',
+      'you_completed_challenges_out_of_total':
+          'أكملتما {done} من أصل {total} تحديات!',
       'challenge_completed': 'تم إكمال التحدي!',
       'skip_challenge': 'تخطي التحدي',
       'completed_count': 'مكتمل',
@@ -811,7 +1047,8 @@ class AppLocalizations {
       'refresh_schedule': 'جدول التحديث',
       'frequency': 'التكرار',
       'next_refresh': 'التحديث التالي',
-      'content_refreshes_automatically_every_30_days_with_new_questions': 'يتم تحديث المحتوى تلقائياً كل 30 يوماً بأسئلة جديدة',
+      'content_refreshes_automatically_every_30_days_with_new_questions':
+          'يتم تحديث المحتوى تلقائياً كل 30 يوماً بأسئلة جديدة',
       'truth_or_truth_desc': 'أسئلة عميقة لإثارة محادثات هادفة',
       'love_language_quiz_desc': 'اكتشف كيف تقدمان وتستقبلان الحب',
       'reflection_game': 'التأمل والنقاش',
@@ -830,18 +1067,22 @@ class AppLocalizations {
       'refresh_available': 'التحديث متاح',
       'refresh_content': 'تحديث المحتوى',
       'content_refreshed_successfully': 'تم تحديث محتوى {name} بنجاح!',
-      'all_game_content_refreshed_successfully': 'تم تحديث جميع محتويات الألعاب بنجاح!',
+      'all_game_content_refreshed_successfully':
+          'تم تحديث جميع محتويات الألعاب بنجاح!',
       'error_refreshing_content': 'خطأ في تحديث المحتوى',
       'failed_to_send_message': 'فشل في إرسال الرسالة',
       'error_loading_messages': 'خطأ في تحميل الرسائل',
-      'migration_confirmation_message': 'سيؤدي هذا إلى رفع جميع البيانات من النسخة الاحتياطية المضمنة migration.json (الألعاب، الأسئلة، إعدادات ملفك الشخصي الافتراضية، بيانات بدء الدردشة) إلى Firebase.\n\nسيتم دمج/تحديث المستندات الموجودة.\n\nمتابعة؟',
+      'migration_confirmation_message':
+          'سيؤدي هذا إلى رفع جميع البيانات من النسخة الاحتياطية المضمنة migration.json (الألعاب، الأسئلة، إعدادات ملفك الشخصي الافتراضية، بيانات بدء الدردشة) إلى Firebase.\n\nسيتم دمج/تحديث المستندات الموجودة.\n\nمتابعة؟',
       'upload': 'رفع',
       'uploading_to_firebase': 'جارٍ الرفع إلى Firebase…',
-      'migration_syncing_collections': 'جارٍ قراءة migration.json ومزامنة جميع المجموعات.',
+      'migration_syncing_collections':
+          'جارٍ قراءة migration.json ومزامنة جميع المجموعات.',
       'migration_failed': 'فشلت عملية الترحيل',
       'uploaded_with_warnings': 'تم الرفع مع تحذيرات',
       'upload_complete': 'اكتمل الرفع',
-      'documents_uploaded_to_firebase': 'تم رفع {count} مستند(ات) إلى Firebase.',
+      'documents_uploaded_to_firebase':
+          'تم رفع {count} مستند(ات) إلى Firebase.',
       'collections_synced': 'المجموعات التي تمت مزامنتها:',
       'warnings': 'تحذيرات:',
       'source': 'المصدر',
@@ -849,10 +1090,12 @@ class AppLocalizations {
       'uploading': 'جارٍ الرفع…',
       'reset_challenge': 'إعادة تعيين التحدي',
       'reset': 'إعادة تعيين',
-      'reset_challenge_progress_confirmation': 'هل أنت متأكد أنك تريد إعادة تعيين تقدم تحدي 30 يوماً؟ لا يمكن التراجع عن هذا الإجراء.',
+      'reset_challenge_progress_confirmation':
+          'هل أنت متأكد أنك تريد إعادة تعيين تقدم تحدي 30 يوماً؟ لا يمكن التراجع عن هذا الإجراء.',
       'percent_complete': '{percent}% مكتمل',
       'days_completed_out_of_total': '{done} / {total} يوم مكتمل',
-      'challenge_completion_message': 'تهانينا على إكمال 30 يوماً من تمارين كيجل. لقد حصلت على شارة الإتقان!',
+      'challenge_completion_message':
+          'تهانينا على إكمال 30 يوماً من تمارين كيجل. لقد حصلت على شارة الإتقان!',
       'restart_challenge': 'إعادة بدء التحدي',
 
       // Subscription Screen
@@ -866,7 +1109,8 @@ class AppLocalizations {
       'free_trial_48h': 'ابدأ تجربتك المجانية لمدة 48 ساعة',
       'then_price': 'مجانًا لمدة 48 ساعة، ثم',
       'cancel_anytime': 'إلغاء في أي وقت',
-      'subscription_trial_fallback': 'مجانًا لمدة 48 ساعة، ثم {price} دولارًا شهريًا. يمكنك الإلغاء في أي وقت.',
+      'subscription_trial_fallback':
+          'مجانًا لمدة 48 ساعة، ثم {price} دولارًا شهريًا. يمكنك الإلغاء في أي وقت.',
       'free_plan': 'الخطة المجانية',
       'upgrade_to_unlock_all_features': 'قم بالترقية لفتح جميع الميزات',
       'free_trial_active': 'التجربة المجانية نشطة',
@@ -887,10 +1131,12 @@ class AppLocalizations {
       'processing_subscription': 'جاري معالجة اشتراكك...',
       'checking_purchases': 'جاري التحقق من المشتريات السابقة...',
       'error_restoring_purchases': 'خطأ في استعادة المشتريات',
-      'cancellation_request_submitted_admin_will_review_it': 'تم تقديم طلب الإلغاء. سيقوم فريقنا بمراجعته.',
+      'cancellation_request_submitted_admin_will_review_it':
+          'تم تقديم طلب الإلغاء. سيقوم فريقنا بمراجعته.',
       'failed_to_initiate_purchase': 'فشل بدء الشراء. يرجى المحاولة مرة أخرى.',
       'subscription_activated': 'تم تفعيل الاشتراك',
-      'subscription_activated_body': 'شكراً لك على الشراء. استمتع بميزاتك المميزة.',
+      'subscription_activated_body':
+          'شكراً لك على الشراء. استمتع بميزاتك المميزة.',
 
       // Games
       'love_language_quiz': 'اختبار لغة الحب',
@@ -924,7 +1170,8 @@ class AppLocalizations {
       'premium_feature': 'Fonctionnalité Premium',
       'premium_message':
           'Cette fonctionnalité nécessite un abonnement premium. Commencez votre essai gratuit pour accéder à toutes les fonctionnalités!',
-      'is_a_premium_feature_upgrade_to_unlock_full_access': 'est une fonctionnalité premium. Passez à l’abonnement pour débloquer l’accès complet.',
+      'is_a_premium_feature_upgrade_to_unlock_full_access':
+          'est une fonctionnalité premium. Passez à l’abonnement pour débloquer l’accès complet.',
       'upgrade_to_premium': 'Passer à Premium',
       'start_48_hour_free_trial': 'Commencer l’essai gratuit de 48 heures',
       'last_updated': 'Dernière mise à jour',
@@ -1123,7 +1370,116 @@ class AppLocalizations {
       'view_challenge': 'Voir le défi',
       'day': 'Jour',
       'kegel_plan': 'Plan Kegel',
-      'welcome_to_reflection': 'Bienvenue dans Réflexion et discussion',
+      'beginner_level_title': 'Niveau Débutant – Contrôle & Conscience',
+      'intermediate_level_title':
+          'Niveau Intermédiaire – Force, Contrôle & Endurance',
+      'advanced_level_title': 'Niveau Avancé – Contrôle & Performance Maximum',
+      'beginner_subtitle': 'Identifier et contrôler correctement',
+      'intermediate_subtitle': 'Force, contrôle et endurance',
+      'advanced_subtitle': 'Maîtriser le contrôle maximum',
+      'start_session': 'Commencer la session',
+      'exercise_instructions': 'Instructions:',
+      'exercise_structure': 'Structure de l\'exercice:',
+      'tips_colon': 'Conseils:',
+      'goal': 'Objectif:',
+      'beginner_desc':
+          'Ce niveau est conçu pour vous aider à identifier et contrôler correctement les muscles de votre plancher pelvien.',
+      'beginner_inst_1':
+          'Contractez doucement les muscles de votre plancher pelvien pendant 3 secondes',
+      'beginner_inst_2': 'Relâchez complètement pendant 3 secondes',
+      'beginner_inst_3': 'Répétez 10 à 12 fois',
+      'beginner_inst_4':
+          'Pour la dernière répétition, contractez pendant 5 secondes',
+      'beginner_inst_5': 'Faites 2 séries par session',
+      'beginner_tip_1': 'Ne serrez pas l\'estomac, les cuisses ou les fesses',
+      'beginner_tip_2': 'Respirez normalement pendant l\'exercice',
+      'beginner_tip_3':
+          'Concentrez-vous sur des contractions fluides et contrôlées',
+      'beginner_tip_4': 'Restez détendu entre les répétitions',
+      'beginner_goal':
+          'Construire une conscience et un contrôle musculaire de base avant de passer à un entraînement plus avancé.\nLa régularité est la clé — essayez de pratiquer quotidiennement.',
+      'intermediate_desc':
+          'Ce niveau améliore la force, le contrôle et l\'endurance grâce à une combinaison de contractions lentes, de pulsations rapides et de maintiens prolongés.',
+      'int_struct_1': '1. Contractions lentes',
+      'int_inst_1_1': 'Contractez pendant 5 secondes',
+      'int_inst_1_2': 'Relâchez pendant 5 secondes',
+      'int_inst_1_3': 'Répétez 10 fois',
+      'int_struct_2': '2. Pulsations rapides',
+      'int_inst_2_1': 'Contractez rapidement pendant 1 seconde',
+      'int_inst_2_2': 'Relâchez pendant 1 seconde',
+      'int_inst_2_3': 'Répétez 15 à 20 fois',
+      'int_struct_3': '3. Maintien d\'endurance',
+      'int_inst_3_1': 'Maintenez la contraction pendant 10-15 secondes',
+      'int_inst_3_2': 'Relâchez pendant 10 secondes',
+      'int_inst_3_3': 'Répétez 3 fois',
+      'int_tip_1': 'Continuez à respirer naturellement',
+      'int_tip_2': 'Concentrez-vous sur le contrôle, pas la tension',
+      'int_tip_3':
+          'Évitez d\'engager les muscles environnants (abdos, cuisses, fesses)',
+      'int_goal':
+          'Développez un contrôle plus fort et augmentez l\'endurance pour une meilleure performance pelvienne globale.\nSoyez régulier pour débloquer l\'entraînement avancé.',
+      'advanced_desc':
+          'Ce niveau est conçu pour maîtriser le contrôle du plancher pelvien, l\'endurance et la réactivité grâce à des techniques avancées.',
+      'adv_struct_1': '1. Maintiens progressifs',
+      'adv_inst_1_1': 'Contractez 5 secondes puis reposez-vous 5 secondes',
+      'adv_inst_1_2': 'Puis augmentez à 10, 15 et 20 secondes',
+      'adv_inst_1_3': 'Relâchez pour la même durée',
+      'adv_inst_1_4': 'Faites 4 répétitions',
+      'adv_struct_2': '2. Entraînement en pyramide',
+      'adv_inst_2_1': 'Contractez 3 secondes → relâchez',
+      'adv_inst_2_2': '5 secondes → relâchez',
+      'adv_inst_2_3': '7 secondes → relâchez',
+      'adv_inst_2_4': '10 secondes → relâchez',
+      'adv_inst_2_5': 'Puis inversez: 7 → 5 → 3 secondes',
+      'adv_inst_2_6': 'Maintenez un contrôle total partout',
+      'adv_struct_3': '3. Pulsations explosives',
+      'adv_inst_3_1': 'Contractions rapides (0,5–1 sec)',
+      'adv_inst_3_2': 'Relâchez rapidement',
+      'adv_inst_3_3': 'Répétez 25-30 fois',
+      'adv_struct_4': '4. Série de contrôle mixte',
+      'adv_inst_4_1': 'Maintenez pendant 10 secondes',
+      'adv_inst_4_2': 'Faites 10 pulsations sans relâcher',
+      'adv_inst_4_3': 'Relâchez pendant 10 secondes',
+      'adv_inst_4_4': 'Répétez 3 fois',
+      'adv_tip_1': 'Concentrez-vous sur la précision et le contrôle',
+      'adv_tip_2': 'Restez détendu dans les muscles environnants',
+      'adv_tip_3': 'Respirez naturellement pendant la session',
+      'adv_goal':
+          'Atteignez un contrôle, une endurance et une réactivité maximaux pour des performances avancées.\nLa régularité mène aux meilleurs résultats.',
+      'unlock_advanced_training': 'Débloquer l\'entraînement avancé',
+      'premium_kegel_desc':
+          'Faites passer vos progrès au niveau supérieur avec des techniques structurées conçues pour améliorer le contrôle et la force.',
+      'premium_kegel_feat_1': 'Niveaux Intermédiaire & Avancé',
+      'premium_kegel_feat_2': 'Modes d\'entraînement réels',
+      'premium_kegel_feat_3': 'Suivi des progrès plus rapide',
+      'premium_kegel_feat_4': 'Expérience premium',
+      'start_upgrade': 'Commencez votre mise à niveau aujourd\'hui',
+      'completed_session': 'Vous avez terminé votre session!',
+      'keep_going_daily':
+          'Continuez quotidiennement pour améliorer le contrôle.',
+      'ready_next_level': '• → Vous êtes prêt pour le niveau suivant',
+      'completed_intermediate':
+          'Vous avez terminé l\'entraînement intermédiaire!\n✔ Force améliorée\n✔ Contrôle renforcé\n✔ Endurance augmentée\n\nVous progressez vers un niveau plus fort.',
+      'completed_advanced':
+          'Vous avez terminé l\'entraînement avancé!\n✔ Haut contrôle atteint\n✔ Forte endurance\n✔ Réactivité avancée\n\nVous vous entraînez à un niveau professionnel.',
+      'elite_performance': 'Performance d\'élite 💪🔥',
+      'great_work_emoji': 'Bon travail 🔥',
+      'great_job_emoji': 'Beau travail 👏',
+      'completed_intermediate_body':
+          "Vous avez terminé l'entraînement intermédiaire !\n✔ Force améliorée\n✔ Contrôle renforcé\n✔ Endurance augmentée\n\nVous progressez vers un niveau plus fort.",
+      'completed_advanced_body':
+          "Vous avez terminé l'entraînement avancé !\n✔ Haut contrôle atteint\n✔ Forte endurance\n✔ Réactivité avancée\n\nVous vous entraînez à un niveau professionnel.",
+      'hold_and_squeeze': 'Contracter et maintenir',
+      'rest_and_relax': 'Reposer et relaxer',
+      'rest_between_sets': 'Repos entre les séries',
+      'seconds': 'SECONDES',
+      'overall_progress': 'Progression globale',
+      'resume': 'Reprendre',
+      'pause': 'Pause',
+      'set_of': 'Série {current} sur {total}',
+      'thirty_days': '30 JOURS',
+    },
+    'fr': {
       'reflection_welcome_desc':
           'Un jeu pour approfondir votre connexion grâce à des conversations significatives et des réflexions partagées.',
       'your_turn': 'Votre tour',
@@ -1204,30 +1560,41 @@ class AppLocalizations {
       'get_help': 'Obtenir de l\'aide',
       'resources': 'Ressources',
       'faqs': 'FAQ',
-      'find_answers_to_common_questions': 'Trouvez des réponses aux questions courantes',
+      'find_answers_to_common_questions':
+          'Trouvez des réponses aux questions courantes',
       'get_in_touch_with_our_team': 'Contactez notre équipe',
       'help_us_improve_the_app': 'Aidez-nous à améliorer l\'application',
       'read_our_terms_and_conditions': 'Lisez nos conditions générales',
       'how_we_handle_your_data': 'Comment nous traitons vos données',
-      'strengthening_relationships_through_wellness': 'Renforcer les relations grâce au bien-être',
+      'strengthening_relationships_through_wellness':
+          'Renforcer les relations grâce au bien-être',
       'frequently_asked_questions': 'Questions fréquemment posées',
-      'no_faqs_available_at_the_moment': 'Aucune FAQ disponible pour le moment.',
-      'send_us_a_message_and_well_get_back_to_you_soon': 'Envoyez-nous un message et nous vous répondrons bientôt.',
+      'no_faqs_available_at_the_moment':
+          'Aucune FAQ disponible pour le moment.',
+      'send_us_a_message_and_well_get_back_to_you_soon':
+          'Envoyez-nous un message et nous vous répondrons bientôt.',
       'message_sent': 'Message envoyé !',
       'send': 'Envoyer',
       'submit': 'Soumettre',
       'bug_title': 'Titre du bug',
       'description': 'Description',
-      'please_describe_what_happened': 'Veuillez décrire ce qui s\'est passé...',
+      'please_describe_what_happened':
+          'Veuillez décrire ce qui s\'est passé...',
       'bug_report_submitted': 'Rapport de bug soumis !',
-      'please_login_to_see_notifications': 'Veuillez vous connecter pour voir les notifications',
+      'please_login_to_see_notifications':
+          'Veuillez vous connecter pour voir les notifications',
       'no_notifications_yet': 'Aucune notification pour le moment',
       'delete_notification': 'Supprimer la notification',
-      'are_you_sure_you_want_to_delete_this_notification': 'Êtes-vous sûr de vouloir supprimer cette notification ?',
-      'read_our_privacy_policy_and_terms': 'Lisez notre politique de confidentialité et nos conditions',
-      'update_your_account_password': 'Mettez à jour le mot de passe de votre compte',
-      'permanently_delete_your_account': 'Supprimez définitivement votre compte',
-      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data': 'Êtes-vous sûr de vouloir supprimer définitivement votre compte ? Cette action est irréversible et vous perdrez toutes vos données.',
+      'are_you_sure_you_want_to_delete_this_notification':
+          'Êtes-vous sûr de vouloir supprimer cette notification ?',
+      'read_our_privacy_policy_and_terms':
+          'Lisez notre politique de confidentialité et nos conditions',
+      'update_your_account_password':
+          'Mettez à jour le mot de passe de votre compte',
+      'permanently_delete_your_account':
+          'Supprimez définitivement votre compte',
+      'are_you_sure_you_want_to_permanently_delete_your_account_this_action_cannot_be_undone_and_you_will_lose_all_your_data':
+          'Êtes-vous sûr de vouloir supprimer définitivement votre compte ? Cette action est irréversible et vous perdrez toutes vos données.',
       'delete': 'Supprimer',
       'minutes_short_ago': 'min',
       'hours_short_ago': 'h',
@@ -1252,7 +1619,8 @@ class AppLocalizations {
       'both_answered': 'Les deux ont répondu !',
       'would_you_rather_ellipsis': 'Tu préfères...',
       'found_favorite_ideas': '{count} idées favorites trouvées !',
-      'you_explored_date_night_ideas_together': 'Vous avez exploré {count} idées de soirée en amoureux ensemble !',
+      'you_explored_date_night_ideas_together':
+          'Vous avez exploré {count} idées de soirée en amoureux ensemble !',
       'favorites': 'favoris',
       'so_much_love': 'Tellement d\'amour !',
       'you_shared_compliments': 'Vous avez partagé {count} compliments !',
@@ -1261,7 +1629,8 @@ class AppLocalizations {
       'give_a_compliment_prompt': '{name}, fais un compliment !',
       'hint': 'Astuce',
       'challenge_complete': 'Défi terminé !',
-      'you_completed_challenges_out_of_total': 'Vous avez terminé {done} défis sur {total} !',
+      'you_completed_challenges_out_of_total':
+          'Vous avez terminé {done} défis sur {total} !',
       'challenge_completed': 'Défi terminé !',
       'skip_challenge': 'Passer le défi',
       'completed_count': 'terminés',
@@ -1269,37 +1638,50 @@ class AppLocalizations {
       'refresh_schedule': 'Programme d\'actualisation',
       'frequency': 'Fréquence',
       'next_refresh': 'Prochaine actualisation',
-      'content_refreshes_automatically_every_30_days_with_new_questions': 'Le contenu s\'actualise automatiquement tous les 30 jours avec de nouvelles questions',
-      'truth_or_truth_desc': 'Des questions profondes pour susciter des conversations significatives',
-      'love_language_quiz_desc': 'Découvrez comment vous donnez et recevez de l\'amour',
+      'content_refreshes_automatically_every_30_days_with_new_questions':
+          'Le contenu s\'actualise automatiquement tous les 30 jours avec de nouvelles questions',
+      'truth_or_truth_desc':
+          'Des questions profondes pour susciter des conversations significatives',
+      'love_language_quiz_desc':
+          'Découvrez comment vous donnez et recevez de l\'amour',
       'reflection_game': 'Réflexion et discussion',
-      'reflection_game_desc': 'Approfondissez votre lien grâce à des réflexions significatives',
+      'reflection_game_desc':
+          'Approfondissez votre lien grâce à des réflexions significatives',
       'couples_challenge_desc': 'Des défis amusants pour renforcer votre lien',
-      'would_you_rather_desc': 'Des scénarios amusants pour explorer vos préférences ensemble',
-      'date_night_ideas_desc': 'Découvrez de nouvelles façons de passer du temps de qualité ensemble',
+      'would_you_rather_desc':
+          'Des scénarios amusants pour explorer vos préférences ensemble',
+      'date_night_ideas_desc':
+          'Découvrez de nouvelles façons de passer du temps de qualité ensemble',
       'relationship_quiz_desc': 'Testez à quel point vous vous connaissez',
-      'compliment_game_desc': 'Partagez des compliments significatifs entre vous',
+      'compliment_game_desc':
+          'Partagez des compliments significatifs entre vous',
       'memory_lane': 'Le chemin des souvenirs',
       'memory_lane_desc': 'Remémorez-vous vos plus beaux souvenirs partagés',
       'future_planning': 'Planification d\'avenir',
-      'future_planning_desc': 'Planifiez vos rêves et vos objectifs futurs en tant que couple',
+      'future_planning_desc':
+          'Planifiez vos rêves et vos objectifs futurs en tant que couple',
       'new': 'NOUVEAU',
       'version_n': 'Version {version}',
       'refresh_available': 'Actualisation disponible',
       'refresh_content': 'Actualiser le contenu',
-      'content_refreshed_successfully': 'Le contenu de {name} a été actualisé avec succès !',
-      'all_game_content_refreshed_successfully': 'Tout le contenu des jeux a été actualisé avec succès !',
+      'content_refreshed_successfully':
+          'Le contenu de {name} a été actualisé avec succès !',
+      'all_game_content_refreshed_successfully':
+          'Tout le contenu des jeux a été actualisé avec succès !',
       'error_refreshing_content': 'Erreur lors de l\'actualisation du contenu',
       'failed_to_send_message': 'Échec de l\'envoi du message',
       'error_loading_messages': 'Erreur lors du chargement des messages',
-      'migration_confirmation_message': 'Cela va téléverser TOUTES les données de la sauvegarde intégrée migration.json (jeux, questions, valeurs par défaut de votre profil, amorce de chat) vers Firebase.\n\nLes documents existants seront fusionnés / mis à jour.\n\nContinuer ?',
+      'migration_confirmation_message':
+          'Cela va téléverser TOUTES les données de la sauvegarde intégrée migration.json (jeux, questions, valeurs par défaut de votre profil, amorce de chat) vers Firebase.\n\nLes documents existants seront fusionnés / mis à jour.\n\nContinuer ?',
       'upload': 'Téléverser',
       'uploading_to_firebase': 'Téléversement vers Firebase…',
-      'migration_syncing_collections': 'Lecture de migration.json et synchronisation de toutes les collections.',
+      'migration_syncing_collections':
+          'Lecture de migration.json et synchronisation de toutes les collections.',
       'migration_failed': 'Échec de la migration',
       'uploaded_with_warnings': 'Téléversé avec des avertissements',
       'upload_complete': 'Téléversement terminé',
-      'documents_uploaded_to_firebase': '{count} document(s) téléversé(s) vers Firebase.',
+      'documents_uploaded_to_firebase':
+          '{count} document(s) téléversé(s) vers Firebase.',
       'collections_synced': 'Collections synchronisées :',
       'warnings': 'Avertissements :',
       'source': 'Source',
@@ -1307,10 +1689,12 @@ class AppLocalizations {
       'uploading': 'Téléversement…',
       'reset_challenge': 'Réinitialiser le défi',
       'reset': 'Réinitialiser',
-      'reset_challenge_progress_confirmation': 'Voulez-vous vraiment réinitialiser votre progression du défi de 30 jours ? Cette action est irréversible.',
+      'reset_challenge_progress_confirmation':
+          'Voulez-vous vraiment réinitialiser votre progression du défi de 30 jours ? Cette action est irréversible.',
       'percent_complete': '{percent}% terminé',
       'days_completed_out_of_total': '{done} / {total} jours terminés',
-      'challenge_completion_message': 'Félicitations pour avoir terminé 30 jours d\'exercices de Kegel. Vous avez obtenu votre badge Maîtrise !',
+      'challenge_completion_message':
+          'Félicitations pour avoir terminé 30 jours d\'exercices de Kegel. Vous avez obtenu votre badge Maîtrise !',
       'restart_challenge': 'Recommencer le défi',
 
       // Subscription Screen
@@ -1324,9 +1708,11 @@ class AppLocalizations {
       'free_trial_48h': 'Commencez votre essai gratuit de 48 heures',
       'then_price': 'Gratuit pendant 48 heures, puis',
       'cancel_anytime': 'Annuler à tout moment',
-      'subscription_trial_fallback': 'Gratuit pendant 48 heures, puis {price}/mois. Annulez à tout moment.',
+      'subscription_trial_fallback':
+          'Gratuit pendant 48 heures, puis {price}/mois. Annulez à tout moment.',
       'free_plan': 'Forfait gratuit',
-      'upgrade_to_unlock_all_features': 'Passez au niveau supérieur pour débloquer toutes les fonctionnalités',
+      'upgrade_to_unlock_all_features':
+          'Passez au niveau supérieur pour débloquer toutes les fonctionnalités',
       'free_trial_active': 'Essai gratuit actif',
       'expiry': 'Expiration',
       'premium_monthly': 'Premium mensuel',
@@ -1338,17 +1724,22 @@ class AppLocalizations {
       'no_commitment': 'Annuler à tout moment, sans engagement',
       'choose_your_plan': 'Choisissez votre forfait',
       'no_plans_available': 'Aucun forfait disponible',
-      'unable_to_load_subscription_plans': 'Impossible de charger les forfaits d\'abonnement',
+      'unable_to_load_subscription_plans':
+          'Impossible de charger les forfaits d\'abonnement',
       'pay_now': 'Payer maintenant',
-      'or_start_48_hour_free_trial': 'Ou commencez un essai gratuit de 48 heures',
+      'or_start_48_hour_free_trial':
+          'Ou commencez un essai gratuit de 48 heures',
       'error_loading_plans': 'Erreur lors du chargement des forfaits',
       'processing_subscription': 'Traitement de votre abonnement...',
       'checking_purchases': 'Vérification des achats précédents...',
       'error_restoring_purchases': 'Erreur lors de la restauration des achats',
-      'cancellation_request_submitted_admin_will_review_it': 'Demande d\'annulation soumise. Notre équipe va l\'examiner.',
-      'failed_to_initiate_purchase': 'Échec de l\'initiation de l\'achat. Veuillez réessayer.',
+      'cancellation_request_submitted_admin_will_review_it':
+          'Demande d\'annulation soumise. Notre équipe va l\'examiner.',
+      'failed_to_initiate_purchase':
+          'Échec de l\'initiation de l\'achat. Veuillez réessayer.',
       'subscription_activated': 'Abonnement activé',
-      'subscription_activated_body': 'Merci pour votre achat. Profitez de vos fonctionnalités premium.',
+      'subscription_activated_body':
+          'Merci pour votre achat. Profitez de vos fonctionnalités premium.',
 
       // Games
       'love_language_quiz': 'Quiz des langages de l\'amour',
@@ -1566,18 +1957,22 @@ class AppLocalizations {
   String get noCommitment => translate('no_commitment');
   String get chooseYourPlan => translate('choose_your_plan');
   String get noPlansAvailable => translate('no_plans_available');
-  String get unableToLoadSubscriptionPlans => translate('unable_to_load_subscription_plans');
+  String get unableToLoadSubscriptionPlans =>
+      translate('unable_to_load_subscription_plans');
   String get payNow => translate('pay_now');
   String get orStart48HourFreeTrial => translate('or_start_48_hour_free_trial');
   String get errorLoadingPlans => translate('error_loading_plans');
   String get processingSubscription => translate('processing_subscription');
   String get checkingPurchases => translate('checking_purchases');
   String get errorRestoringPurchases => translate('error_restoring_purchases');
-  String get cancellationRequestSubmitted => translate('cancellation_request_submitted_admin_will_review_it');
-  String get failedToInitiatePurchase => translate('failed_to_initiate_purchase');
+  String get cancellationRequestSubmitted =>
+      translate('cancellation_request_submitted_admin_will_review_it');
+  String get failedToInitiatePurchase =>
+      translate('failed_to_initiate_purchase');
   String get requestCancellation => translate('request_cancellation');
   String get subscriptionActivated => translate('subscription_activated');
-  String get subscriptionActivatedBody => translate('subscription_activated_body');
+  String get subscriptionActivatedBody =>
+      translate('subscription_activated_body');
 
   // Games
   String get truthOrTruth => translate('truth_or_truth');
@@ -1700,6 +2095,100 @@ class AppLocalizations {
   String get youCompleted => translate('you_completed');
   String get duration => translate('duration');
   String get setsCompleted => translate('sets_completed');
+  String get beginnerLevelTitle => translate('beginner_level_title');
+  String get intermediateLevelTitle => translate('intermediate_level_title');
+  String get advancedLevelTitle => translate('advanced_level_title');
+  String get beginnerSubtitle => translate('beginner_subtitle');
+  String get intermediateSubtitle => translate('intermediate_subtitle');
+  String get advancedSubtitle => translate('advanced_subtitle');
+  String get startSession => translate('start_session');
+  String get exerciseInstructions => translate('exercise_instructions');
+  String get exerciseStructure => translate('exercise_structure');
+  String get tipsColon => translate('tips_colon');
+  String get goal => translate('goal');
+  String get beginnerDesc => translate('beginner_desc');
+  String get beginnerInst1 => translate('beginner_inst_1');
+  String get beginnerInst2 => translate('beginner_inst_2');
+  String get beginnerInst3 => translate('beginner_inst_3');
+  String get beginnerInst4 => translate('beginner_inst_4');
+  String get beginnerInst5 => translate('beginner_inst_5');
+  String get beginnerTip1 => translate('beginner_tip_1');
+  String get beginnerTip2 => translate('beginner_tip_2');
+  String get beginnerTip3 => translate('beginner_tip_3');
+  String get beginnerTip4 => translate('beginner_tip_4');
+  String get beginnerGoal => translate('beginner_goal');
+  String get intermediateDesc => translate('intermediate_desc');
+  String get intStruct1 => translate('int_struct_1');
+  String get intInst11 => translate('int_inst_1_1');
+  String get intInst12 => translate('int_inst_1_2');
+  String get intInst13 => translate('int_inst_1_3');
+  String get intStruct2 => translate('int_struct_2');
+  String get intInst21 => translate('int_inst_2_1');
+  String get intInst22 => translate('int_inst_2_2');
+  String get intInst23 => translate('int_inst_2_3');
+  String get intStruct3 => translate('int_struct_3');
+  String get intInst31 => translate('int_inst_3_1');
+  String get intInst32 => translate('int_inst_3_2');
+  String get intInst33 => translate('int_inst_3_3');
+  String get intTip1 => translate('int_tip_1');
+  String get intTip2 => translate('int_tip_2');
+  String get intTip3 => translate('int_tip_3');
+  String get intGoal => translate('int_goal');
+  String get advancedDesc => translate('advanced_desc');
+  String get advStruct1 => translate('adv_struct_1');
+  String get advInst11 => translate('adv_inst_1_1');
+  String get advInst12 => translate('adv_inst_1_2');
+  String get advInst13 => translate('adv_inst_1_3');
+  String get advInst14 => translate('adv_inst_1_4');
+  String get advStruct2 => translate('adv_struct_2');
+  String get advInst21 => translate('adv_inst_2_1');
+  String get advInst22 => translate('adv_inst_2_2');
+  String get advInst23 => translate('adv_inst_2_3');
+  String get advInst24 => translate('adv_inst_2_4');
+  String get advInst25 => translate('adv_inst_2_5');
+  String get advInst26 => translate('adv_inst_2_6');
+  String get advStruct3 => translate('adv_struct_3');
+  String get advInst31 => translate('adv_inst_3_1');
+  String get advInst32 => translate('adv_inst_3_2');
+  String get advInst33 => translate('adv_inst_3_3');
+  String get advStruct4 => translate('adv_struct_4');
+  String get advInst41 => translate('adv_inst_4_1');
+  String get advInst42 => translate('adv_inst_4_2');
+  String get advInst43 => translate('adv_inst_4_3');
+  String get advInst44 => translate('adv_inst_4_4');
+  String get advTip1 => translate('adv_tip_1');
+  String get advTip2 => translate('adv_tip_2');
+  String get advTip3 => translate('adv_tip_3');
+  String get advGoal => translate('adv_goal');
+  String get unlockAdvancedTraining => translate('unlock_advanced_training');
+  String get premiumKegelDesc => translate('premium_kegel_desc');
+  String get premiumKegelFeat1 => translate('premium_kegel_feat_1');
+  String get premiumKegelFeat2 => translate('premium_kegel_feat_2');
+  String get premiumKegelFeat3 => translate('premium_kegel_feat_3');
+  String get premiumKegelFeat4 => translate('premium_kegel_feat_4');
+  String get startUpgrade => translate('start_upgrade');
+  String get completedSession => translate('completed_session');
+  String get keepGoingDaily => translate('keep_going_daily');
+  String get readyNextLevel => translate('ready_next_level');
+  String get completedIntermediate => translate('completed_intermediate');
+  String get completedAdvanced => translate('completed_advanced');
+  String get elitePerformance => translate('elite_performance');
+  String get greatWorkEmoji => translate('great_work_emoji');
+  String get greatJobEmoji => translate('great_job_emoji');
+  String get completedIntermediateBody =>
+      translate('completed_intermediate_body');
+  String get completedAdvancedBody => translate('completed_advanced_body');
+  String get holdAndSqueeze => translate('hold_and_squeeze');
+  String get restAndRelax => translate('rest_and_relax');
+  String get restBetweenSets => translate('rest_between_sets');
+  String get secondsLabel => translate('seconds');
+  String get overallProgressLabel => translate('overall_progress');
+  String get resumeLabel => translate('resume');
+  String get pauseLabel => translate('pause');
+  String setOfLabel(Object current, Object total) => translate('set_of')
+      .replaceFirst('{current}', current.toString())
+      .replaceFirst('{total}', total.toString());
+  String get thirtyDaysLabel => translate('thirty_days');
 }
 
 class _AppLocalizationsDelegate

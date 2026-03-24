@@ -92,26 +92,26 @@ class _KegelScreenState extends State<KegelScreen> {
     return [
       {
         'id': 'beginner',
-        'name': 'Beginner Routine',
-        'duration': 5,
-        'sets': 3,
+        'name': AppLocalizations.of(context).beginnerLevelTitle,
+        'duration': 3,
+        'sets': 2,
         'isPremium': false,
         'isActive': true,
       },
       {
         'id': 'intermediate',
-        'name': 'Intermediate Routine',
+        'name': AppLocalizations.of(context).intermediateLevelTitle,
         'duration': 10,
-        'sets': 5,
-        'isPremium': false,
+        'sets': 3,
+        'isPremium': true,
         'isActive': true,
       },
       {
         'id': 'advanced',
-        'name': 'Advanced Routine',
+        'name': AppLocalizations.of(context).advancedLevelTitle,
         'duration': 15,
-        'sets': 7,
-        'isPremium': false,
+        'sets': 4,
+        'isPremium': true,
         'isActive': true,
       },
     ];
@@ -223,45 +223,26 @@ class _KegelScreenState extends State<KegelScreen> {
                                 padding: EdgeInsets.only(bottom: 12.h),
                                 child: _buildRoutineCard(
                                   title: exercise['name'],
-                                  subtitle:
-                                      '${exercise['duration']} ${AppLocalizations.of(context).minutes} • ${exercise['sets']} ${AppLocalizations.of(context).sets}',
+                                  subtitle: exercise['id'] == 'beginner'
+                                      ? AppLocalizations.of(
+                                          context,
+                                        ).beginnerSubtitle
+                                      : exercise['id'] == 'intermediate'
+                                      ? AppLocalizations.of(
+                                          context,
+                                        ).intermediateSubtitle
+                                      : AppLocalizations.of(
+                                          context,
+                                        ).advancedSubtitle,
                                   iconBg: _getExerciseColor(exercise['id']),
                                   playBtnColor: const Color(0xFF6B26FF),
                                   isPremium: exercise['isPremium'] ?? false,
-                                  onTap: () => _navigateToKegelStartingScreen(
-                                    exercise['name'],
-                                    exercise['duration'],
-                                    exercise['sets'],
-                                    exercise['isPremium'] ?? false,
-                                  ),
+                                  onTap: () => _showRoutineDetails(exercise),
                                 ),
                               ),
                             ),
                           SizedBox(height: 24.h),
-                          _buildInfoCard(
-                            icon: Icons.info_outline,
-                            bgColor: const Color.fromARGB(255, 246, 241, 255),
-                            iconBg: const Color(0xFF9B67FF),
-                            title: AppLocalizations.of(context).aboutKegel,
-                            content: AppLocalizations.of(
-                              context,
-                            ).aboutKegelContent,
-                          ),
-                          SizedBox(height: 12.h),
-                          _buildInfoCard(
-                            icon: Icons.female,
-                            iconBg: const Color(0xFFFF4D8D),
-                            title: AppLocalizations.of(context).targetMuscle,
-                            content: AppLocalizations.of(
-                              context,
-                            ).targetMuscleContent,
-                          ),
-                          SizedBox(height: 12.h),
-                          _buildHowToPerformCard(),
-                          SizedBox(height: 12.h),
-                          _buildTipsCard(),
-                          SizedBox(height: 12.h),
-                          _buildDisclaimerCard(),
+                          _buildPremiumPromoCard(),
                           SizedBox(height: 40.h),
                         ],
                       ),
@@ -568,308 +549,363 @@ class _KegelScreenState extends State<KegelScreen> {
     );
   }
 
-  Widget _buildInfoCard({
-    required IconData icon,
-    required Color iconBg,
-    required String title,
-    required String content,
-    Color bgColor = Colors.white,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(20.adaptSize),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(16.adaptSize),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+  void _showRoutineDetails(Map<String, dynamic> exercise) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.85,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+          padding: EdgeInsets.all(24.adaptSize),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: EdgeInsets.all(8.adaptSize),
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  // shape: BoxShape.circle,
-                  borderRadius: BorderRadius.circular(11.adaptSize),
+              Center(
+                child: Container(
+                  width: 50.w,
+                  height: 5.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-                child: Icon(icon, color: Colors.white, size: 24.adaptSize),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(height: 24.h),
               Text(
-                title,
+                exercise['name'],
                 style: TextStyle(
-                  fontSize: 16.fSize,
+                  fontSize: 22.fSize,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
+              SizedBox(height: 16.h),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: _buildExerciseDescription(exercise['id']),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _navigateToKegelStartingScreen(
+                      exercise['name'],
+                      exercise['duration'],
+                      exercise['sets'],
+                      exercise['isPremium'] ?? false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6B26FF),
+                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.adaptSize),
+                    ),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).startSession,
+                    style: TextStyle(
+                      fontSize: 18.fSize,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          SizedBox(height: 12.h),
+        );
+      },
+    );
+  }
+
+  Widget _buildExerciseDescription(String id) {
+    if (id == 'beginner') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(AppLocalizations.of(context).beginnerDesc, style: _descStyle),
+          SizedBox(height: 16.h),
           Text(
-            content,
-            style: TextStyle(
-              fontSize: 13.fSize,
-              color: Colors.black54,
-              height: 1.5,
-            ),
+            AppLocalizations.of(context).exerciseInstructions,
+            style: _subHeaderStyle,
           ),
+          SizedBox(height: 8.h),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerInst1),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerInst2),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerInst3),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerInst4),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerInst5),
+          SizedBox(height: 16.h),
+          Text(AppLocalizations.of(context).tipsColon, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerTip1),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerTip2),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerTip3),
+          _buildBulletPoint(AppLocalizations.of(context).beginnerTip4),
+          SizedBox(height: 16.h),
+          Text(AppLocalizations.of(context).goal, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).beginnerGoal, style: _descStyle),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHowToPerformCard() {
-    return Container(
-      padding: EdgeInsets.all(20.adaptSize),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.adaptSize),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+      );
+    } else if (id == 'intermediate') {
+      return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.adaptSize),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF9B67FF),
-                  borderRadius: BorderRadius.circular(11.adaptSize),
-                ),
-                child: Icon(
-                  Icons.menu_book,
-                  color: Colors.white,
-                  size: 24.adaptSize,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                AppLocalizations.of(context).howToPerform,
-                style: TextStyle(
-                  fontSize: 16.fSize,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
+          Text(
+            AppLocalizations.of(context).intermediateDesc,
+            style: _descStyle,
           ),
           SizedBox(height: 16.h),
-          _buildStep(
-            number: '1',
-            title: AppLocalizations.of(context).step1Title,
-            desc: AppLocalizations.of(context).step1Desc,
-            color: const Color(0xFF4CAF50),
+          Text(
+            AppLocalizations.of(context).exerciseStructure,
+            style: _subHeaderStyle,
           ),
-          _buildStep(
-            number: '2',
-            title: AppLocalizations.of(context).step2Title,
-            desc: AppLocalizations.of(context).step2Desc,
-            color: const Color(0xFFFF4D8D),
-          ),
-          _buildStep(
-            number: '3',
-            title: AppLocalizations.of(context).step3Title,
-            desc: AppLocalizations.of(context).step3Desc,
-            color: const Color(0xFF9B67FF),
-          ),
-          _buildStep(
-            number: '4',
-            title: AppLocalizations.of(context).step4Title,
-            desc: AppLocalizations.of(context).step4Desc,
-            color: const Color(0xFF2196F3),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStep({
-    required String number,
-    required String title,
-    required String desc,
-    required Color color,
-  }) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 16.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 3.w,
-            height: 60.h,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$number. $title',
-                  style: TextStyle(
-                    fontSize: 14.fSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  desc,
-                  style: TextStyle(
-                    fontSize: 13.fSize,
-                    color: Colors.black54,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTipsCard() {
-    return Container(
-      padding: EdgeInsets.all(20.adaptSize),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB),
-        borderRadius: BorderRadius.circular(16.adaptSize),
-        border: Border.all(color: const Color.fromARGB(255, 234, 234, 234)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.adaptSize),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 228, 137, 1),
-                  borderRadius: BorderRadius.circular(11.adaptSize),
-                ),
-                child: Icon(
-                  Icons.lightbulb_outline,
-                  color: Colors.white,
-                  size: 24.adaptSize,
-                ),
-              ),
-              SizedBox(width: 12.w),
-              Text(
-                AppLocalizations.of(context).importantTips,
-                style: TextStyle(
-                  fontSize: 16.fSize,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
-          ),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).intStruct1, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).intInst11),
+          _buildBulletPoint(AppLocalizations.of(context).intInst12),
+          _buildBulletPoint(AppLocalizations.of(context).intInst13),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).intStruct2, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).intInst21),
+          _buildBulletPoint(AppLocalizations.of(context).intInst22),
+          _buildBulletPoint(AppLocalizations.of(context).intInst23),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).intStruct3, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).intInst31),
+          _buildBulletPoint(AppLocalizations.of(context).intInst32),
+          _buildBulletPoint(AppLocalizations.of(context).intInst33),
           SizedBox(height: 16.h),
-          _buildTip(AppLocalizations.of(context).tip1),
-          _buildTip(AppLocalizations.of(context).tip2),
-          _buildTip(AppLocalizations.of(context).tip3),
-          _buildTip(AppLocalizations.of(context).tip4),
+          Text(AppLocalizations.of(context).tipsColon, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          _buildBulletPoint(AppLocalizations.of(context).intTip1),
+          _buildBulletPoint(AppLocalizations.of(context).intTip2),
+          _buildBulletPoint(AppLocalizations.of(context).intTip3),
+          SizedBox(height: 16.h),
+          Text(AppLocalizations.of(context).goal, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).intGoal, style: _descStyle),
         ],
-      ),
-    );
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(AppLocalizations.of(context).advancedDesc, style: _descStyle),
+          SizedBox(height: 16.h),
+          Text(
+            AppLocalizations.of(context).exerciseStructure,
+            style: _subHeaderStyle,
+          ),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).advStruct1, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).advInst11),
+          _buildBulletPoint(AppLocalizations.of(context).advInst12),
+          _buildBulletPoint(AppLocalizations.of(context).advInst13),
+          _buildBulletPoint(AppLocalizations.of(context).advInst14),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).advStruct2, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).advInst21),
+          _buildBulletPoint(AppLocalizations.of(context).advInst22),
+          _buildBulletPoint(AppLocalizations.of(context).advInst23),
+          _buildBulletPoint(AppLocalizations.of(context).advInst24),
+          _buildBulletPoint(AppLocalizations.of(context).advInst25),
+          _buildBulletPoint(AppLocalizations.of(context).advInst26),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).advStruct3, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).advInst31),
+          _buildBulletPoint(AppLocalizations.of(context).advInst32),
+          _buildBulletPoint(AppLocalizations.of(context).advInst33),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).advStruct4, style: _boldDescStyle),
+          _buildBulletPoint(AppLocalizations.of(context).advInst41),
+          _buildBulletPoint(AppLocalizations.of(context).advInst42),
+          _buildBulletPoint(AppLocalizations.of(context).intInst32),
+          _buildBulletPoint(AppLocalizations.of(context).intInst33),
+          SizedBox(height: 16.h),
+          Text(AppLocalizations.of(context).tipsColon, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          _buildBulletPoint(AppLocalizations.of(context).advTip1),
+          _buildBulletPoint(AppLocalizations.of(context).advTip2),
+          _buildBulletPoint(AppLocalizations.of(context).advTip3),
+          SizedBox(height: 16.h),
+          Text(AppLocalizations.of(context).goal, style: _subHeaderStyle),
+          SizedBox(height: 8.h),
+          Text(AppLocalizations.of(context).advGoal, style: _descStyle),
+        ],
+      );
+    }
   }
 
-  Widget _buildTip(String tip) {
+  TextStyle get _subHeaderStyle => TextStyle(
+    fontSize: 18.fSize,
+    fontWeight: FontWeight.bold,
+    color: Colors.black87,
+  );
+  TextStyle get _descStyle =>
+      TextStyle(fontSize: 14.fSize, color: Colors.black87, height: 1.5);
+  TextStyle get _boldDescStyle => TextStyle(
+    fontSize: 14.fSize,
+    fontWeight: FontWeight.bold,
+    color: Colors.black87,
+    height: 1.5,
+  );
+
+  Widget _buildBulletPoint(String text) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.only(bottom: 6.h, left: 8.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '• ',
+            "• ",
             style: TextStyle(
-              fontSize: 13.fSize,
-              color: Colors.black54,
+              fontSize: 14.fSize,
+              color: Colors.black87,
               fontWeight: FontWeight.bold,
             ),
           ),
-          Expanded(
-            child: Text(
-              tip,
-              style: TextStyle(
-                fontSize: 13.fSize,
-                color: Colors.black54,
-                height: 1.4,
-              ),
-            ),
-          ),
+          Expanded(child: Text(text, style: _descStyle)),
         ],
       ),
     );
   }
 
-  Widget _buildDisclaimerCard() {
-    return Container(
-      padding: EdgeInsets.all(20.adaptSize),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFFBEB),
-        borderRadius: BorderRadius.circular(16.adaptSize),
-        border: Border.all(color: const Color(0xFFFF9800).withOpacity(0.3)),
-      ),
+  Widget _buildPremiumPromoCard() {
+    return FutureBuilder<bool>(
+      future: _checkIfPremium(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData && snapshot.data == true) {
+          return const SizedBox.shrink();
+        }
+        return Container(
+          padding: EdgeInsets.all(20.adaptSize),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF2E2E3E), Color(0xFF1E1E2E)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16.adaptSize),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.workspace_premium,
+                    color: const Color(0xFFFFD700),
+                    size: 28.adaptSize,
+                  ),
+                  SizedBox(width: 12.w),
+                  Text(
+                    AppLocalizations.of(context).unlockAdvancedTraining,
+                    style: TextStyle(
+                      fontSize: 18.fSize,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 12.h),
+              Text(
+                AppLocalizations.of(context).premiumKegelDesc,
+                style: TextStyle(
+                  fontSize: 13.fSize,
+                  color: Colors.white70,
+                  height: 1.4,
+                ),
+              ),
+              SizedBox(height: 16.h),
+              _buildPremiumFeature(
+                AppLocalizations.of(context).premiumKegelFeat1,
+              ),
+              _buildPremiumFeature(
+                AppLocalizations.of(context).premiumKegelFeat2,
+              ),
+              _buildPremiumFeature(
+                AppLocalizations.of(context).premiumKegelFeat3,
+              ),
+              _buildPremiumFeature(
+                AppLocalizations.of(context).premiumKegelFeat4,
+              ),
+              SizedBox(height: 20.h),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PremiumScreen(),
+                      ),
+                    ).then((_) => _loadKegelData());
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFD700),
+                    foregroundColor: Colors.black87,
+                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.adaptSize),
+                    ),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(context).startUpgrade,
+                    style: TextStyle(
+                      fontSize: 16.fSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<bool> _checkIfPremium() async {
+    return await SubscriptionService().hasActiveSubscription() ||
+        await UserService().isTrialActive();
+  }
+
+  Widget _buildPremiumFeature(String text) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            Icons.info_outline,
-            color: const Color.fromARGB(255, 228, 137, 1),
-            size: 24.adaptSize,
+            Icons.check_circle,
+            color: const Color(0xFFFFD700),
+            size: 18.adaptSize,
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  AppLocalizations.of(context).medicalDisclaimer,
-                  style: TextStyle(
-                    fontSize: 14.fSize,
-                    fontWeight: FontWeight.bold,
-                    color: const Color.fromARGB(255, 228, 137, 1),
-                  ),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  AppLocalizations.of(context).medicalDisclaimerContent,
-                  style: TextStyle(
-                    fontSize: 12.fSize,
-                    color: const Color.fromARGB(255, 228, 137, 1),
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
+          SizedBox(width: 8.w),
+          Text(
+            text,
+            style: TextStyle(color: Colors.white, fontSize: 13.fSize),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
@@ -29,6 +30,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
       1; // 1: Hold & Squeeze, 2: Rest & Relax, 3: Rest Between Sets
   bool _isPlaying = false;
   bool _isCompleted = false;
+  bool _isReadyForNextLevel = false;
 
   // Timing configuration
   final int _holdSqueezeSeconds = 3;
@@ -65,6 +67,10 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
       setState(() {
         _elapsedSeconds++;
         _phaseSeconds--;
+
+        if (_currentPhase == 1) {
+          HapticFeedback.lightImpact();
+        }
 
         if (_phaseSeconds <= 0) {
           _togglePhase();
@@ -123,17 +129,28 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
     });
   }
 
-  void _completeExercise() {
+  void _completeExercise() async {
     _timer?.cancel();
     setState(() {
       _isCompleted = true;
       _isPlaying = false;
     });
-    _kegelService.saveSession(
+
+    await _kegelService.saveSession(
       routineType: widget.routineType,
       durationMinutes: widget.durationMinutes,
       setsCompleted: _currentSet > widget.sets ? widget.sets : _currentSet,
     );
+
+    final data = await _kegelService.getKegelData();
+    if (mounted) {
+      setState(() {
+        int weekStreak = data?['weekStreak'] ?? 0;
+        if (weekStreak >= 3) {
+          _isReadyForNextLevel = true;
+        }
+      });
+    }
   }
 
   @override
@@ -144,6 +161,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     if (_isCompleted) {
       final l10n = AppLocalizations.of(context);
       return Scaffold(
@@ -237,22 +255,95 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                       ),
                     ),
                     SizedBox(height: 24.h),
-                    Text(
-                      l10n.greatJob,
-                      style: TextStyle(
-                        fontSize: 28.fSize,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF1F1F1F),
-                      ),
-                    ),
-                    SizedBox(height: 12.h),
-                    Text(
-                      "${l10n.youCompleted} ${widget.sets} ${l10n.setsCompleted} (60 reps)",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16.fSize,
-                        color: Colors.grey.shade600,
-                      ),
+                    Builder(
+                      builder: (context) {
+                        if (widget.routineType.contains('Intermediate')) {
+                          return Column(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context).greatWorkEmoji,
+                                style: TextStyle(
+                                  fontSize: 28.fSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1F1F1F),
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                AppLocalizations.of(context).completedIntermediateBody,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16.fSize,
+                                  color: Colors.grey.shade600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else if (widget.routineType.contains('Advanced')) {
+                          return Column(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context).elitePerformance,
+                                style: TextStyle(
+                                  fontSize: 28.fSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1F1F1F),
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                AppLocalizations.of(context).completedAdvancedBody,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16.fSize,
+                                  color: Colors.grey.shade600,
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          // Beginner Level
+                          return Column(
+                            children: [
+                              Text(
+                                AppLocalizations.of(context).greatJobEmoji,
+                                style: TextStyle(
+                                  fontSize: 28.fSize,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1F1F1F),
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              Text(
+                                AppLocalizations.of(context).completedSession +
+                                    "\n✔ ${widget.sets} Sets completed\n✔ Total time: ${widget.durationMinutes}:00 min\n\n" +
+                                    AppLocalizations.of(context).keepGoingDaily,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16.fSize,
+                                  color: Colors.grey.shade600,
+                                  height: 1.5,
+                                ),
+                              ),
+                              if (_isReadyForNextLevel)
+                                Padding(
+                                  padding: EdgeInsets.only(top: 16.h),
+                                  child: Text(
+                                    AppLocalizations.of(context).readyNextLevel,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16.fSize,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF9B3BFF),
+                                    ),
+                                  ), // Purple
+                                ),
+                            ],
+                          );
+                        }
+                      },
                     ),
                     SizedBox(height: 40.h),
                     // Finish Button
@@ -317,7 +408,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
             ),
           ),
           Text(
-            "SECONDS",
+            AppLocalizations.of(context).secondsLabel,
             style: TextStyle(
               fontSize: 12.fSize,
               fontWeight: FontWeight.w600,
@@ -384,8 +475,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                 ),
                 SizedBox(height: 8.h),
                 Text(
-                  "Set ${_currentSet > widget.sets ? widget.sets : _currentSet} of ${widget.sets}",
-                  // "${widget.sets} times repetition",
+                  l10n.setOfLabel(_currentSet > widget.sets ? widget.sets : _currentSet, widget.sets),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14.fSize,
@@ -422,10 +512,10 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                           SizedBox(height: 40.h),
                           Text(
                             _currentPhase == 1
-                                ? "Hold & Squeeze"
+                                ? AppLocalizations.of(context).holdAndSqueeze
                                 : _currentPhase == 2
-                                ? "Rest & Relax"
-                                : "Rest Between Sets",
+                                ? AppLocalizations.of(context).restAndRelax
+                                : AppLocalizations.of(context).restBetweenSets,
                             style: TextStyle(
                               fontSize: 24.fSize,
                               fontWeight: FontWeight.w600,
@@ -511,7 +601,9 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                     ),
                                     SizedBox(width: 8.w),
                                     Text(
-                                      _isPlaying ? "Pause" : "Resume",
+                                      _isPlaying 
+                                          ? AppLocalizations.of(context).pauseLabel 
+                                          : AppLocalizations.of(context).resumeLabel,
                                       style: TextStyle(
                                         fontSize: 16.fSize,
                                         fontWeight: FontWeight.w600,
@@ -531,13 +623,13 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Overall Progress",
-                                  style: TextStyle(
-                                    fontSize: 13.fSize,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF4B5563),
+                                    l10n.overallProgressLabel,
+                                    style: TextStyle(
+                                      fontSize: 13.fSize,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF4B5563),
+                                    ),
                                   ),
-                                ),
                                 Text(
                                   "${(progressVal * 100).toInt()}%",
                                   style: TextStyle(
