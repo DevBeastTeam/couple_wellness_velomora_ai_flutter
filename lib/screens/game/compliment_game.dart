@@ -3,6 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
+import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
 
@@ -305,38 +306,19 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
       ),
       body: Column(
         children: [
-          Container(
-            padding: EdgeInsets.all(24.adaptSize),
-            color: Colors.white,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${l10n.translate('round')} ${_currentIndex + 1} ${l10n.ofLabel} ${_prompts.length}',
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Text(
-                      '${_givenCompliments.length} ${l10n.translate('compliments')}',
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8.h),
-                LinearProgressIndicator(
-                  value: (_currentIndex + 1) / _prompts.length,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
-              ],
+          GameProgressIndicator(
+            gameId: 'compliment_game',
+            current: _currentIndex + 1,
+            total: _prompts.length,
+            color: primaryColor,
+            label: '${l10n.translate('round')} ${_currentIndex + 1} ${l10n.ofLabel} ${_prompts.length}',
+            trailingWidget: Text(
+              '${_givenCompliments.length} ${l10n.translate('compliments')}',
+              style: TextStyle(
+                fontSize: 13.fSize,
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Expanded(

@@ -6,6 +6,7 @@ import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
+import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/models/game_question.dart';
 
 class LoveLanguageQuizScreen extends StatefulWidget {
@@ -580,51 +581,28 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
       body: Column(
         children: [
           // Progress indicator
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(16.adaptSize),
-            color: Colors.white,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${l10n.questionOf} ${_currentQuestionIndex + 1} ${l10n.ofLabel} ${_questions.length}',
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 6.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _primaryColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        Localizations.localeOf(context).languageCode == 'ar'
-                            ? '${l10n.sTurn} $currentPlayer'
-                            : '$currentPlayer ${l10n.sTurn}',
-                        style: TextStyle(
-                          fontSize: 12.fSize,
-                          fontWeight: FontWeight.bold,
-                          color: _primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
+          GameProgressIndicator(
+            gameId: 'love_language_quiz',
+            current: _currentQuestionIndex + 1,
+            total: _questions.length,
+            color: _primaryColor,
+            label: '${l10n.questionOf} ${_currentQuestionIndex + 1} ${l10n.ofLabel} ${_questions.length}',
+            trailingWidget: Container(
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: _primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                Localizations.localeOf(context).languageCode == 'ar'
+                    ? '${l10n.sTurn} $currentPlayer'
+                    : '$currentPlayer ${l10n.sTurn}',
+                style: TextStyle(
+                  fontSize: 12.fSize,
+                  fontWeight: FontWeight.bold,
+                  color: _primaryColor,
                 ),
-                SizedBox(height: 8.h),
-                LinearProgressIndicator(
-                  value: (_currentQuestionIndex + 1) / _questions.length,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: AlwaysStoppedAnimation<Color>(_primaryColor),
-                ),
-              ],
+              ),
             ),
           ),
 

@@ -3,6 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
+import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
 
@@ -332,11 +333,20 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
                   ],
                 ),
                 SizedBox(height: 8.h),
-                LinearProgressIndicator(
-                  value: (_currentQuestionIndex + 1) / _questions.length,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
+              ],
+            ),
+          ),
+          GameProgressIndicator(
+            gameId: 'relationship_quiz',
+            current: _currentQuestionIndex + 1,
+            total: _questions.length,
+            color: primaryColor,
+            label: '${l10n.questionOf} ${_currentQuestionIndex + 1} ${l10n.ofLabel} ${_questions.length}',
+            trailingWidget: Row(
+              children: [
+                _buildMiniScore(_player1Name, _player1Score, Colors.blue),
+                SizedBox(width: 16.w),
+                _buildMiniScore(_player2Name, _player2Score, Colors.pink),
               ],
             ),
           ),

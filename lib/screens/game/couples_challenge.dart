@@ -3,6 +3,7 @@ import 'package:velmora/services/game_service.dart';
 import 'package:velmora/services/game_questions_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
+import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
 
@@ -317,38 +318,19 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
       body: Column(
         children: [
           // Progress indicator
-          Container(
-            padding: EdgeInsets.all(24.adaptSize),
-            color: Colors.white,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${l10n.translate('challenge')} ${_currentChallengeIndex + 1} ${l10n.ofLabel} ${_challenges.length}',
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                    Text(
-                      '${_completedChallenges.length} ${l10n.translate('completed_count')}',
-                      style: TextStyle(
-                        fontSize: 14.fSize,
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8.h),
-                LinearProgressIndicator(
-                  value: (_currentChallengeIndex + 1) / _challenges.length,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: const AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
-              ],
+          GameProgressIndicator(
+            gameId: 'couples_challenge',
+            current: _currentChallengeIndex + 1,
+            total: _challenges.length,
+            color: primaryColor,
+            label: '${l10n.translate('challenge')} ${_currentChallengeIndex + 1} ${l10n.ofLabel} ${_challenges.length}',
+            trailingWidget: Text(
+              '${_completedChallenges.length} ${l10n.translate('completed_count')}',
+              style: TextStyle(
+                fontSize: 13.fSize,
+                color: primaryColor,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
 
