@@ -321,9 +321,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                AppLocalizations.of(context).completedSession +
-                                    "\n✔ ${widget.sets} Sets completed\n✔ Total time: ${widget.durationMinutes}:00 min\n\n" +
-                                    AppLocalizations.of(context).keepGoingDaily,
+                                "${AppLocalizations.of(context).completedSession}\n✔ ${widget.sets} Sets completed\n✔ Total time: ${widget.durationMinutes}:00 min\n\n${AppLocalizations.of(context).keepGoingDaily}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 16.fSize,

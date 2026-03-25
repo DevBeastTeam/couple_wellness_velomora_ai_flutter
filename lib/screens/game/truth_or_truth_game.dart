@@ -506,11 +506,11 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
       backgroundColor: const Color(0xFFF9F9FF),
       appBar: AppBar(
         backgroundColor: _primaryColor,
-        title: Text(l10n.truthOrTruth),
+        // title: Text(l10n.truthOrTruth),
         elevation: 0,
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.w),
+            padding: EdgeInsets.only(right: 16.w, left: 16.w),
             child: Center(
               child: Text(
                 '$_player1Score - $_player2Score',
@@ -531,7 +531,8 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
             current: _currentQuestionIndex + 1,
             total: _questions.length,
             color: _primaryColor,
-            label: '${l10n.questionCount} ${_currentQuestionIndex + 1} ${l10n.ofLabel} ${_questions.length}',
+            label:
+                '${l10n.questionCount} ${_currentQuestionIndex + 1} ${l10n.ofLabel} ${_questions.length}',
             trailingWidget: Container(
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
               decoration: BoxDecoration(
