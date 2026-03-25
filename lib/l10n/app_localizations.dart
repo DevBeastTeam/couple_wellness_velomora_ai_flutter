@@ -221,6 +221,22 @@ class AppLocalizations {
       'set_of': 'Set {current} of {total}',
       'thirty_days': '30 DAYS',
 
+      // Kegel Challenge Screen
+      'challenge_plan_title': '30-Day Kegel Challenge',
+      'challenge_plan_subtitle': 'Complete exercises for 30 consecutive days',
+      'week_label': 'W',
+      'week_1_title': 'Foundation Week',
+      'week_1_desc': 'Build the habit with beginner routines',
+      'week_2_title': 'Consistency Week',
+      'week_2_desc': 'Maintain daily practice',
+      'week_3_title': 'Progress Week',
+      'week_3_desc': 'Increase to intermediate routines',
+      'week_4_title': 'Mastery Week',
+      'week_4_desc': 'Challenge yourself with advanced routines',
+      'routine_beginner': 'BEGINNER',
+      'routine_intermediate': 'INTERMEDIATE',
+      'routine_advanced': 'ADVANCED',
+
       // Chat Screen
       'chat': 'Chat',
       'ai_companion': 'Your AI relationship companion',
@@ -897,6 +913,22 @@ class AppLocalizations {
       'set_of': 'المجموعة {current} من {total}',
       'thirty_days': '30 يوم',
 
+      // Kegel Challenge Screen
+      'challenge_plan_title': 'تحدي كيجل لمدة 30 يوماً',
+      'challenge_plan_subtitle': 'أكمل التمارين لمدة 30 يوماً متتالياً',
+      'week_label': 'أ',
+      'week_1_title': 'أسبوع الأساسيات',
+      'week_1_desc': 'ابنِ العادة مع روتين المبتدئين',
+      'week_2_title': 'أسبوع الاستمرارية',
+      'week_2_desc': 'حافظ على التمارين اليومية',
+      'week_3_title': 'أسبوع التقدم',
+      'week_3_desc': 'انتقل إلى الروتين المتوسط',
+      'week_4_title': 'أسبوع الإتقان',
+      'week_4_desc': 'تحدَّ نفسك بالروتين المتقدم',
+      'routine_beginner': 'مبتدئ',
+      'routine_intermediate': 'متوسط',
+      'routine_advanced': 'متقدم',
+
       // Reflection & Discussion Game
       'welcome_to_reflection': 'مرحباً بك في التأمل والنقاش',
       'reflection_welcome_desc':
@@ -1478,6 +1510,23 @@ class AppLocalizations {
       'pause': 'Pause',
       'set_of': 'Série {current} sur {total}',
       'thirty_days': '30 JOURS',
+
+      // Kegel Challenge Screen
+      'challenge_plan_title': 'Défi Kegel de 30 jours',
+      'challenge_plan_subtitle':
+          'Complétez des exercices pendant 30 jours consécutifs',
+      'week_label': 'S',
+      'week_1_title': 'Semaine de fondation',
+      'week_1_desc': 'Construisez l\'habitude avec des routines débutantes',
+      'week_2_title': 'Semaine de cohérence',
+      'week_2_desc': 'Maintenez la pratique quotidienne',
+      'week_3_title': 'Semaine de progrès',
+      'week_3_desc': 'Passez aux routines intermédiaires',
+      'week_4_title': 'Semaine de maîtrise',
+      'week_4_desc': 'Défiez-vous avec des routines avancées',
+      'routine_beginner': 'DÉBUTANT',
+      'routine_intermediate': 'INTERMÉDIAIRE',
+      'routine_advanced': 'AVANCÉ',
       'reflection_welcome_desc':
           'Un jeu pour approfondir votre connexion grâce à des conversations significatives et des réflexions partagées.',
       'your_turn': 'Votre tour',
@@ -2187,6 +2236,33 @@ class AppLocalizations {
       .replaceFirst('{current}', current.toString())
       .replaceFirst('{total}', total.toString());
   String get thirtyDaysLabel => translate('thirty_days');
+
+  // Kegel Challenge Screen
+  String get challengePlanTitle => translate('challenge_plan_title');
+  String get challengePlanSubtitle => translate('challenge_plan_subtitle');
+  String get weekLabel => translate('week_label');
+  String get week1Title => translate('week_1_title');
+  String get week1Desc => translate('week_1_desc');
+  String get week2Title => translate('week_2_title');
+  String get week2Desc => translate('week_2_desc');
+  String get week3Title => translate('week_3_title');
+  String get week3Desc => translate('week_3_desc');
+  String get week4Title => translate('week_4_title');
+  String get week4Desc => translate('week_4_desc');
+  String get routineBeginner => translate('routine_beginner');
+  String get routineIntermediate => translate('routine_intermediate');
+  String get routineAdvanced => translate('routine_advanced');
+  String get percentComplete => translate('percent_complete');
+  String get daysCompletedOutOfTotal =>
+      translate('days_completed_out_of_total');
+  String get challengeCompletionMessage =>
+      translate('challenge_completion_message');
+  String get restartChallenge => translate('restart_challenge');
+  String get resetChallengeLabel => translate('reset_challenge');
+  String get resetLabel => translate('reset');
+  String get resetChallengeProgressConfirmation =>
+      translate('reset_challenge_progress_confirmation');
+  String get challengeCompletedLabel => translate('challenge_completed');
 }
 
 class _AppLocalizationsDelegate

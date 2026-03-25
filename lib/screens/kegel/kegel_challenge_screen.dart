@@ -39,16 +39,41 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
     }
   }
 
+  /// Returns the localized week data list (replacing the service's English strings).
+  List<Map<String, dynamic>> _getLocalizedWeeks(AppLocalizations l10n) {
+    return [
+      {
+        'week': 1,
+        'title': l10n.week1Title,
+        'description': l10n.week1Desc,
+        'routine': 'beginner',
+      },
+      {
+        'week': 2,
+        'title': l10n.week2Title,
+        'description': l10n.week2Desc,
+        'routine': 'beginner',
+      },
+      {
+        'week': 3,
+        'title': l10n.week3Title,
+        'description': l10n.week3Desc,
+        'routine': 'intermediate',
+      },
+      {
+        'week': 4,
+        'title': l10n.week4Title,
+        'description': l10n.week4Desc,
+        'routine': 'advanced',
+      },
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final plan = _kegelService.get30DayPlan();
     final completedDates =
         (_kegelData?['completedDates'] as List<dynamic>?) ?? [];
-
-    // Sort completed dates to find the start of the challenge (e.g., first ever completion or start of current streak)
-    // For simplicity, we'll show the last 30 days or a fixed grid if we want to follow a specific "challenge start".
-    // Requirement 5.2 says "30-day plan". We'll show a grid of 30 items.
 
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9FF),
@@ -69,7 +94,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
             IconButton(
               icon: const Icon(Icons.refresh, color: Colors.white),
               onPressed: _showResetConfirmation,
-              tooltip: l10n.translate('reset_challenge'),
+              tooltip: l10n.resetChallengeLabel,
             ),
         ],
       ),
@@ -80,7 +105,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeaderCard(plan),
+                  _buildHeaderCard(l10n),
                   SizedBox(height: 24.h),
                   Text(
                     l10n.kegelPlan,
@@ -94,16 +119,16 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
                   _buildProgressGrid(completedDates),
                   SizedBox(height: 24.h),
                   if ((_kegelData?['planProgress'] ?? 0) >= 30)
-                    _buildCompletionCard()
+                    _buildCompletionCard(l10n)
                   else
-                    _buildWeekCards(plan['weeks']),
+                    _buildWeekCards(l10n, _getLocalizedWeeks(l10n)),
                 ],
               ),
             ),
     );
   }
 
-  Widget _buildHeaderCard(Map<String, dynamic> plan) {
+  Widget _buildHeaderCard(AppLocalizations l10n) {
     final progress = _kegelData?['planProgress'] ?? 0;
     final percent = (progress / 30).clamp(0.0, 1.0);
 
@@ -126,28 +151,31 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    plan['title'],
-                    style: TextStyle(
-                      fontSize: 18.fSize,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.brandPurple,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.challengePlanTitle,
+                      style: TextStyle(
+                        fontSize: 18.fSize,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.brandPurple,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    AppLocalizations.of(context)
-                        .translate('percent_complete')
-                        .replaceAll('{percent}', '${(percent * 100).toInt()}'),
-                    style: TextStyle(
-                      fontSize: 14.fSize,
-                      color: Colors.grey.shade600,
+                    SizedBox(height: 4.h),
+                    Text(
+                      l10n.percentComplete.replaceAll(
+                        '{percent}',
+                        '${(percent * 100).toInt()}',
+                      ),
+                      style: TextStyle(
+                        fontSize: 14.fSize,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(12.adaptSize),
@@ -177,8 +205,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
           ),
           SizedBox(height: 12.h),
           Text(
-            AppLocalizations.of(context)
-                .translate('days_completed_out_of_total')
+            l10n.daysCompletedOutOfTotal
                 .replaceAll('{done}', '$progress')
                 .replaceAll('{total}', '30'),
             style: TextStyle(
@@ -193,7 +220,6 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
   }
 
   Widget _buildProgressGrid(List<dynamic> completedDates) {
-    // Generate 30 days grid
     return Container(
       padding: EdgeInsets.all(16.adaptSize),
       decoration: BoxDecoration(
@@ -211,7 +237,6 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
         itemCount: 30,
         itemBuilder: (context, index) {
           final dayNum = index + 1;
-          // For visualization: if progress is 5, highlight days 1-5
           final progress = _kegelData?['planProgress'] ?? 0;
           final isCompleted = dayNum <= progress;
 
@@ -242,10 +267,14 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
     );
   }
 
-  Widget _buildWeekCards(List<dynamic> weeks) {
+  Widget _buildWeekCards(
+    AppLocalizations l10n,
+    List<Map<String, dynamic>> weeks,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: weeks.map<Widget>((week) {
+        final routineLabel = _getRoutineLabel(l10n, week['routine'] as String);
         return Container(
           margin: EdgeInsets.only(bottom: 12.h),
           padding: EdgeInsets.all(16.adaptSize),
@@ -265,7 +294,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                  'W${week['week']}',
+                  '${l10n.weekLabel}${week['week']}',
                   style: TextStyle(
                     color: AppColors.brandPurple,
                     fontWeight: FontWeight.bold,
@@ -279,7 +308,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      week['title'],
+                      week['title'] as String,
                       style: TextStyle(
                         fontSize: 15.fSize,
                         fontWeight: FontWeight.bold,
@@ -288,7 +317,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      week['description'],
+                      week['description'] as String,
                       style: TextStyle(
                         fontSize: 12.fSize,
                         color: Colors.grey.shade600,
@@ -301,15 +330,18 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: _getRoutineColor(week['routine']).withOpacity(0.1),
+                  color:
+                      _getRoutineColor(week['routine'] as String).withOpacity(
+                        0.1,
+                      ),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  week['routine'].toString().toUpperCase(),
+                  routineLabel,
                   style: TextStyle(
                     fontSize: 10.fSize,
                     fontWeight: FontWeight.bold,
-                    color: _getRoutineColor(week['routine']),
+                    color: _getRoutineColor(week['routine'] as String),
                   ),
                 ),
               ),
@@ -318,6 +350,19 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
         );
       }).toList(),
     );
+  }
+
+  String _getRoutineLabel(AppLocalizations l10n, String routine) {
+    switch (routine) {
+      case 'beginner':
+        return l10n.routineBeginner;
+      case 'intermediate':
+        return l10n.routineIntermediate;
+      case 'advanced':
+        return l10n.routineAdvanced;
+      default:
+        return routine.toUpperCase();
+    }
   }
 
   Color _getRoutineColor(String routine) {
@@ -339,9 +384,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context).kegelChallenge),
         content: Text(
-          AppLocalizations.of(
-            context,
-          ).translate('reset_challenge_progress_confirmation'),
+          AppLocalizations.of(context).resetChallengeProgressConfirmation,
         ),
         actions: [
           TextButton(
@@ -356,7 +399,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
               await _loadKegelData();
             },
             child: Text(
-              AppLocalizations.of(context).translate('reset'),
+              AppLocalizations.of(context).resetLabel,
               style: const TextStyle(color: Colors.red),
             ),
           ),
@@ -365,7 +408,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
     );
   }
 
-  Widget _buildCompletionCard() {
+  Widget _buildCompletionCard(AppLocalizations l10n) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(24.adaptSize),
@@ -379,7 +422,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
           const Icon(Icons.emoji_events, color: Colors.amber, size: 64),
           SizedBox(height: 16.h),
           Text(
-            AppLocalizations.of(context).translate('challenge_completed'),
+            l10n.challengeCompletedLabel,
             style: TextStyle(
               fontSize: 22.fSize,
               fontWeight: FontWeight.bold,
@@ -388,9 +431,7 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
           ),
           SizedBox(height: 8.h),
           Text(
-            AppLocalizations.of(
-              context,
-            ).translate('challenge_completion_message'),
+            l10n.challengeCompletionMessage,
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 14.fSize, color: Colors.grey.shade700),
           ),
@@ -405,8 +446,8 @@ class _KegelChallengeScreenState extends State<KegelChallengeScreen> {
               padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
             ),
             child: Text(
-              AppLocalizations.of(context).translate('restart_challenge'),
-              style: TextStyle(
+              l10n.restartChallenge,
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),

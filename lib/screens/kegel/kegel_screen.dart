@@ -958,6 +958,7 @@ class _KegelScreenState extends State<KegelScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 10.h),
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 10.w,
@@ -968,7 +969,7 @@ class _KegelScreenState extends State<KegelScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          '30 DAYS',
+                          l10n.thirtyDaysLabel,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 10.fSize,
@@ -976,7 +977,7 @@ class _KegelScreenState extends State<KegelScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 12.h),
+                      SizedBox(height: 7.h),
                       Text(
                         l10n.kegelChallenge,
                         style: TextStyle(
@@ -1039,8 +1040,8 @@ class _KegelScreenState extends State<KegelScreen> {
           ),
         ),
         Positioned(
-          top: 8.h,
-          right: 8.w,
+          top: 5.h,
+          right: 5.w,
           child: GestureDetector(
             onTap: () {
               setState(() {
