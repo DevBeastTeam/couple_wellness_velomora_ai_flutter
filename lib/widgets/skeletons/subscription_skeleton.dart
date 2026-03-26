@@ -18,15 +18,7 @@ class SubscriptionScreenSkeleton extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         children: [
           SizedBox(height: height * 0.025),
-          // Trial badge
-          Center(
-            child: ShimmerBox(
-              height: height * 0.0425,
-              width: height * 0.0425,
-              radius: width * 0.5,
-              color: Colors.grey.shade300,
-            ),
-          ),
+
           SizedBox(height: height * 0.03),
           // Premium icon
           Center(

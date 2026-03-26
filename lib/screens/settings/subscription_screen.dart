@@ -277,7 +277,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 size: 76.adaptSize,
                 color: AppColors.brandPurple,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 7.h),
               Text(
                 AppLocalizations.of(context).premiumAccess,
                 style: TextStyle(
@@ -294,7 +294,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   color: AppColors.brandPurple,
                 ),
               ),
-              SizedBox(height: 40.h),
+              SizedBox(height: 30.h),
 
               // Dynamic plan cards from Firestore
               if (_plans.isEmpty)
@@ -349,7 +349,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                 )),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: 25.h),
 
               // Pay button
               SizedBox(
@@ -467,7 +467,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 Icons.auto_awesome,
                 AppLocalizations.of(context).noCommitment,
               ),
-              SizedBox(height: 40.h),
+              SizedBox(height: 30.h),
             ],
           ),
         ),
@@ -483,7 +483,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
       onTap: () => setState(() => _selectedPlanId = plan.id),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(16.adaptSize),
+        padding: EdgeInsets.symmetric(
+          horizontal: 10.adaptSize,
+          vertical: 15.adaptSize,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20.adaptSize),
@@ -505,7 +508,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               children: [
                 // Icon based on duration
                 Container(
-                  padding: EdgeInsets.all(10.adaptSize),
+                  padding: EdgeInsets.all(7.adaptSize),
                   decoration: BoxDecoration(
                     color: _iconColor(plan.durationMonths),
                     borderRadius: BorderRadius.circular(12.adaptSize),
@@ -516,7 +519,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     size: 24.adaptSize,
                   ),
                 ),
-                SizedBox(width: 16.w),
+                SizedBox(width: 7.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
