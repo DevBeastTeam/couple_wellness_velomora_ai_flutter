@@ -73,6 +73,7 @@ class _AccountScreenState extends State<AccountScreen> {
       if (newPassword.isNotEmpty) {
         final user = FirebaseAuth.instance.currentUser;
         await user?.updatePassword(newPassword);
+        await _userService.updateUserPassword(newPassword);
       }
 
       _showSnackBar(

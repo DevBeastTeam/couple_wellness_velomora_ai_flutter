@@ -21,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _isSocialLoading = false;
+  bool _isPasswordVisible = false;
 
   @override
   void dispose() {
@@ -353,11 +354,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }) {
     return TextField(
       controller: controller,
-      obscureText: isPassword,
+      obscureText: isPassword && !_isPasswordVisible,
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: const TextStyle(color: AppColors.hintText, fontSize: 14),
         prefixIcon: Icon(icon, color: AppColors.brandPurpleLight, size: 22),
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: AppColors.hintText,
+                  size: 22,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              )
+            : null,
         filled: true,
         fillColor: AppColors.inputFill,
         contentPadding: const EdgeInsets.symmetric(

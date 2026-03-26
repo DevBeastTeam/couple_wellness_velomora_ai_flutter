@@ -21,10 +21,19 @@ class LimitService {
 
       // Check if user is premium
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+      final data = userDoc.data();
+      final isPremium = data?['isPremium'] ?? false;
 
-      // Premium users have unlimited messages
-      if (isPremium) return true;
+      bool isTrialActive = false;
+      if (data?['subscriptionStatus'] == 'trial') {
+        final trialEnd = data?['trialEndTime'] as Timestamp?;
+        if (trialEnd != null && DateTime.now().isBefore(trialEnd.toDate())) {
+          isTrialActive = true;
+        }
+      }
+
+      // Premium and active trial users have unlimited messages
+      if (isPremium || isTrialActive) return true;
 
       // Check daily limit for free users
       final today = _getTodayString();
@@ -55,10 +64,19 @@ class LimitService {
 
       // Check if user is premium
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+      final data = userDoc.data();
+      final isPremium = data?['isPremium'] ?? false;
 
-      // Premium users have unlimited messages
-      if (isPremium) return -1; // -1 indicates unlimited
+      bool isTrialActive = false;
+      if (data?['subscriptionStatus'] == 'trial') {
+        final trialEnd = data?['trialEndTime'] as Timestamp?;
+        if (trialEnd != null && DateTime.now().isBefore(trialEnd.toDate())) {
+          isTrialActive = true;
+        }
+      }
+
+      // Premium and active trial users have unlimited messages
+      if (isPremium || isTrialActive) return -1; // -1 indicates unlimited
 
       // Check daily limit for free users
       final today = _getTodayString();
@@ -90,10 +108,19 @@ class LimitService {
 
       // Check if user is premium
       final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+      final data = userDoc.data();
+      final isPremium = data?['isPremium'] ?? false;
 
-      // Don't track for premium users
-      if (isPremium) return;
+      bool isTrialActive = false;
+      if (data?['subscriptionStatus'] == 'trial') {
+        final trialEnd = data?['trialEndTime'] as Timestamp?;
+        if (trialEnd != null && DateTime.now().isBefore(trialEnd.toDate())) {
+          isTrialActive = true;
+        }
+      }
+
+      // Don't track for premium or active trial users
+      if (isPremium || isTrialActive) return;
 
       final today = _getTodayString();
       final docId = '${user.uid}_$today';
@@ -202,17 +229,30 @@ class LimitService {
         .doc(docId)
         .snapshots()
         .asyncMap((snapshot) async {
-      // Check if user is premium
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+          // Check if user is premium
+          final userDoc = await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .get();
+          final data = userDoc.data();
+          final isPremium = data?['isPremium'] ?? false;
 
-      if (isPremium) return -1; // Unlimited
+          bool isTrialActive = false;
+          if (data?['subscriptionStatus'] == 'trial') {
+            final trialEnd = data?['trialEndTime'] as Timestamp?;
+            if (trialEnd != null &&
+                DateTime.now().isBefore(trialEnd.toDate())) {
+              isTrialActive = true;
+            }
+          }
 
-      if (!snapshot.exists) return FREE_DAILY_AI_MESSAGES;
+          if (isPremium || isTrialActive) return -1; // Unlimited
 
-      final messageCount = snapshot.data()?['aiMessageCount'] ?? 0;
-      final remaining = FREE_DAILY_AI_MESSAGES - messageCount;
-      return (remaining > 0 ? remaining : 0).toInt();
-    });
+          if (!snapshot.exists) return FREE_DAILY_AI_MESSAGES;
+
+          final messageCount = snapshot.data()?['aiMessageCount'] ?? 0;
+          final remaining = FREE_DAILY_AI_MESSAGES - messageCount;
+          return (remaining > 0 ? remaining : 0).toInt();
+        });
   }
 }

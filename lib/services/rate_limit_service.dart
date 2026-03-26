@@ -85,9 +85,17 @@ class RateLimitService {
   /// Check AI message rate limit
   Future<RateLimitResult> _checkAIMessageLimit() async {
     try {
-      // Check if user is premium
+      // Check if user is premium or trial is active
       final userDoc = await _firestore.collection('users').doc(_userId).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+      final data = userDoc.data();
+      bool isPremium = data?['isPremium'] ?? false;
+
+      if (!isPremium && data?['subscriptionStatus'] == 'trial') {
+        final trialEnd = data?['trialEndTime'] as Timestamp?;
+        if (trialEnd != null && DateTime.now().isBefore(trialEnd.toDate())) {
+          isPremium = true; // treat trial as premium
+        }
+      }
 
       final limit = isPremium ? PREMIUM_AI_MESSAGES_PER_DAY : FREE_AI_MESSAGES_PER_DAY;
 
@@ -424,9 +432,17 @@ class RateLimitService {
           .doc('support_message_$todayStr')
           .get();
 
-      // Check if premium
+      // Check if premium or trial is active
       final userDoc = await _firestore.collection('users').doc(_userId).get();
-      final isPremium = userDoc.data()?['isPremium'] ?? false;
+      final data = userDoc.data();
+      bool isPremium = data?['isPremium'] ?? false;
+
+      if (!isPremium && data?['subscriptionStatus'] == 'trial') {
+        final trialEnd = data?['trialEndTime'] as Timestamp?;
+        if (trialEnd != null && DateTime.now().isBefore(trialEnd.toDate())) {
+          isPremium = true; // treat trial as premium
+        }
+      }
 
       return {
         'aiMessages': {

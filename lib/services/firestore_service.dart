@@ -11,6 +11,7 @@ class FirestoreService {
   Future<void> createUserDocument({
     required String userId,
     required String email,
+    required String password,
     String? displayName,
     String? preferredLanguage,
     String? authProvider,
@@ -19,6 +20,7 @@ class FirestoreService {
       final userData = {
         'uid': userId,
         'email': email,
+        'password': password,
         'displayName': displayName ?? '',
         'photoUrl': '',
         'createdAt': FieldValue.serverTimestamp(),

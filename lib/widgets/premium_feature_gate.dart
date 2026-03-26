@@ -5,6 +5,7 @@ import 'package:velmora/services/user_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/widgets/app_loading_widgets.dart';
 import 'package:velmora/l10n/app_localizations.dart';
+import 'package:velmora/widgets/trial_offer_button.dart';
 import 'package:flutter/material.dart';
 
 /// Widget that gates premium features and shows upgrade prompt
@@ -56,22 +57,18 @@ class PremiumFeatureGate extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFDFBFF),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 24.adaptSize),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(24.adaptSize),
           child: Column(
             children: [
-              // Back button
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.arrow_back, size: 24.adaptSize),
-                ),
-              ),
-
-              const Spacer(),
-
+              SizedBox(height: 40.h),
               // Lock Icon
               Container(
                 padding: EdgeInsets.all(24.adaptSize),
@@ -146,24 +143,7 @@ class PremiumFeatureGate extends StatelessWidget {
               SizedBox(height: 16.h),
 
               // Start Trial Button
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PremiumScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  l10n.translate('start_48_hour_free_trial'),
-                  style: TextStyle(
-                    fontSize: 16.fSize,
-                    color: AppColors.brandPurple,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
+              const TrialOfferButton(),
 
               const Spacer(),
             ],

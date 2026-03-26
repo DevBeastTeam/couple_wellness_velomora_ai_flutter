@@ -59,6 +59,7 @@ class AuthService {
         await _firestoreService.createUserDocument(
           userId: userCredential.user!.uid,
           email: email.trim(),
+          password: password,
           displayName: userCredential.user!.displayName,
           preferredLanguage: currentLanguage,
           authProvider: 'email',
@@ -193,6 +194,7 @@ class AuthService {
           await _firestoreService.createUserDocument(
             userId: userCredential.user!.uid,
             email: userCredential.user!.email ?? '',
+            password: '12345678',
             displayName: userCredential.user!.displayName,
             preferredLanguage: currentLanguage,
             authProvider: 'google',
@@ -270,6 +272,7 @@ class AuthService {
           await _firestoreService.createUserDocument(
             userId: userCredential.user!.uid,
             email: email,
+            password: '12345678',
             displayName: displayName,
             preferredLanguage: currentLanguage,
             authProvider: 'apple',

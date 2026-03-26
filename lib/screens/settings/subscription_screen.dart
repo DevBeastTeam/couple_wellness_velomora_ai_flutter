@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:velmora/widgets/skeletons/subscription_skeleton.dart';
 import 'package:velmora/widgets/app_loading_widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:velmora/widgets/trial_offer_button.dart';
 
 class PremiumScreen extends StatefulWidget {
   const PremiumScreen({super.key});
@@ -119,9 +120,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       if (success && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              AppLocalizations.of(context).processingSubscription,
-            ),
+            content: Text(AppLocalizations.of(context).processingSubscription),
             backgroundColor: AppColors.brandPurple,
           ),
         );
@@ -148,9 +147,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              AppLocalizations.of(context).checkingPurchases,
-            ),
+            content: Text(AppLocalizations.of(context).checkingPurchases),
           ),
         );
       }
@@ -310,9 +307,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     ),
                     SizedBox(height: 16.h),
                     Text(
-                      AppLocalizations.of(
-                        context,
-                      ).noPlansAvailable,
+                      AppLocalizations.of(context).noPlansAvailable,
                       style: TextStyle(
                         color: Colors.grey.shade700,
                         fontSize: 16.fSize,
@@ -387,20 +382,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-              if (!_hasUsedTrial && !_isTrialActive)
-                TextButton(
-                  onPressed: _isPurchasing ? null : _startFreeTrial,
-                  child: Text(
-                    AppLocalizations.of(
-                      context,
-                    ).orStart48HourFreeTrial,
-                    style: TextStyle(
-                      color: AppColors.brandPurple,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16.fSize,
-                    ),
-                  ),
-                ),
+              TrialOfferButton(
+                isFromPremiumScreen: true,
+                customText: AppLocalizations.of(context).orStart48HourFreeTrial,
+              ),
               SizedBox(height: 16.h),
               // Show bottomNote from the selected plan (Firestore-managed)
               Builder(
@@ -416,17 +401,23 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   final selectedPlan = _selectedPlanId != null
                       ? _plans.where((p) => p.id == _selectedPlanId).firstOrNull
                       : null;
-                  
+
                   String note;
                   if (selectedPlan != null) {
                     note = selectedPlan.getLocalizedBottomNote(lang) ?? '';
                   } else {
                     // Fallback to localized generic message
-                    final template = AppLocalizations.of(context).translate('subscription_trial_fallback');
+                    final template = AppLocalizations.of(
+                      context,
+                    ).translate('subscription_trial_fallback');
                     if (template == 'subscription_trial_fallback') {
-                       note = 'Free for 48 hours, then \$${cheapestPrice.toStringAsFixed(2)}/month. Cancel anytime.';
+                      note =
+                          'Free for 48 hours, then \$${cheapestPrice.toStringAsFixed(2)}/month. Cancel anytime.';
                     } else {
-                       note = template.replaceAll('{price}', cheapestPrice.toStringAsFixed(2));
+                      note = template.replaceAll(
+                        '{price}',
+                        cheapestPrice.toStringAsFixed(2),
+                      );
                     }
                   }
 
@@ -456,9 +447,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                     ),
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).requestCancellation,
+                      AppLocalizations.of(context).requestCancellation,
                       style: TextStyle(
                         color: Colors.red.shade600,
                         fontSize: 14.fSize,
@@ -631,19 +620,21 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             ...([plan.getLocalizedSavings(lang)]
                 .where((s) => s != null && s.isNotEmpty)
-                .map((savings) => Padding(
-                      padding: EdgeInsets.only(top: 8.h),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          savings!,
-                          style: TextStyle(
-                            color: Colors.green.shade600,
-                            fontSize: 11.fSize,
-                          ),
+                .map(
+                  (savings) => Padding(
+                    padding: EdgeInsets.only(top: 8.h),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        savings!,
+                        style: TextStyle(
+                          color: Colors.green.shade600,
+                          fontSize: 11.fSize,
                         ),
                       ),
-                    ))),
+                    ),
+                  ),
+                )),
           ],
         ),
       ),

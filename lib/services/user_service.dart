@@ -42,6 +42,18 @@ class UserService {
     }
   }
 
+  /// Update user password inside Firestore
+  Future<void> updateUserPassword(String newPassword) async {
+    try {
+      await _userDoc.update({
+        'password': newPassword,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw 'Failed to update password in database: $e';
+    }
+  }
+
   /// Update preferred language
   Future<void> updateLanguage(String languageCode) async {
     try {
