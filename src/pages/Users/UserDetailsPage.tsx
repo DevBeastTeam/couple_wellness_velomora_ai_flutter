@@ -38,7 +38,10 @@ import {
     CheckCircle,
     Close,
     Save,
-    Stars
+    Stars,
+    Apple,
+    Google,
+    Email
 } from '@mui/icons-material';
 import { useParams, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
@@ -58,6 +61,7 @@ const UserDetailsPage: React.FC = () => {
     });
     const [editForm, setEditForm] = useState({
         displayName: '',
+        password: '',
         subscriptionStatus: 'free' as 'free' | 'premium',
         subscriptionType: '',
         subscriptionExpiryDate: ''
@@ -79,6 +83,7 @@ const UserDetailsPage: React.FC = () => {
 
                 setEditForm({
                     displayName: data.displayName || '',
+                    password: data.password || '',
                     subscriptionStatus: (data.subscriptionStatus === 'trial' ? 'free' : data.subscriptionStatus) as 'free' | 'premium',
                     subscriptionType: data.subscriptionType || '',
                     subscriptionExpiryDate: data.subscriptionExpiryDate?.seconds
@@ -108,6 +113,7 @@ const UserDetailsPage: React.FC = () => {
         try {
             const updateData: any = {
                 displayName: editForm.displayName,
+                password: editForm.password,
                 subscriptionStatus: editForm.subscriptionStatus,
             };
 
@@ -371,7 +377,9 @@ const UserDetailsPage: React.FC = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                                            <VerifiedUser color="action" />
+                                            {user.authProvider === 'google' ? <Google color="action" /> :
+                                                user.authProvider === 'apple' ? <Apple color="action" /> :
+                                                    <Email color="action" />}
                                             <Box>
                                                 <Typography variant="caption" color="text.secondary">Auth Provider</Typography>
                                                 <Typography variant="body2">{user.authProvider?.toUpperCase() || 'EMAIL'}</Typography>
@@ -631,10 +639,10 @@ const UserDetailsPage: React.FC = () => {
                     <TextField
                         fullWidth
                         label="Password"
-                        value={user?.authProvider === 'email' ? '••••••••' : `Signed in with ${user?.authProvider || 'social'}`}
-                        disabled
+                        value={editForm.password}
+                        onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
                         sx={{ mb: 2 }}
-                        helperText={user?.authProvider === 'email' ? 'User can change password in app' : 'Password managed by provider'}
+                        helperText="Update the user's password in the database."
                     />
                     <FormControl fullWidth sx={{ mb: 2 }}>
                         <InputLabel>Subscription Plan</InputLabel>

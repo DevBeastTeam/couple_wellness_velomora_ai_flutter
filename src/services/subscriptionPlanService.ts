@@ -27,6 +27,11 @@ export interface SubscriptionPlan {
     isActive: boolean;
     isPopular: boolean;
     sortOrder: number;
+    name_translations?: Record<string, string>;
+    badge_translations?: Record<string, string>;
+    savings_translations?: Record<string, string>;
+    bottomNote_translations?: Record<string, string>;
+    features_translations?: Record<string, string[]>;
     createdAt?: any;
     updatedAt?: any;
 }
@@ -65,6 +70,11 @@ export const subscriptionPlanService = {
         const defaults: Omit<SubscriptionPlan, 'id'>[] = [
             {
                 name: 'Monthly Plan',
+                name_translations: {
+                    en: 'Monthly Plan',
+                    ar: 'الخطة الشهرية',
+                    fr: 'Forfait mensuel'
+                },
                 productId: 'velmora_premium_monthly',
                 durationMonths: 1,
                 pricePerMonth: 4.99,
@@ -73,6 +83,12 @@ export const subscriptionPlanService = {
                 badge: '',
                 badgeColor: '',
                 savingsText: '',
+                bottomNote: 'Free for 48 hours, then $4.99/month. Cancel anytime.',
+                bottomNote_translations: {
+                    en: 'Free for 48 hours, then $4.99/month. Cancel anytime.',
+                    ar: 'مجانًا لمدة 48 ساعة، ثم 4.99 دولارًا شهريًا. يمكنك الإلغاء في أي وقت.',
+                    fr: 'Gratuit pendant 48 heures, puis 4,99 $/mois. Annulez à tout moment.'
+                },
                 features: [],
                 isActive: true,
                 isPopular: false,
@@ -82,14 +98,35 @@ export const subscriptionPlanService = {
             },
             {
                 name: '3-Month Plan',
+                name_translations: {
+                    en: '3-Month Plan',
+                    ar: 'خطة 3 أشهر',
+                    fr: 'Forfait 3 mois'
+                },
                 productId: 'velmora_premium_quarterly',
                 durationMonths: 3,
                 pricePerMonth: 3.33,
                 totalPrice: 9.99,
                 currency: 'USD',
                 badge: 'SAVE 33%',
+                badge_translations: {
+                    en: 'SAVE 33%',
+                    ar: 'وفر 33%',
+                    fr: 'ÉCONOMISEZ 33%'
+                },
                 badgeColor: '#FF8A00',
                 savingsText: 'Save 33% compared to monthly',
+                savings_translations: {
+                    en: 'Save 33% compared to monthly',
+                    ar: 'وفر 33% مقارنة بالخطة الشهرية',
+                    fr: 'Économisez 33% par rapport au forfait mensuel'
+                },
+                bottomNote: 'Start your journey today. Cancel anytime.',
+                bottomNote_translations: {
+                    en: 'Start your journey today. Cancel anytime.',
+                    ar: 'ابدأ رحلتك اليوم. يمكنك الإلغاء في أي وقت.',
+                    fr: 'Commencez votre voyage aujourd\'hui. Annulez à tout moment.'
+                },
                 features: [],
                 isActive: true,
                 isPopular: false,
@@ -99,14 +136,35 @@ export const subscriptionPlanService = {
             },
             {
                 name: 'Yearly Plan',
+                name_translations: {
+                    en: 'Yearly Plan',
+                    ar: 'الخطة السنوية',
+                    fr: 'Forfait annuel'
+                },
                 productId: 'velmora_premium_yearly',
                 durationMonths: 12,
                 pricePerMonth: 2.50,
                 totalPrice: 29.99,
                 currency: 'USD',
                 badge: 'BEST VALUE',
+                badge_translations: {
+                    en: 'BEST VALUE',
+                    ar: 'أفضل قيمة',
+                    fr: 'MEILLEURE VALEUR'
+                },
                 badgeColor: '#FF8A00',
                 savingsText: 'Save 50% compared to monthly',
+                savings_translations: {
+                    en: 'Save 50% compared to monthly',
+                    ar: 'وفر 50% مقارنة بالخطة الشهرية',
+                    fr: 'Économisez 50% par rapport au forfait mensuel'
+                },
+                bottomNote: 'Our most popular plan. Cancel anytime.',
+                bottomNote_translations: {
+                    en: 'Our most popular plan. Cancel anytime.',
+                    ar: 'خطتنا الأكثر شعبية. يمكنك الإلغاء في أي وقت.',
+                    fr: 'Notre forfait le plus populaire. Annulez à tout moment.'
+                },
                 features: [],
                 isActive: true,
                 isPopular: true,

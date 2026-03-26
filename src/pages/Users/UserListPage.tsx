@@ -32,7 +32,10 @@ import {
     Delete,
     Close,
     SportsEsports,
-    FitnessCenter
+    FitnessCenter,
+    Apple,
+    Google,
+    Email
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { userService, UserProfile } from '../../services/userService';
@@ -179,7 +182,12 @@ const UserListPage: React.FC = () => {
                                             </Avatar>
                                             <Box>
                                                 <Typography variant="body2" sx={{ fontWeight: '600' }}>{user.displayName || 'N/A'}</Typography>
-                                                <Typography variant="caption" color="text.secondary">{user.email}</Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                                    {user.authProvider === 'google' ? <Google sx={{ fontSize: 14 }} color="action" /> :
+                                                     user.authProvider === 'apple' ? <Apple sx={{ fontSize: 14 }} color="action" /> :
+                                                     <Email sx={{ fontSize: 14 }} color="action" />}
+                                                    <Typography variant="caption" color="text.secondary">{user.email}</Typography>
+                                                </Box>
                                             </Box>
                                         </Box>
                                     </TableCell>

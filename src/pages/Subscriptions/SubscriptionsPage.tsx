@@ -239,8 +239,41 @@ const SubscriptionsPage: React.FC = () => {
                                 <FormControlLabel control={<Switch checked={editingPlan.isPopular ?? false} onChange={e => setEditingPlan(p => ({ ...p, isPopular: e.target.checked }))} />} label="Popular" />
                             </Box>
                         </Grid>
+
                         <Grid item xs={12}>
-                            <Typography variant="subtitle2" gutterBottom>Features</Typography>
+                            <Divider sx={{ my: 2 }}><Chip label="Translations" size="small" /></Divider>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Name (Arabic)" value={editingPlan.name_translations?.ar || ''} onChange={e => setEditingPlan(p => ({ ...p, name_translations: { ...p.name_translations, ar: e.target.value } }))} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Name (French)" value={editingPlan.name_translations?.fr || ''} onChange={e => setEditingPlan(p => ({ ...p, name_translations: { ...p.name_translations, fr: e.target.value } }))} />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Badge (Arabic)" value={editingPlan.badge_translations?.ar || ''} onChange={e => setEditingPlan(p => ({ ...p, badge_translations: { ...p.badge_translations, ar: e.target.value } }))} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Badge (French)" value={editingPlan.badge_translations?.fr || ''} onChange={e => setEditingPlan(p => ({ ...p, badge_translations: { ...p.badge_translations, fr: e.target.value } }))} />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Savings Text (Arabic)" value={editingPlan.savings_translations?.ar || ''} onChange={e => setEditingPlan(p => ({ ...p, savings_translations: { ...p.savings_translations, ar: e.target.value } }))} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Savings Text (French)" value={editingPlan.savings_translations?.fr || ''} onChange={e => setEditingPlan(p => ({ ...p, savings_translations: { ...p.savings_translations, fr: e.target.value } }))} />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Bottom Note (Arabic)" value={editingPlan.bottomNote_translations?.ar || ''} onChange={e => setEditingPlan(p => ({ ...p, bottomNote_translations: { ...p.bottomNote_translations, ar: e.target.value } }))} />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField fullWidth label="Bottom Note (French)" value={editingPlan.bottomNote_translations?.fr || ''} onChange={e => setEditingPlan(p => ({ ...p, bottomNote_translations: { ...p.bottomNote_translations, fr: e.target.value } }))} />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle2" gutterBottom>Features (Primary Language / English)</Typography>
                             <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
                                 <TextField size="small" fullWidth placeholder="Add a feature..." value={featureInput} onChange={e => setFeatureInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addFeature()} />
                                 <Button variant="outlined" onClick={addFeature}>Add</Button>
@@ -250,6 +283,42 @@ const SubscriptionsPage: React.FC = () => {
                                     <Chip key={i} label={f} onDelete={() => removeFeature(i)} size="small" />
                                 ))}
                             </Box>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2" gutterBottom>Features (Arabic) - Comma separated</Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={2}
+                                placeholder="Feature 1, Feature 2..."
+                                value={editingPlan.features_translations?.ar?.join(', ') || ''}
+                                onChange={e => setEditingPlan(p => ({
+                                    ...p,
+                                    features_translations: {
+                                        ...p.features_translations,
+                                        ar: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')
+                                    }
+                                }))}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <Typography variant="subtitle2" gutterBottom>Features (French) - Comma separated</Typography>
+                            <TextField
+                                fullWidth
+                                multiline
+                                rows={2}
+                                placeholder="Caractéristique 1, Caractéristique 2..."
+                                value={editingPlan.features_translations?.fr?.join(', ') || ''}
+                                onChange={e => setEditingPlan(p => ({
+                                    ...p,
+                                    features_translations: {
+                                        ...p.features_translations,
+                                        fr: e.target.value.split(',').map(s => s.trim()).filter(s => s !== '')
+                                    }
+                                }))}
+                            />
                         </Grid>
                     </Grid>
                 </DialogContent>

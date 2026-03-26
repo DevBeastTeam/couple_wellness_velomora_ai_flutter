@@ -15,6 +15,7 @@ export interface UserProfile {
     uid: string;
     displayName: string;
     email: string;
+    password?: string;
     photoURL?: string;
     subscriptionStatus: 'free' | 'trial' | 'premium';
     deleted?: boolean;
