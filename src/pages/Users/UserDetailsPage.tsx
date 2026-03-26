@@ -84,11 +84,13 @@ const UserDetailsPage: React.FC = () => {
                 setEditForm({
                     displayName: data.displayName || '',
                     password: data.password || '',
-                    subscriptionStatus: (data.subscriptionStatus === 'trial' ? 'free' : data.subscriptionStatus) as 'free' | 'premium',
+                    subscriptionStatus: (data.subscriptionStatus === 'trial' ? 'trial' : data.subscriptionStatus) as 'free' | 'premium' | 'trial',
                     subscriptionType: data.subscriptionType || '',
                     subscriptionExpiryDate: data.subscriptionExpiryDate?.seconds
                         ? new Date(data.subscriptionExpiryDate.seconds * 1000).toISOString().split('T')[0]
-                        : ''
+                        : data.trialEndTime?.seconds
+                            ? new Date(data.trialEndTime.seconds * 1000).toISOString().split('T')[0]
+                            : ''
                 });
             } catch (error) {
                 console.error('Error fetching user details:', error);
@@ -173,7 +175,9 @@ const UserDetailsPage: React.FC = () => {
             plan: user?.subscriptionStatus === 'free' ? 'free' : user?.subscriptionType || 'free',
             expiryDate: user?.subscriptionExpiryDate?.seconds
                 ? new Date(user.subscriptionExpiryDate.seconds * 1000).toISOString().split('T')[0]
-                : ''
+                : user?.trialEndTime?.seconds
+                    ? new Date(user.trialEndTime.seconds * 1000).toISOString().split('T')[0]
+                    : ''
         });
     };
 
@@ -462,7 +466,9 @@ const UserDetailsPage: React.FC = () => {
                                                 type="date"
                                                 value={subscriptionEditMode ? tempSubscription.expiryDate : (user.subscriptionExpiryDate?.seconds
                                                     ? new Date(user.subscriptionExpiryDate.seconds * 1000).toISOString().split('T')[0]
-                                                    : '')}
+                                                    : user.trialEndTime?.seconds
+                                                        ? new Date(user.trialEndTime.seconds * 1000).toISOString().split('T')[0]
+                                                        : '')}
                                                 onChange={(e) => setTempSubscription({ ...tempSubscription, expiryDate: e.target.value })}
                                                 InputLabelProps={{ shrink: true }}
                                                 disabled={!subscriptionEditMode}
@@ -525,14 +531,16 @@ const UserDetailsPage: React.FC = () => {
                                             </Box>
                                         </Grid>
                                     )}
-                                    {user.subscriptionExpiryDate?.seconds && (
+                                    {(user.subscriptionExpiryDate?.seconds || user.trialEndTime?.seconds) && (
                                         <Grid item xs={12} sm={6}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                                                 <History color="action" />
                                                 <Box>
                                                     <Typography variant="caption" color="text.secondary">Expiry Date</Typography>
                                                     <Typography variant="body2">
-                                                        {new Date(user.subscriptionExpiryDate.seconds * 1000).toLocaleDateString()}
+                                                        {user.subscriptionExpiryDate?.seconds
+                                                            ? new Date(user.subscriptionExpiryDate.seconds * 1000).toLocaleDateString()
+                                                            : new Date(user.trialEndTime.seconds * 1000).toLocaleDateString()}
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -581,7 +589,7 @@ const UserDetailsPage: React.FC = () => {
                             <Paper sx={{ p: 3, borderRadius: 3 }}>
                                 <Typography variant="h6" gutterBottom sx={{ fontWeight: '600' }}>Features Access</Typography>
                                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                                    {user.subscriptionStatus === 'premium' ? (
+                                    {user.subscriptionStatus === 'premium' || user.subscriptionStatus === 'trial' ? (
                                         <>
                                             <Chip
                                                 icon={<VerifiedUser />}
@@ -601,6 +609,13 @@ const UserDetailsPage: React.FC = () => {
                                                 color="success"
                                                 variant="outlined"
                                             />
+                                            {user.subscriptionStatus === 'trial' && (
+                                                <Chip
+                                                    label="48h Access"
+                                                    color="warning"
+                                                    variant="outlined"
+                                                />
+                                            )}
                                         </>
                                     ) : (
                                         <>

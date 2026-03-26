@@ -211,6 +211,15 @@ const UserListPage: React.FC = () => {
                                                                 user.subscriptionType?.includes('yearly') ? 'Yearly' : 'Premium'}
                                                     </Typography>
                                                 </>
+                                            ) : user.trialEndTime?.seconds ? (
+                                                <>
+                                                    <Typography variant="body2" sx={{ fontWeight: '600' }}>
+                                                        {new Date(user.trialEndTime.seconds * 1000).toLocaleDateString()}
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        Free Trial (48h)
+                                                    </Typography>
+                                                </>
                                             ) : (
                                                 <Typography variant="body2" color="text.secondary">
                                                     No expiry (Free)
