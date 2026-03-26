@@ -27,6 +27,7 @@ class _AccountScreenState extends State<AccountScreen> {
 
   bool _isLoading = true;
   String? _localProfileImagePath;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
@@ -43,8 +44,14 @@ class _AccountScreenState extends State<AccountScreen> {
 
       if (mounted) {
         setState(() {
-          _emailController.text = user?.email ?? '';
-          _nameController.text = userData?['displayName'] ?? '';
+          final userEmail = user?.email ?? '';
+          _emailController.text = userEmail;
+
+          final storedName = userData?['displayName'] as String?;
+          _nameController.text = (storedName != null && storedName.isNotEmpty)
+              ? storedName
+              : (userEmail.isNotEmpty ? userEmail.split('@')[0] : '');
+          _passwordController.text = userData?['password'] ?? '';
           _localProfileImagePath = localPath;
           _isLoading = false;
         });
@@ -466,7 +473,7 @@ class _AccountScreenState extends State<AccountScreen> {
           SizedBox(height: 5.h),
           TextField(
             controller: _passwordController,
-            obscureText: true,
+            obscureText: !_isPasswordVisible,
             decoration: InputDecoration(
               hintText: '••••••••',
               border: OutlineInputBorder(
@@ -484,6 +491,17 @@ class _AccountScreenState extends State<AccountScreen> {
               filled: true,
               fillColor: Colors.white,
               prefixIcon: const Icon(Icons.lock_outline, color: Colors.grey),
+              suffixIcon: IconButton(
+                icon: Icon(
+                  _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.grey,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isPasswordVisible = !_isPasswordVisible;
+                  });
+                },
+              ),
             ),
           ),
         ],

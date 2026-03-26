@@ -15,40 +15,6 @@ class AccountScreenSkeleton extends StatelessWidget {
     return ShimmerWrap(
       Column(
         children: [
-          // Header
-          Container(
-            height: height * 0.15,
-            color: AppColors.brandPurple,
-            padding: EdgeInsets.fromLTRB(
-              width * 0.067,
-              height * 0.06,
-              width * 0.067,
-              0,
-            ),
-            child: Row(
-              children: [
-                ShimmerBox(
-                  height: height * 0.03,
-                  width: height * 0.03,
-                  radius: width * 0.067,
-                  color: Colors.white.withValues(alpha: 0.3),
-                ),
-                SizedBox(width: width * 0.033),
-                ShimmerLine(
-                  height: height * 0.025,
-                  width: width * 0.35,
-                  color: Colors.white.withValues(alpha: 0.3),
-                ),
-                const Spacer(),
-                ShimmerBox(
-                  height: height * 0.025,
-                  width: height * 0.025,
-                  radius: width * 0.133,
-                  color: Colors.white.withValues(alpha: 0.3),
-                ),
-              ],
-            ),
-          ),
           // Form content
           SizedBox(
             height: height * 0.65,
@@ -90,17 +56,11 @@ class AccountScreenSkeleton extends StatelessWidget {
                       SizedBox(height: height * 0.04),
                       ShimmerBox(
                         height: height * 0.0625,
-                        width: height * 0.0625,
+                        width: height * 0.6,
                         radius: width,
                         color: Colors.grey.shade300,
                       ),
                       SizedBox(height: height * 0.02),
-                      ShimmerBox(
-                        height: height * 0.0625,
-                        width: height * 0.0625,
-                        radius: width,
-                        color: Colors.grey.shade200,
-                      ),
                     ],
                   ),
                 ),

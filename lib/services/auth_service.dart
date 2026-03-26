@@ -60,7 +60,7 @@ class AuthService {
           userId: userCredential.user!.uid,
           email: email.trim(),
           password: password,
-          displayName: userCredential.user!.displayName,
+          displayName: userCredential.user!.displayName ?? email.trim().split('@')[0],
           preferredLanguage: currentLanguage,
           authProvider: 'email',
         );
