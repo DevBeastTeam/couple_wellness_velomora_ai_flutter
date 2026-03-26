@@ -5,6 +5,7 @@ import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class KegelStartingScreen extends StatefulWidget {
   final String routineType;
@@ -14,8 +15,8 @@ class KegelStartingScreen extends StatefulWidget {
   const KegelStartingScreen({
     super.key,
     this.routineType = "Beginner Routine",
-    this.durationMinutes = 5,
-    this.sets = 3,
+    this.durationMinutes = 3,
+    this.sets = 2,
   });
 
   @override
@@ -27,37 +28,122 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
   int _elapsedSeconds = 0;
   int _currentSet = 1;
   int _currentPhase =
-      1; // 1: Hold & Squeeze, 2: Rest & Relax, 3: Rest Between Sets
+      1; // 1: Hold & Squeeze, 2: Rest & Relax, 3: Rest Between Sets, 4: Pulses
   bool _isPlaying = false;
   bool _isCompleted = false;
   bool _isReadyForNextLevel = false;
 
   // Timing configuration
-  final int _holdSqueezeSeconds = 3;
-  final int _restRelaxSeconds = 3;
-  final int _restBetweenSetsSeconds = 30;
   int _phaseSeconds = 0;
-  int _cycleCount = 0; // Track cycles within a set
-  late int _cyclesPerSet; // Fixed based on routine type
+  int _cycleCount = 0; // Track current repetition
+  int _currentStepIndex = 0;
+  bool _initialized = false;
+
+  // Exercise Structures
+  List<Map<String, dynamic>> _currentSteps = [];
 
   final KegelService _kegelService = KegelService();
 
   @override
   void initState() {
     super.initState();
-    _phaseSeconds = _holdSqueezeSeconds;
-    _currentPhase = 1;
-    // Set cycles per set based on routine type
-    // Beginner: 10 dots, Intermediate: 15 dots, Advanced: 20 dots
-    if (widget.durationMinutes == 5) {
-      _cyclesPerSet = 10; // Beginner
-    } else if (widget.durationMinutes == 8) {
-      _cyclesPerSet = 15; // Intermediate
-    } else if (widget.durationMinutes == 12) {
-      _cyclesPerSet = 20; // Advanced
-    } else {
-      _cyclesPerSet = 10; // Default
+    // NOTE: Do NOT call _initializeExerciseStructure() here.
+    // AppLocalizations.of(context) requires inherited widgets which are
+    // not available yet in initState. Use didChangeDependencies() instead.
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      _initializeExerciseStructure();
+      _loadInitialStep();
     }
+  }
+
+  void _initializeExerciseStructure() {
+    final l10n = AppLocalizations.of(context);
+    if (widget.routineType.toLowerCase().contains('beginner')) {
+      _currentSteps = [
+        {'name': l10n.beginnerRoutine, 'contract': 3, 'relax': 3, 'reps': 11},
+        {'name': l10n.beginnerRoutine, 'contract': 5, 'relax': 3, 'reps': 1},
+      ];
+    } else if (widget.routineType.toLowerCase().contains('intermediate')) {
+      _currentSteps = [
+        {'name': l10n.slowContractions, 'contract': 5, 'relax': 5, 'reps': 10},
+        {'name': l10n.quickPulses, 'contract': 1, 'relax': 1, 'reps': 20},
+        {'name': l10n.enduranceHold, 'contract': 15, 'relax': 10, 'reps': 3},
+      ];
+    } else if (widget.routineType.toLowerCase().contains('advanced')) {
+      _currentSteps = [
+        {
+          'name': l10n.progressiveHolds,
+          'contract': [5, 10, 15, 20],
+          'relax': [5, 10, 15, 20],
+          'reps': 4,
+          'isSequence': true,
+        },
+        {
+          'name': l10n.pyramidTraining,
+          'contract': [3, 5, 7, 10, 7, 5, 3],
+          'relax': [3, 5, 7, 10, 7, 5, 3],
+          'reps': 7,
+          'isSequence': true,
+        },
+        {'name': l10n.explosivePulses, 'contract': 1, 'relax': 1, 'reps': 30},
+        {
+          'name': l10n.mixedControlSet,
+          'contract': 10,
+          'relax': 10,
+          'reps': 3,
+          'hasPulses': true,
+          'pulseCount': 10,
+        },
+      ];
+    } else {
+      _currentSteps = [
+        {'name': l10n.basicRoutine, 'contract': 3, 'relax': 3, 'reps': 10},
+      ];
+    }
+  }
+
+  void _loadInitialStep() {
+    _currentStepIndex = 0;
+    _cycleCount = 0;
+    _currentPhase = 1;
+    _updatePhaseSeconds();
+  }
+
+  void _updatePhaseSeconds() {
+    final step = _currentSteps[_currentStepIndex];
+    if (_currentPhase == 1) {
+      // Contract
+      if (step['isSequence'] == true) {
+        _phaseSeconds = (step['contract'] as List)[_cycleCount];
+      } else {
+        _phaseSeconds = step['contract'];
+      }
+    } else if (_currentPhase == 2) {
+      // Relax
+      if (step['isSequence'] == true) {
+        _phaseSeconds = (step['relax'] as List)[_cycleCount];
+      } else {
+        _phaseSeconds = step['relax'];
+      }
+    } else if (_currentPhase == 4) {
+      // Pulses (Advanced Mixed Set)
+      _phaseSeconds =
+          (step['pulseCount'] ?? 10) *
+          2; // Pulse is 1s contract + 1s relax (implied)
+    } else if (_currentPhase == 3) {
+      // Rest between sets
+      _phaseSeconds = 30; // Standard rest
+    }
+  }
+
+  int get _totalDotsInCurrentStep {
+    return _currentSteps[_currentStepIndex]['reps'];
   }
 
   void _startTimer() {
@@ -85,43 +171,62 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
   }
 
   void _togglePhase() {
+    final step = _currentSteps[_currentStepIndex];
+
     if (_currentPhase == 1) {
-      // From Hold & Squeeze to Rest & Relax
+      // From Hold & Squeeze to Next Phase
+      if (step['hasPulses'] == true) {
+        _currentPhase = 4; // Advanced pulses
+      } else {
+        _currentPhase = 2; // Normal relax
+      }
+    } else if (_currentPhase == 4) {
+      // From Pulses to Relax
       _currentPhase = 2;
-      _phaseSeconds = _restRelaxSeconds;
     } else if (_currentPhase == 2) {
-      // From Rest & Relax back to Hold & Squeeze or Rest Between Sets
+      // Finished a repetition
       _cycleCount++;
 
-      // After completing cycles per set, take 30 second rest between sets
-      if (_cycleCount >= _cyclesPerSet) {
-        // Time for rest between sets (only if not on last set)
-        if (_currentSet < widget.sets) {
-          _currentPhase = 3;
-          _phaseSeconds = _restBetweenSetsSeconds;
-          _cycleCount = 0;
-          _currentSet++;
+      if (_cycleCount >= step['reps']) {
+        // Move to next step or next set
+        _cycleCount = 0;
+        if (_currentStepIndex < _currentSteps.length - 1) {
+          _currentStepIndex++;
+          _currentPhase = 1;
         } else {
-          // Last set completed - finish exercise
-          _completeExercise();
-          return;
+          // Finished all steps in the current set
+          if (_currentSet < widget.sets) {
+            _currentSet++;
+            _currentStepIndex = 0;
+            _currentPhase = 3; // Rest between sets
+            _phaseSeconds = 30; // Standard rest
+            return;
+          } else {
+            // All sets done
+            _completeExercise();
+            return;
+          }
         }
       } else {
-        // Continue with next cycle
+        // Next rep in the same step
         _currentPhase = 1;
-        _phaseSeconds = _holdSqueezeSeconds;
       }
     } else if (_currentPhase == 3) {
-      // From Rest Between Sets back to Hold & Squeeze
+      // Rest between sets is over
       _currentPhase = 1;
-      _phaseSeconds = _holdSqueezeSeconds;
+      _currentStepIndex = 0;
+      _cycleCount = 0;
     }
+
+    _updatePhaseSeconds();
+    VibrationService.vibration();
   }
 
   void _togglePlayPause() {
     setState(() {
       _isPlaying = !_isPlaying;
       if (_isPlaying) {
+        VibrationService.doubleVibration();
         _startTimer();
       } else {
         _timer?.cancel();
@@ -135,6 +240,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
       _isCompleted = true;
       _isPlaying = false;
     });
+    VibrationService.longVibration();
 
     await _kegelService.saveSession(
       routineType: widget.routineType,
@@ -145,8 +251,11 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
     final data = await _kegelService.getKegelData();
     if (mounted) {
       setState(() {
-        int weekStreak = data?['weekStreak'] ?? 0;
-        if (weekStreak >= 3) {
+        int currentStreak =
+            data?['currentStreak'] ??
+            0; // Assuming currentStreak tracks daily practice
+        if (widget.routineType.toLowerCase().contains('beginner') &&
+            currentStreak >= 3) {
           _isReadyForNextLevel = true;
         }
       });
@@ -157,6 +266,15 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
   void dispose() {
     _timer?.cancel();
     super.dispose();
+  }
+
+  /// Returns a localized display title for the routine, regardless of the
+  /// language-neutral [widget.routineType] ID passed from the parent.
+  String _getLocalizedRoutineTitle(AppLocalizations l10n) {
+    final id = widget.routineType.toLowerCase();
+    if (id.contains('intermediate')) return l10n.intermediateLevelTitle;
+    if (id.contains('advanced')) return l10n.advancedLevelTitle;
+    return l10n.beginnerLevelTitle; // default / 'beginner'
   }
 
   @override
@@ -192,12 +310,13 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
                     child: Text(
-                      widget.routineType,
+                      _getLocalizedRoutineTitle(l10n),
                       style: TextStyle(
-                        fontSize: 24.fSize,
+                        fontSize: 20.fSize,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -260,7 +379,9 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                     SizedBox(height: 15.h),
                     Builder(
                       builder: (context) {
-                        if (widget.routineType.contains('Intermediate')) {
+                        if (widget.routineType.toLowerCase().contains(
+                          'intermediate',
+                        )) {
                           return Column(
                             children: [
                               Text(
@@ -276,7 +397,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                 AppLocalizations.of(
                                   context,
                                 ).completedIntermediateBody,
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 16.fSize,
                                   color: Colors.grey.shade600,
@@ -285,13 +406,15 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                             ],
                           );
-                        } else if (widget.routineType.contains('Advanced')) {
+                        } else if (widget.routineType.toLowerCase().contains(
+                          'advanced',
+                        )) {
                           return Column(
                             children: [
                               Text(
                                 AppLocalizations.of(context).elitePerformance,
                                 style: TextStyle(
-                                  fontSize: 28.fSize,
+                                  fontSize: 20.fSize,
                                   fontWeight: FontWeight.bold,
                                   color: const Color(0xFF1F1F1F),
                                 ),
@@ -301,7 +424,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                 AppLocalizations.of(
                                   context,
                                 ).completedAdvancedBody,
-                                textAlign: TextAlign.center,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 16.fSize,
                                   color: Colors.grey.shade600,
@@ -324,8 +447,10 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                "${AppLocalizations.of(context).completedSession}\n✔ ${widget.sets} Sets completed\n✔ Total time: ${widget.durationMinutes}:00 min\n\n${AppLocalizations.of(context).keepGoingDaily}",
-                                textAlign: TextAlign.center,
+                                AppLocalizations.of(
+                                  context,
+                                ).beginnerRoutineCompleteMsg(widget.sets),
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 16.fSize,
                                   color: Colors.grey.shade600,
@@ -473,10 +598,10 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    widget.routineType,
+                    _getLocalizedRoutineTitle(l10n),
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 24.fSize,
+                      fontSize: 20.fSize,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -526,11 +651,22 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                 ? AppLocalizations.of(context).holdAndSqueeze
                                 : _currentPhase == 2
                                 ? AppLocalizations.of(context).restAndRelax
+                                : _currentPhase == 4
+                                ? AppLocalizations.of(context).pulses
                                 : AppLocalizations.of(context).restBetweenSets,
                             style: TextStyle(
-                              fontSize: 24.fSize,
+                              fontSize: 18.fSize,
                               fontWeight: FontWeight.w600,
                               color: const Color(0xFF111827),
+                            ),
+                          ),
+                          SizedBox(height: 8.h),
+                          Text(
+                            _currentSteps[_currentStepIndex]['name'],
+                            style: TextStyle(
+                              fontSize: 16.fSize,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF6B7280),
                             ),
                           ),
                           SizedBox(height: 15.h),
@@ -539,10 +675,15 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                             alignment: WrapAlignment.center,
                             spacing: 6.w,
                             runSpacing: 8.h,
-                            children: List.generate(_cyclesPerSet, (index) {
+                            children: List.generate(_totalDotsInCurrentStep, (
+                              index,
+                            ) {
                               bool isCompleted = index < _cycleCount;
                               bool isCurrent =
-                                  index == _cycleCount && _currentPhase <= 2;
+                                  index == _cycleCount &&
+                                  (_currentPhase == 1 ||
+                                      _currentPhase == 2 ||
+                                      _currentPhase == 4);
                               return Container(
                                 width: 10.adaptSize,
                                 height: 10.adaptSize,
@@ -553,7 +694,8 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                           0xFF8B3DFF,
                                         ) // Purple for completed
                                       : isCurrent
-                                      ? _currentPhase == 1
+                                      ? (_currentPhase == 1 ||
+                                                _currentPhase == 4)
                                             ? const Color(
                                                 0xFF8B3DFF,
                                               ) // Purple for Hold & Squeeze
@@ -563,7 +705,9 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                                       : const Color(0xFFE5E7EB),
                                   border: isCurrent
                                       ? Border.all(
-                                          color: _currentPhase == 1
+                                          color:
+                                              (_currentPhase == 1 ||
+                                                  _currentPhase == 4)
                                               ? const Color(
                                                   0xFF8B3DFF,
                                                 ) // Purple border for Hold

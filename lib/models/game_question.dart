@@ -43,17 +43,21 @@ class GameQuestion {
 
   factory GameQuestion.fromJson(Map<String, dynamic> json, {String? id}) {
     // Determine the main text based on common keys
-    String qText = json['question'] ??
+    String qText =
+        json['question'] ??
         json['prompt'] ??
         json['title'] ??
         json['description'] ??
         '';
 
     // Map the most appropriate translations to questionTranslations
-    Map<String, String>? qTranslations = 
-        json['question_translations'] != null ? Map<String, String>.from(json['question_translations']) :
-        json['prompt_translations'] != null ? Map<String, String>.from(json['prompt_translations']) :
-        json['title_translations'] != null ? Map<String, String>.from(json['title_translations']) : null;
+    Map<String, String>? qTranslations = json['question_translations'] != null
+        ? Map<String, String>.from(json['question_translations'])
+        : json['prompt_translations'] != null
+        ? Map<String, String>.from(json['prompt_translations'])
+        : json['title_translations'] != null
+        ? Map<String, String>.from(json['title_translations'])
+        : null;
 
     return GameQuestion(
       id: id ?? json['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
@@ -68,8 +72,8 @@ class GameQuestion {
       hint: json['hint'] as String?,
       options: json['options'] != null
           ? (json['options'] as List)
-              .map((i) => QuizOption.fromJson(Map<String, dynamic>.from(i)))
-              .toList()
+                .map((i) => QuizOption.fromJson(Map<String, dynamic>.from(i)))
+                .toList()
           : null,
       questionTranslations: qTranslations,
       descriptionTranslations: json['description_translations'] != null
@@ -183,4 +187,3 @@ class QuizOption {
     return textTranslations?[languageCode] ?? text;
   }
 }
-

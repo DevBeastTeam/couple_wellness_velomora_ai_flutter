@@ -201,16 +201,16 @@ class AppLocalizations {
       'keep_going_daily': 'Keep going daily to improve control.',
       'ready_next_level': '• → You\'re ready for the next level',
       'completed_intermediate':
-          'You completed intermediate training!\n✔ Strength improved\n✔ Control enhanced\n✔ Endurance increased\n\nYou\'re progressing to a stronger level of performance.',
+          'You completed intermediate training! \n\n ✔ Strength improved\n ✔ Control enhanced\n ✔ Endurance increased\n\nYou\'re progressing to a stronger level of performance.',
       'completed_advanced':
-          'You completed advanced training!\n✔ High control achieved\n✔ Strong endurance\n✔ Advanced responsiveness\n\nYou\'re training at a professional level.',
+          'You completed advanced training!\n\n ✔ High control achieved\n ✔ Strong endurance\n ✔ Advanced responsiveness\n\nYou\'re training at a professional level.',
       'elite_performance': 'Elite performance 💪🔥',
       'great_work_emoji': 'Great work 🔥',
       'great_job_emoji': 'Great job 👏',
       'completed_intermediate_body':
-          "You completed intermediate training!\n✔ Strength improved\n✔ Control enhanced\n✔ Endurance increased\n\nYou're progressing to a stronger level of performance.",
+          "You completed intermediate training!\n\n ✔ Strength improved\n ✔ Control enhanced\n ✔ Endurance increased\n\nYou're progressing to a stronger level of performance.",
       'completed_advanced_body':
-          "You completed advanced training!\n✔ High control achieved\n✔ Strong endurance\n✔ Advanced responsiveness\n\nYou're training at a professional level.",
+          "You completed advanced training!\n\n ✔ High control achieved\n ✔ Strong endurance\n ✔ Advanced responsiveness\n\nYou're training at a professional level.",
       'hold_and_squeeze': 'Hold & Squeeze',
       'rest_and_relax': 'Rest & Relax',
       'rest_between_sets': 'Rest Between Sets',
@@ -604,6 +604,17 @@ class AppLocalizations {
           'questions together and shared meaningful insights.',
       's_answer': '\'s Answer',
       'question_count': 'Question',
+      'beginner_routine_complete_msg':
+          'You completed your session!\n\n✔ {sets} Sets completed\n✔ Total time: 2:30 min\n\nKeep going daily to improve control.',
+      'slow_contractions': 'Slow Contractions',
+      'quick_pulses': 'Quick Pulses',
+      'endurance_hold': 'Endurance Hold',
+      'progressive_holds': 'Progressive Holds',
+      'pyramid_training': 'Pyramid Training',
+      'explosive_pulses': 'Explosive Pulses',
+      'mixed_control_set': 'Mixed Control Set',
+      'basic_routine': 'Basic Routine',
+      'pulses': 'Pulses',
     },
     'ar': {
       // Home Screen
@@ -940,6 +951,17 @@ class AppLocalizations {
       'questions_answered': 'لقد أجبت على',
       'questions_together': 'أسئلة معاً وشاركت رؤى هادفة.',
       's_answer': 'إجابة',
+      'beginner_routine_complete_msg':
+          'لقد أكملت جلستك!\n\n✔ {sets} مجموعات مكتملة\n✔ الوقت الإجمالي: 2:30 دقيقة\n\nاستمر يومياً لتحسين التحكم.',
+      'slow_contractions': 'انقباضات بطيئة',
+      'quick_pulses': 'نبضات سريعة',
+      'endurance_hold': 'احتفاظ للتحمل',
+      'progressive_holds': 'احتفاظ تدريجي',
+      'pyramid_training': 'تدريب هرمي',
+      'explosive_pulses': 'نبضات متفجرة',
+      'mixed_control_set': 'مجموعة تحكم مختلطة',
+      'basic_routine': 'روتين أساسي',
+      'pulses': 'نبضات',
 
       // Onboarding
       'next': 'التالي',
@@ -1239,7 +1261,7 @@ class AppLocalizations {
       'not_started': 'Non commencé',
       'in_progress': 'En cours',
       'completed': 'Terminé',
-      'played': 'Joué',
+      'played': 'Terminé',
       'time': 'fois',
       'times': 'fois',
       'play_now': 'Jouer maintenant',
@@ -1538,6 +1560,17 @@ class AppLocalizations {
       'questions_together':
           'questions ensemble et partagé des réflexions significatives.',
       's_answer': 'Réponse de:',
+      'beginner_routine_complete_msg':
+          'Vous avez terminé votre séance !\n\n✔ {sets} Séries terminées\n✔ Temps total : 2:30 min\n\nContinuez quotidiennement pour améliorer le contrôle.',
+      'slow_contractions': 'Contractions lentes',
+      'quick_pulses': 'Pulsations rapides',
+      'endurance_hold': 'Maintien d\'endurance',
+      'progressive_holds': 'Maintiens progressifs',
+      'pyramid_training': 'Entraînement pyramidal',
+      'explosive_pulses': 'Pulsations explosives',
+      'mixed_control_set': 'Ensemble de contrôle mixte',
+      'basic_routine': 'Routine de base',
+      'pulses': 'Pulsations',
 
       // Onboarding
       'next': 'Suivant',
@@ -2263,6 +2296,19 @@ class AppLocalizations {
   String get resetChallengeProgressConfirmation =>
       translate('reset_challenge_progress_confirmation');
   String get challengeCompletedLabel => translate('challenge_completed');
+
+  String beginnerRoutineCompleteMsg(Object sets) => translate(
+    'beginner_routine_complete_msg',
+  ).replaceFirst('{sets}', sets.toString());
+  String get slowContractions => translate('slow_contractions');
+  String get quickPulses => translate('quick_pulses');
+  String get enduranceHold => translate('endurance_hold');
+  String get progressiveHolds => translate('progressive_holds');
+  String get pyramidTraining => translate('pyramid_training');
+  String get explosivePulses => translate('explosive_pulses');
+  String get mixedControlSet => translate('mixed_control_set');
+  String get basicRoutine => translate('basic_routine');
+  String get pulses => translate('pulses');
 }
 
 class _AppLocalizationsDelegate

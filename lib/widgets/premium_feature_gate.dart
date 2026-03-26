@@ -6,6 +6,7 @@ import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/widgets/app_loading_widgets.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/trial_offer_button.dart';
+import 'package:velmora/widgets/bottom_nav_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 /// Widget that gates premium features and shows upgrade prompt
@@ -65,8 +66,12 @@ class PremiumFeatureGate extends StatelessWidget {
           onPressed: () {
             if (onBackToHome != null) {
               onBackToHome!();
-            } else if (Navigator.canPop(context)) {
-              Navigator.pop(context);
+            } else {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const BottomNavBarWidget()),
+                (route) => false,
+              );
             }
           },
         ),

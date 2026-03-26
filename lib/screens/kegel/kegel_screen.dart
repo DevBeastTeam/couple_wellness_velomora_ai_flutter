@@ -75,8 +75,8 @@ class _KegelScreenState extends State<KegelScreen> {
         exercises.add({
           'id': doc.id,
           'name': localizedName,
-          'duration': data['duration'] ?? 5,
-          'sets': data['sets'] ?? 3,
+          'duration': doc.id == 'beginner' ? 3 : (data['duration'] ?? 5),
+          'sets': doc.id == 'beginner' ? 2 : (data['sets'] ?? 1),
           'isPremium': data['isPremium'] ?? false,
           'isActive': data['isActive'] ?? true,
         });
@@ -102,7 +102,7 @@ class _KegelScreenState extends State<KegelScreen> {
       {
         'id': 'beginner',
         'name': AppLocalizations.of(context).beginnerLevelTitle,
-        'duration': 3,
+        'duration': 3, // ~2:30 min
         'sets': 2,
         'isPremium': false,
         'isActive': true,
@@ -110,16 +110,16 @@ class _KegelScreenState extends State<KegelScreen> {
       {
         'id': 'intermediate',
         'name': AppLocalizations.of(context).intermediateLevelTitle,
-        'duration': 10,
-        'sets': 3,
+        'duration': 4, // ~3:35 min
+        'sets': 1,
         'isPremium': true,
         'isActive': true,
       },
       {
         'id': 'advanced',
         'name': AppLocalizations.of(context).advancedLevelTitle,
-        'duration': 15,
-        'sets': 4,
+        'duration': 6, // ~5:30 min
+        'sets': 1,
         'isPremium': true,
         'isActive': true,
       },
@@ -609,7 +609,7 @@ class _KegelScreenState extends State<KegelScreen> {
                   onPressed: () {
                     Navigator.pop(context);
                     _navigateToKegelStartingScreen(
-                      exercise['name'],
+                      exercise['id'], // always 'beginner'/'intermediate'/'advanced'
                       exercise['duration'],
                       exercise['sets'],
                       exercise['isPremium'] ?? false,
