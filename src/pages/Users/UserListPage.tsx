@@ -184,8 +184,8 @@ const UserListPage: React.FC = () => {
                                                 <Typography variant="body2" sx={{ fontWeight: '600' }}>{user.displayName || 'N/A'}</Typography>
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                                     {user.authProvider === 'google' ? <Google sx={{ fontSize: 14 }} color="action" /> :
-                                                     user.authProvider === 'apple' ? <Apple sx={{ fontSize: 14 }} color="action" /> :
-                                                     <Email sx={{ fontSize: 14 }} color="action" />}
+                                                        user.authProvider === 'apple' ? <Apple sx={{ fontSize: 14 }} color="action" /> :
+                                                            <Email sx={{ fontSize: 14 }} color="action" />}
                                                     <Typography variant="caption" color="text.secondary">{user.email}</Typography>
                                                 </Box>
                                             </Box>
@@ -206,7 +206,10 @@ const UserListPage: React.FC = () => {
                                                         {new Date(user.subscriptionExpiryDate.seconds * 1000).toLocaleDateString()}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
-                                                        {user.subscriptionType?.includes('monthly') ? 'Monthly' :
+                                                        {(() => {
+                                                            const days = Math.ceil((user.subscriptionExpiryDate.seconds * 1000 - Date.now()) / (1000 * 60 * 60 * 24));
+                                                            return days > 0 ? `${days} days left` : 'Expired';
+                                                        })()} • {user.subscriptionType?.includes('monthly') ? 'Monthly' :
                                                             user.subscriptionType?.includes('quarterly') ? 'Quarterly' :
                                                                 user.subscriptionType?.includes('yearly') ? 'Yearly' : 'Premium'}
                                                     </Typography>
@@ -217,7 +220,19 @@ const UserListPage: React.FC = () => {
                                                         {new Date(user.trialEndTime.seconds * 1000).toLocaleDateString()}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
-                                                        Free Trial (48h)
+                                                        {(() => {
+                                                            const days = Math.ceil((user.trialEndTime.seconds * 1000 - Date.now()) / (1000 * 60 * 60 * 24));
+                                                            return days > 0 ? `${days} days left` : 'Expired';
+                                                        })()} • Trial (48h)
+                                                    </Typography>
+                                                </>
+                                            ) : user.subscriptionStatus === 'premium' || user.subscriptionStatus === 'trial' ? (
+                                                <>
+                                                    <Typography variant="body2" sx={{ fontWeight: '600', color: 'primary.main' }}>
+                                                        Active
+                                                    </Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        No expiry date set
                                                     </Typography>
                                                 </>
                                             ) : (
