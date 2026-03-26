@@ -124,7 +124,7 @@ class AnalyticsService {
   /// Chat events
   Future<void> logChatMessage(bool isAI, int messageLength) async {
     await logEvent('chat_message', parameters: {
-      'is_ai': isAI,
+      'is_ai': isAI ? 1 : 0,
       'message_length': messageLength,
     });
   }
@@ -182,7 +182,7 @@ class AnalyticsService {
 
   Future<void> logNotificationToggle(bool enabled) async {
     await logEvent('notification_toggle', parameters: {
-      'enabled': enabled,
+      'enabled': enabled ? 1 : 0,
     });
   }
 

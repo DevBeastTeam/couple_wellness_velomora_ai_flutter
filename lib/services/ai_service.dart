@@ -56,8 +56,13 @@ class AIService {
         _apiKey = _aiSettings['apiKey'] as String?;
 
         // Override API URL if custom model is set
-        final model = _aiSettings['model'] as String?;
+        String? model = _aiSettings['model'] as String?;
         if (model != null && model.isNotEmpty) {
+          model = model.trim();
+          // Remove 'models/' prefix if it's already there to avoid duplicates in the URL
+          if (model.startsWith('models/')) {
+            model = model.replaceFirst('models/', '');
+          }
           _apiUrl =
               'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent';
         }
@@ -138,6 +143,9 @@ class AIService {
   ///
   /// Returns the AI response text or throws an exception on error
   Future<String> generateResponse(String userMessage) async {
+    // Always reload config to get latest system instruction from admin
+    await _loadAIConfig();
+
     if (_apiKey == null || _apiKey!.isEmpty) {
       throw Exception(
         'AI Service is not configured. Please contact administrator.',
@@ -154,124 +162,137 @@ class AIService {
       final history = await _getConversationHistory();
       final language = await _getUserLanguage();
 
+      // Get user profile context (names)
+      String userContext = '';
+      if (currentUserId != null) {
+        final userDoc = await _firestore
+            .collection('users')
+            .doc(currentUserId)
+            .get();
+        final userData = userDoc.data() ?? {};
+        final name = userData['name'] ?? 'User';
+        final partnerName = userData['partnerName'] ?? 'Partner';
+        userContext =
+            'You are speaking with $name. Their partner\'s name is $partnerName.';
+      }
+
       // Build the prompt with context
-      final prompt = _buildPrompt(userMessage, language, history);
+      final requestBody = _buildGeminiRequestBody(
+        userMessage,
+        language,
+        history,
+        userContext,
+      );
 
       // Call Gemini API
-      final response = await _callGeminiAPI(prompt);
+      final response = await _callGeminiAPI(requestBody);
 
       return response;
     } catch (e) {
       debugPrint('AI generation error: $e');
-
-      // If API key error, try reloading config
-      if (e.toString().contains('API_KEY') || e.toString().contains('403')) {
-        await _loadAIConfig();
-        // Retry once with reloaded config
-        try {
-          final history = await _getConversationHistory();
-          final language = await _getUserLanguage();
-          final prompt = _buildPrompt(userMessage, language, history);
-          return await _callGeminiAPI(prompt);
-        } catch (retryError) {
-          throw Exception('AI service error. Please try again later.');
-        }
-      }
-
       throw Exception('Failed to generate response. Please try again.');
     }
   }
 
-  /// Build the prompt with system instructions and conversation history
-  String _buildPrompt(
+  /// Build the Gemini API request body with system instructions and conversation history
+  Map<String, dynamic> _buildGeminiRequestBody(
     String userMessage,
     String language,
     List<Map<String, dynamic>> history,
+    String userContext,
   ) {
     // Get system instruction from Firestore or use default
-    final systemInstruction = _aiSettings['systemInstruction'] as String? ??
+    final systemInstruction =
+        _aiSettings['systemInstruction'] as String? ??
         'You are Velmora AI, a helpful relationship coach.';
 
     // Get language name
     final languageName = _getLanguageName(language);
 
-    // Build conversation context
-    final buffer = StringBuffer();
-    buffer.writeln(systemInstruction);
-    buffer.writeln('IMPORTANT: You MUST respond in $languageName. This is the user\'s preferred language.');
-    buffer.writeln();
+    // Combine system instruction with language constraint and user context
+    final fullSystemInstruction =
+        '''$systemInstruction
 
-    // Add recent history (sliding window)
-    if (history.isNotEmpty) {
-      buffer.writeln('Previous conversation:');
-      for (var msg in history) {
-        final role = msg['role'] == 'user' ? 'User' : 'Assistant';
-        buffer.writeln('$role: ${msg['content']}');
-      }
-      buffer.writeln();
+$userContext
+IMPORTANT: You MUST respond in $languageName. This is the user's preferred language.''';
+
+    // Build the contents (history + current message)
+    final contents = <Map<String, dynamic>>[];
+
+    // Add history
+    for (var msg in history) {
+      contents.add({
+        'role': msg['role'],
+        'parts': [
+          {'text': msg['content']},
+        ],
+      });
     }
 
-    buffer.writeln('User: $userMessage');
-    buffer.writeln('Assistant:');
+    // Add current user message
+    contents.add({
+      'role': 'user',
+      'parts': [
+        {'text': userMessage},
+      ],
+    });
 
-    return buffer.toString();
+    // Get generation config from Firestore or use defaults
+    final maxTokens = _aiSettings['maxTokens'] as int? ?? 500;
+    final temperature = (_aiSettings['temperature'] as num?)?.toDouble() ?? 0.7;
+    final topK = _aiSettings['topK'] as int? ?? 40;
+    final topP = (_aiSettings['topP'] as num?)?.toDouble() ?? 0.95;
+
+    // Get safety settings from Firestore or use defaults
+    final safetySettingsMap =
+        _aiSettings['safetySettings'] as Map<String, dynamic>? ?? {};
+    final dangerousContent =
+        safetySettingsMap['dangerousContent'] as String? ??
+        'BLOCK_MEDIUM_AND_ABOVE';
+    final harassment =
+        safetySettingsMap['harassment'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
+    final hateSpeech =
+        safetySettingsMap['hateSpeech'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
+    final sexuallyExplicit =
+        safetySettingsMap['sexuallyExplicit'] as String? ??
+        'BLOCK_MEDIUM_AND_ABOVE';
+
+    return {
+      'system_instruction': {
+        'parts': [
+          {'text': fullSystemInstruction},
+        ],
+      },
+      'contents': contents,
+      'generationConfig': {
+        'maxOutputTokens': maxTokens,
+        'temperature': temperature,
+        'topK': topK,
+        'topP': topP,
+      },
+      'safetySettings': [
+        {
+          'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+          'threshold': sexuallyExplicit,
+        },
+        {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': hateSpeech},
+        {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': harassment},
+        {
+          'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
+          'threshold': dangerousContent,
+        },
+      ],
+    };
   }
 
   /// Call Gemini API directly
-  Future<String> _callGeminiAPI(String prompt) async {
+  Future<String> _callGeminiAPI(Map<String, dynamic> requestBody) async {
     if (_apiKey == null || _apiKey!.isEmpty) {
       throw Exception('API key not configured');
     }
 
     try {
       final url = Uri.parse('$_apiUrl?key=$_apiKey');
-
-      // Get generation config from Firestore or use defaults
-      final maxTokens = _aiSettings['maxTokens'] as int? ?? 500;
-      final temperature = (_aiSettings['temperature'] as num?)?.toDouble() ?? 0.7;
-      final topK = _aiSettings['topK'] as int? ?? 40;
-      final topP = (_aiSettings['topP'] as num?)?.toDouble() ?? 0.95;
-
-      // Get safety settings from Firestore or use defaults
-      final safetySettings = _aiSettings['safetySettings'] as Map<String, dynamic>? ?? {};
-      final dangerousContent = safetySettings['dangerousContent'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
-      final harassment = safetySettings['harassment'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
-      final hateSpeech = safetySettings['hateSpeech'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
-      final sexuallyExplicit = safetySettings['sexuallyExplicit'] as String? ?? 'BLOCK_MEDIUM_AND_ABOVE';
-
-      final requestBody = {
-        'contents': [
-          {
-            'parts': [
-              {'text': prompt},
-            ],
-          },
-        ],
-        'generationConfig': {
-          'maxOutputTokens': maxTokens,
-          'temperature': temperature,
-          'topK': topK,
-          'topP': topP,
-        },
-        'safetySettings': [
-          {
-            'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
-            'threshold': sexuallyExplicit,
-          },
-          {
-            'category': 'HARM_CATEGORY_HATE_SPEECH',
-            'threshold': hateSpeech,
-          },
-          {
-            'category': 'HARM_CATEGORY_HARASSMENT',
-            'threshold': harassment,
-          },
-          {
-            'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
-            'threshold': dangerousContent,
-          },
-        ],
-      };
 
       final response = await http.post(
         url,
@@ -400,9 +421,18 @@ class AIService {
     }
 
     try {
-      final response = await _callGeminiAPI(
-        "$prompt\n\nIMPORTANT: Return ONLY valid JSON. No markdown formatting, no backticks.",
-      );
+      final response = await _callGeminiAPI({
+        'contents': [
+          {
+            'parts': [
+              {
+                'text':
+                    "$prompt\n\nIMPORTANT: Return ONLY valid JSON. No markdown formatting, no backticks.",
+              },
+            ],
+          },
+        ],
+      });
 
       // Clean up response if it contains markdown code blocks
       String cleanJson = response.trim();

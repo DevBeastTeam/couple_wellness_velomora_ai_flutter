@@ -245,6 +245,8 @@ class AppLocalizations {
       'type_message': 'Type your message...',
       'chat_disclaimer':
           'For informational purposes only. Consult a doctor for medical advice.',
+      'ai_error_message':
+          "I'm sorry, I'm having trouble connecting to my AI brain right now. Please contact the Admin.",
 
       // Authentication
       'sign_in': 'Sign In',
@@ -715,6 +717,8 @@ class AppLocalizations {
       'type_message': 'اكتب رسالتك...',
       'chat_disclaimer':
           'لأغراض إعلامية فقط. استشر طبيباً للحصول على نصيحة طبية.',
+      'ai_error_message':
+          'معذرة، أواجه مشكلة في الاتصال بذكائي الاصطناعي الآن. يرجى الاتصال بالمسؤول.',
 
       // Authentication
       'sign_in': 'تسجيل الدخول',
@@ -1318,6 +1322,8 @@ class AppLocalizations {
       'type_message': 'Tapez votre message...',
       'chat_disclaimer':
           'À des fins informatives uniquement. Consultez un médecin pour des conseils médicaux.',
+      'ai_error_message':
+          "Désolé, j'ai du mal à me connecter à mon cerveau IA en ce moment. Veuillez contacter l'administrateur.",
 
       // Authentication
       'sign_in': 'Se connecter',
@@ -1938,6 +1944,7 @@ class AppLocalizations {
   String get aiGreeting => translate('ai_greeting');
   String get typeMessage => translate('type_message');
   String get chatDisclaimer => translate('chat_disclaimer');
+  String get aiErrorMessage => translate('ai_error_message');
 
   // Authentication
   String get signIn => translate('sign_in');
