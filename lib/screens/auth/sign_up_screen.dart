@@ -7,6 +7,7 @@ import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:velmora/widgets/app_loading_widgets.dart';
+import 'package:velmora/screens/settings/help_support_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,7 +21,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _isSocialLoading = false;
+  bool _isGoogleLoading = false;
+  bool _isAppleLoading = false;
   bool _isPasswordVisible = false;
 
   @override
@@ -80,15 +82,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
         content: Text(message),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
+        action: message.toLowerCase().contains('banned')
+            ? SnackBarAction(
+                label: 'Contact',
+                textColor: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HelpSupportScreen(),
+                    ),
+                  );
+                },
+              )
+            : null,
       ),
     );
   }
 
   Future<void> _handleGoogleSignIn() async {
-    if (_isSocialLoading) return;
+    if (_isGoogleLoading || _isAppleLoading || _isLoading) return;
 
     setState(() {
-      _isSocialLoading = true;
+      _isGoogleLoading = true;
     });
 
     try {
@@ -98,7 +114,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // User canceled
         if (mounted) {
           setState(() {
-            _isSocialLoading = false;
+            _isGoogleLoading = false;
           });
         }
         return;
@@ -117,17 +133,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          _isSocialLoading = false;
+          _isGoogleLoading = false;
         });
       }
     }
   }
 
   Future<void> _handleAppleSignIn() async {
-    if (_isSocialLoading) return;
+    if (_isGoogleLoading || _isAppleLoading || _isLoading) return;
 
     setState(() {
-      _isSocialLoading = true;
+      _isAppleLoading = true;
     });
 
     try {
@@ -137,7 +153,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         // User canceled
         if (mounted) {
           setState(() {
-            _isSocialLoading = false;
+            _isAppleLoading = false;
           });
         }
         return;
@@ -156,7 +172,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } finally {
       if (mounted) {
         setState(() {
-          _isSocialLoading = false;
+          _isAppleLoading = false;
         });
       }
     }
@@ -305,14 +321,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       _buildSocialButton(
                         label: '${l10n.orContinueWith} ${l10n.google}',
                         iconPath: Icons.g_mobiledata,
-                        onTap: _isSocialLoading ? null : _handleGoogleSignIn,
+                        isLoading: _isGoogleLoading,
+                        onTap: (_isGoogleLoading || _isAppleLoading || _isLoading) ? null : _handleGoogleSignIn,
                       ),
                       SizedBox(height: 12.h),
                       if (Platform.isIOS)
                         _buildSocialButton(
                           label: '${l10n.orContinueWith} ${l10n.apple}',
                           iconPath: Icons.apple,
-                          onTap: _isSocialLoading ? null : _handleAppleSignIn,
+                          isLoading: _isAppleLoading,
+                          onTap: (_isGoogleLoading || _isAppleLoading || _isLoading) ? null : _handleAppleSignIn,
                         ),
                       SizedBox(height: 20.h),
 
@@ -397,6 +415,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _buildSocialButton({
     required String label,
     required IconData iconPath,
+    required bool isLoading,
     VoidCallback? onTap,
   }) {
     return GestureDetector(
@@ -412,7 +431,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (_isSocialLoading)
+            if (isLoading)
               const AppCircularLoader(size: 20, strokeWidth: 2)
             else ...[
               Icon(iconPath, size: 24),
