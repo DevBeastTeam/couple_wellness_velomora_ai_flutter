@@ -36,6 +36,7 @@ class ChatScreenSkeleton extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: height * 0.05),
                   Row(
                     children: [
                       ShimmerBox(
@@ -88,7 +89,7 @@ class ChatScreenSkeleton extends StatelessWidget {
             // Disclaimer
             _disclaimer(width, height),
             // Input field
-            _inputField(width, height),
+            // _inputField(width, height),
           ],
         ),
       ),
@@ -217,13 +218,13 @@ class ChatScreenSkeleton extends StatelessWidget {
                 ShimmerLine(
                   height: height * 0.015,
                   width: width * 0.8,
-                  color: Colors.orange.shade900,
+                  color: Colors.orange.shade300,
                 ),
                 SizedBox(height: height * 0.005),
                 ShimmerLine(
                   height: height * 0.015,
                   width: width * 0.6,
-                  color: Colors.orange.shade900,
+                  color: Colors.orange.shade300,
                 ),
               ],
             ),
