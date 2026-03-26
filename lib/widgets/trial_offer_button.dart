@@ -102,13 +102,11 @@ class _TrialOfferButtonState extends State<TrialOfferButton> {
       );
     }
 
-    if (_isTrialActive) return const SizedBox.shrink();
-
     final l10n = AppLocalizations.of(context);
     final text =
         widget.customText ?? l10n.translate('start_48_hour_free_trial');
 
-    if (_hasUsedTrial) {
+    if (_hasUsedTrial || _isTrialActive) {
       // Disabled state with strikethrough
       return Padding(
         padding: EdgeInsets.symmetric(vertical: 8.h),

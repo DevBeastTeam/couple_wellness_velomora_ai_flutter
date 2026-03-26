@@ -12,11 +12,13 @@ import 'package:flutter/material.dart';
 class PremiumFeatureGate extends StatelessWidget {
   final Widget child;
   final String featureName;
+  final VoidCallback? onBackToHome;
 
   const PremiumFeatureGate({
     super.key,
     required this.child,
     required this.featureName,
+    this.onBackToHome,
   });
 
   @override
@@ -60,7 +62,13 @@ class PremiumFeatureGate extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios, size: 24.adaptSize),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            if (onBackToHome != null) {
+              onBackToHome!();
+            } else if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            }
+          },
         ),
       ),
       body: SafeArea(

@@ -81,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return PremiumFeatureGate(
       featureName: 'AI Chat',
+      onBackToHome: widget.onBackToHome,
       child: _buildChatContent(context),
     );
   }
