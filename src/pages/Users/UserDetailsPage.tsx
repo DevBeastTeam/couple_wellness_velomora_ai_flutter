@@ -62,7 +62,7 @@ const UserDetailsPage: React.FC = () => {
     const [editForm, setEditForm] = useState({
         displayName: '',
         password: '',
-        subscriptionStatus: 'free' as 'free' | 'premium',
+        subscriptionStatus: 'free' as 'free' | 'premium' | 'trial',
         subscriptionType: '',
         subscriptionExpiryDate: ''
     });
@@ -119,17 +119,25 @@ const UserDetailsPage: React.FC = () => {
                 subscriptionStatus: editForm.subscriptionStatus,
             };
 
-            // Update subscription fields if premium
+            // Update subscription fields based on status
             if (editForm.subscriptionStatus === 'premium') {
                 updateData.isPremium = true;
                 updateData.subscriptionType = editForm.subscriptionType;
                 if (editForm.subscriptionExpiryDate) {
                     updateData.subscriptionExpiryDate = new Date(editForm.subscriptionExpiryDate);
                 }
+            } else if (editForm.subscriptionStatus === 'trial') {
+                updateData.isPremium = false;
+                updateData.subscriptionType = editForm.subscriptionType || 'velmora_trial_48h';
+                if (editForm.subscriptionExpiryDate) {
+                    updateData.trialEndTime = new Date(editForm.subscriptionExpiryDate);
+                }
             } else {
                 updateData.isPremium = false;
                 updateData.subscriptionType = '';
                 updateData.subscriptionExpiryDate = null;
+                updateData.trialStartTime = null;
+                updateData.trialEndTime = null;
             }
 
             await userService.updateUser(uid, updateData);
@@ -673,6 +681,12 @@ const UserDetailsPage: React.FC = () => {
                                         subscriptionType: '',
                                         subscriptionExpiryDate: ''
                                     });
+                                } else if (value === 'velmora_trial_48h') {
+                                    setEditForm({
+                                        ...editForm,
+                                        subscriptionStatus: 'trial',
+                                        subscriptionType: value
+                                    });
                                 } else {
                                     setEditForm({
                                         ...editForm,
@@ -683,12 +697,13 @@ const UserDetailsPage: React.FC = () => {
                             }}
                         >
                             <MenuItem value="free">Free Plan</MenuItem>
+                            <MenuItem value="velmora_trial_48h">48-Hour Trial</MenuItem>
                             <MenuItem value="velmora_premium_monthly">Monthly Plan</MenuItem>
                             <MenuItem value="velmora_premium_quarterly">Quarterly Plan</MenuItem>
                             <MenuItem value="velmora_premium_yearly">Yearly Plan</MenuItem>
                         </Select>
                     </FormControl>
-                    {editForm.subscriptionStatus === 'premium' && (
+                    {(editForm.subscriptionStatus === 'premium' || editForm.subscriptionStatus === 'trial') && (
                         <TextField
                             fullWidth
                             label="Expiry Date"
@@ -697,7 +712,7 @@ const UserDetailsPage: React.FC = () => {
                             onChange={(e) => setEditForm({ ...editForm, subscriptionExpiryDate: e.target.value })}
                             InputLabelProps={{ shrink: true }}
                             sx={{ mb: 2 }}
-                            helperText="Set the plan expiry date"
+                            helperText={`Set the ${editForm.subscriptionStatus} expiry date`}
                         />
                     )}
                 </DialogContent>
