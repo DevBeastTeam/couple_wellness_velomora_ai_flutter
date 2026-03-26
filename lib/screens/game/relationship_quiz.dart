@@ -6,6 +6,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class RelationshipQuizScreen extends StatefulWidget {
   const RelationshipQuizScreen({super.key});
@@ -84,6 +85,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _selectAnswer(String answer, bool isCorrect) {
@@ -97,6 +99,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
         _showResults = true;
       }
     });
+    VibrationService.vibration();
   }
 
   void _nextQuestion() {
@@ -120,6 +123,7 @@ class _RelationshipQuizScreenState extends State<RelationshipQuizScreen> {
       setState(() {
         _gameCompleted = true;
       });
+      VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

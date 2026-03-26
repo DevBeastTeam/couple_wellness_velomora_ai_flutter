@@ -6,6 +6,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class ComplimentGameScreen extends StatefulWidget {
   const ComplimentGameScreen({super.key});
@@ -80,6 +81,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _giveCompliment() {
@@ -88,6 +90,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
       _givenCompliments.add('$complimentGiver gave a compliment!');
       _isPlayer1Turn = !_isPlayer1Turn;
     });
+    VibrationService.vibration();
 
     if (_currentIndex < _prompts.length - 1) {
       setState(() {
@@ -120,6 +123,7 @@ class _ComplimentGameScreenState extends State<ComplimentGameScreen> {
       setState(() {
         _gameCompleted = true;
       });
+      VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

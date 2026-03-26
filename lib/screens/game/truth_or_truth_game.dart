@@ -7,6 +7,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class TruthOrTruthGameScreen extends StatefulWidget {
   const TruthOrTruthGameScreen({super.key});
@@ -160,6 +161,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _submitAnswer(AppLocalizations l10n) {
@@ -189,6 +191,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
     }
 
     controller.clear();
+    VibrationService.vibration();
 
     // Check if both players answered
     if (_answers[_currentQuestionIndex]!.length == 2) {
@@ -230,6 +233,7 @@ class _TruthOrTruthGameScreenState extends State<TruthOrTruthGameScreen> {
       setState(() {
         _gameCompleted = true;
       });
+      VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(

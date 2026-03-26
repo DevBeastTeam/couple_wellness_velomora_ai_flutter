@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class LoveLanguageQuizScreen extends StatefulWidget {
   const LoveLanguageQuizScreen({super.key});
@@ -153,6 +154,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _selectAnswer(String language) {
@@ -205,6 +207,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
         _isPlayer1Turn = !_isPlayer1Turn;
       });
     }
+    VibrationService.vibration();
   }
 
   String _getPrimaryLoveLanguage(Map<String, int> scores) {
@@ -314,6 +317,7 @@ class _LoveLanguageQuizScreenState extends State<LoveLanguageQuizScreen> {
       setState(() {
         _gameCompleted = true;
       });
+      VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(

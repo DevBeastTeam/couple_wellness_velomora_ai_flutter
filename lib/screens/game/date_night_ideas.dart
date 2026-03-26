@@ -6,6 +6,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class DateNightIdeasScreen extends StatefulWidget {
   const DateNightIdeasScreen({super.key});
@@ -77,6 +78,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _toggleFavorite(int index) {
@@ -87,6 +89,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
         _favoritedIndices.add(index);
       }
     });
+    VibrationService.vibration();
   }
 
   void _nextIdea() {
@@ -94,6 +97,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
       setState(() {
         _currentIndex++;
       });
+      VibrationService.vibration();
     } else {
       _finishGame();
     }
@@ -107,6 +111,7 @@ class _DateNightIdeasScreenState extends State<DateNightIdeasScreen> {
       setState(() {
         _gameCompleted = true;
       });
+    VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context);

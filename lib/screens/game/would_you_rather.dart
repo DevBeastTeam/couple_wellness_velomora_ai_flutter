@@ -6,6 +6,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class WouldYouRatherScreen extends StatefulWidget {
   const WouldYouRatherScreen({super.key});
@@ -82,6 +83,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _selectAnswer(String answer) {
@@ -93,6 +95,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
         _showResults = true;
       }
     });
+    VibrationService.vibration();
   }
 
   void _nextQuestion() {
@@ -116,6 +119,7 @@ class _WouldYouRatherScreenState extends State<WouldYouRatherScreen> {
       setState(() {
         _gameCompleted = true;
       });
+      VibrationService.longVibration();
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

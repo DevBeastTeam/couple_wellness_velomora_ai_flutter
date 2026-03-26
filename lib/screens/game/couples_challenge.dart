@@ -6,6 +6,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/game_progress_indicator.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class CouplesChallengeScreen extends StatefulWidget {
   const CouplesChallengeScreen({super.key});
@@ -86,12 +87,14 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _completeChallenge() {
     setState(() {
       _completedChallenges.add(_currentChallengeIndex);
     });
+    VibrationService.vibration();
 
     if (_currentChallengeIndex < _challenges.length - 1) {
       setState(() {
@@ -117,6 +120,7 @@ class _CouplesChallengeScreenState extends State<CouplesChallengeScreen> {
       if (_sessionId != null) {
         await _gameService.completeGameSession(_sessionId!);
       }
+      VibrationService.longVibration();
       setState(() {
         _gameCompleted = true;
       });

@@ -5,6 +5,7 @@ import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/widgets/skeletons/game_skeleton.dart';
 import 'package:velmora/models/game_question.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class ReflectionGameScreen extends StatefulWidget {
   const ReflectionGameScreen({super.key});
@@ -148,6 +149,7 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
       _player2Name = _player2Controller.text.trim();
       _namesSet = true;
     });
+    VibrationService.doubleVibration();
   }
 
   void _submitAnswer(AppLocalizations l10n) {
@@ -182,14 +184,16 @@ class _ReflectionGameScreenState extends State<ReflectionGameScreen> {
         }
       }
 
-      controller.clear();
     });
+    VibrationService.vibration();
+    controller.clear();
   }
 
   Future<void> _completeGame() async {
     if (_sessionId != null) {
       await _gameService.completeGameSession(_sessionId!);
     }
+    VibrationService.longVibration();
   }
 
   void _restartGame() {

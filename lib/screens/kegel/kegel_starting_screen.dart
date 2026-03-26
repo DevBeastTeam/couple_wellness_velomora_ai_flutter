@@ -189,12 +189,15 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                       ),
                     ],
                   ),
-                  Text(
-                    widget.routineType,
-                    style: TextStyle(
-                      fontSize: 24.fSize,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15.w),
+                    child: Text(
+                      widget.routineType,
+                      style: TextStyle(
+                        fontSize: 24.fSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -213,8 +216,8 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
             Align(
               alignment: Alignment.center,
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 24.w),
-                padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+                margin: EdgeInsets.symmetric(horizontal: 25.w),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30.adaptSize),
@@ -231,8 +234,8 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                   children: [
                     // Checkmark Circle
                     Container(
-                      width: 100.adaptSize,
-                      height: 100.adaptSize,
+                      width: 80.adaptSize,
+                      height: 80.adaptSize,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [Color(0xFFFF5B88), Color(0xFFFF5277)],
@@ -254,7 +257,7 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                         size: 50.adaptSize,
                       ),
                     ),
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 15.h),
                     Builder(
                       builder: (context) {
                         if (widget.routineType.contains('Intermediate')) {
@@ -347,11 +350,11 @@ class _KegelStartingScreenState extends State<KegelStartingScreen> {
                         }
                       },
                     ),
-                    SizedBox(height: 40.h),
+                    SizedBox(height: 20.h),
                     // Finish Button
                     SizedBox(
                       width: double.infinity,
-                      height: 56.h,
+                      height: 50.h,
                       child: ElevatedButton(
                         onPressed: () => Navigator.pop(context),
                         style: ElevatedButton.styleFrom(

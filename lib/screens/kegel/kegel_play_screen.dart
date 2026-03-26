@@ -4,6 +4,7 @@ import 'package:velmora/l10n/app_localizations.dart';
 import 'package:velmora/services/kegel_service.dart';
 import 'package:velmora/utils/responsive_sizer.dart';
 import 'package:flutter/material.dart';
+import 'package:velmora/services/vibration_service.dart';
 
 class KegelPlayScreen extends StatefulWidget {
   final String routineType;
@@ -61,6 +62,7 @@ class _KegelPlayScreenState extends State<KegelPlayScreen>
     });
     _breathingController.forward();
     _startTimer();
+    VibrationService.doubleVibration();
   }
 
   void _startTimer() {
@@ -96,6 +98,7 @@ class _KegelPlayScreenState extends State<KegelPlayScreen>
         _currentSet++;
       }
     }
+    VibrationService.vibration();
   }
 
   void _pauseExercise() {
@@ -114,6 +117,7 @@ class _KegelPlayScreenState extends State<KegelPlayScreen>
     _timer?.cancel();
     _breathingController.stop();
     setState(() => _isCompleted = true);
+    VibrationService.longVibration();
     _saveProgress();
   }
 
