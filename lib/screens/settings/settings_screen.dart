@@ -517,7 +517,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Text(
               title,
               style: TextStyle(
-                fontSize: 16.fSize,
+                fontSize: 15.fSize,
                 fontWeight: FontWeight.w500,
                 color: isDestructive ? Colors.red : const Color(0xFF1F2933),
               ),

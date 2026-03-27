@@ -153,7 +153,10 @@ class AIService {
   /// Generate AI response using Gemini API
   ///
   /// Returns the AI response text or throws an exception on error
-  Future<String> generateResponse(String userMessage, {String? languageCode}) async {
+  Future<String> generateResponse(
+    String userMessage, {
+    String? languageCode,
+  }) async {
     // Always reload config to get latest system instruction from admin
     await _loadAIConfig();
 
@@ -195,6 +198,11 @@ class AIService {
         userContext,
       );
 
+      debugPrint(' 🧠 AI System Instruction Language: $language');
+      debugPrint(
+        ' 🧠 AI Full Prompt: ${requestBody['systemInstruction']['parts'][0]['text']}',
+      );
+
       // Call Gemini API
       final response = await _callGeminiAPI(requestBody);
 
@@ -224,13 +232,41 @@ class AIService {
 
     // Combine system instruction with language constraint and user context
     final fullSystemInstruction =
-        '''$systemInstruction
+        '''
+CRITICAL: ALL RESPONSES MUST BE IN $languageName. DO NOT USE ANY OTHER LANGUAGE.
+
+$systemInstruction
 
 $userContext
-IMPORTANT: You MUST respond in $languageName. This is the user's preferred language.''';
+
+LANGUAGE LOCK:
+You are strictly required to respond in $languageName. This is the most important rule. 
+Even if historical messages are in another language, you MUST respond in $languageName only.
+''';
 
     // Build the contents (history + current message)
     final contents = <Map<String, dynamic>>[];
+
+    // LOCK: Prepend a "system reset" to force the AI to respect the chosen language
+    // despite whatever is in the history.
+    contents.add({
+      'role': 'user',
+      'parts': [
+        {
+          'text':
+              '[SYSTEM INSTRUCTION: Interface language is now $languageName. IGNORE the language of previous messages. Respond ONLY in $languageName.]',
+        },
+      ],
+    });
+    contents.add({
+      'role': 'model',
+      'parts': [
+        {
+          'text':
+              'Understood. I will respond to all future messages ONLY in $languageName.',
+        },
+      ],
+    });
 
     // Add history
     for (var msg in history) {
@@ -242,11 +278,14 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
       });
     }
 
-    // Add current user message
+    // Add current user message with total lock enforcement
     contents.add({
       'role': 'user',
       'parts': [
-        {'text': userMessage},
+        {
+          'text':
+              'User Message: $userMessage\n\n(IMPORTANT: Answer strictly in $languageName only.)',
+        },
       ],
     });
 
@@ -330,7 +369,11 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
             data['candidates'][0]['content'] != null &&
             data['candidates'][0]['content']['parts'] != null &&
             data['candidates'][0]['content']['parts'].isNotEmpty) {
-          return data['candidates'][0]['content']['parts'][0]['text'];
+          final aiMsg = data['candidates'][0]['content']['parts'][0]['text'];
+          debugPrint(
+            ' ✅ AI Response Successfully Parsed: ${aiMsg.substring(0, aiMsg.length > 50 ? 50 : aiMsg.length)}...',
+          );
+          return aiMsg;
         }
 
         throw Exception('Invalid response format from AI');

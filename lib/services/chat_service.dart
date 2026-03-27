@@ -35,6 +35,7 @@ class ChatService {
 
   /// Send a message
   Future<void> sendMessage(String message, {String? languageCode}) async {
+    debugPrint(' ✉️ ChatService.sendMessage: languageCode=$languageCode');
     if (currentUserId == null || message.trim().isEmpty) return;
 
     try {
@@ -104,7 +105,7 @@ class ChatService {
         final userDoc = await _firestore.collection('users').doc(currentUserId).get();
         language = userDoc.data()?['preferredLanguage'] ?? 'en';
       }
-
+      debugPrint(' 🤖 ChatService: Requesting AI response in $language');
       // Call real AI service
       aiResponse = await _aiService.generateResponse(userMessage, languageCode: language);
     } catch (e, st) {
@@ -130,6 +131,7 @@ class ChatService {
           'isUser': false,
           'timestamp': FieldValue.serverTimestamp(),
         });
+    debugPrint(' 💾 AI Response saved to Firestore successfully');
 
     // Notify user of AI interaction
     await _notificationService.addInAppNotification(

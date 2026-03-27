@@ -36,7 +36,9 @@ void main() async {
     print('❌ [FATAL FLUTTER ERROR] $stack');
     print('❌ [FATAL FLUTTER ERROR] Library: ${details.library}');
     print('❌ [FATAL FLUTTER ERROR] Context: ${details.context}');
-    print('❌ [FATAL FLUTTER ERROR] ════════════════════════════════════════════');
+    print(
+      '❌ [FATAL FLUTTER ERROR] ════════════════════════════════════════════',
+    );
 
     // Store error using ErrorCacheService
     ErrorCacheService().storeError(
@@ -54,7 +56,9 @@ void main() async {
     print('❌ [FATAL PLATFORM ERROR] Error: $error');
     print('❌ [FATAL PLATFORM ERROR] Stack trace:');
     print('❌ [FATAL PLATFORM ERROR] $stack');
-    print('❌ [FATAL PLATFORM ERROR] ════════════════════════════════════════════');
+    print(
+      '❌ [FATAL PLATFORM ERROR] ════════════════════════════════════════════',
+    );
 
     // Store error using ErrorCacheService
     ErrorCacheService().storeError(
@@ -68,45 +72,52 @@ void main() async {
   };
 
   // Catch all async errors that would otherwise crash the app
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-    // Initialize services
-    await AnalyticsService().initialize();
-    await AIService().initialize();
-    await SubscriptionService().initialize();
-
-    // Auto-setup AI config if it doesn't exist
-    final configExists = await AIConfigSetup.configExists();
-    if (!configExists) {
-      debugPrint('AI config not found, setting up defaults...');
-      await AIConfigSetup.setupAIConfig(
-        apiKey: 'AIzaSyA9tO6byX7lOSuY3WW105nlLpdtnVenIgo',
-        // apiKey: 'REPLACE_WITH_REAL_KEY_IN_FIRESTORE',
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       );
-    }
 
-    // Print any cached errors from previous runs
-    _printCachedErrors();
+      // Initialize services
+      await AnalyticsService().initialize();
+      await AIService().initialize();
+      await SubscriptionService().initialize();
 
-    runApp(const MyApp());
-  }, (error, stack) {
-    final timestamp = DateTime.now().toIso8601String();
-    print('❌ [FATAL ZONE ERROR] $timestamp');
-    print('❌ [FATAL ZONE ERROR] Type: ${error.runtimeType}');
-    print('❌ [FATAL ZONE ERROR] Error: $error');
-    print('❌ [FATAL ZONE ERROR] Stack trace:');
-    print('❌ [FATAL ZONE ERROR] $stack');
-    print('❌ [FATAL ZONE ERROR] ════════════════════════════════════════════');
+      // Auto-setup AI config if it doesn't exist
+      final configExists = await AIConfigSetup.configExists();
+      if (!configExists) {
+        debugPrint('AI config not found, setting up defaults...');
+        await AIConfigSetup.setupAIConfig(
+          apiKey: 'AIzaSyA9tO6byX7lOSuY3WW105nlLpdtnVenIgo',
+          // apiKey: 'REPLACE_WITH_REAL_KEY_IN_FIRESTORE',
+        );
+      }
 
-    // Store error using ErrorCacheService
-    ErrorCacheService().storeError(
-      'Zone Error: $error',
-      stack.toString(),
-      location: 'Zone',
-    );
-  });
+      // Print any cached errors from previous runs
+      _printCachedErrors();
+
+      runApp(const MyApp());
+    },
+    (error, stack) {
+      final timestamp = DateTime.now().toIso8601String();
+      print('❌ [FATAL ZONE ERROR] $timestamp');
+      print('❌ [FATAL ZONE ERROR] Type: ${error.runtimeType}');
+      print('❌ [FATAL ZONE ERROR] Error: $error');
+      print('❌ [FATAL ZONE ERROR] Stack trace:');
+      print('❌ [FATAL ZONE ERROR] $stack');
+      print(
+        '❌ [FATAL ZONE ERROR] ════════════════════════════════════════════',
+      );
+
+      // Store error using ErrorCacheService
+      ErrorCacheService().storeError(
+        'Zone Error: $error',
+        stack.toString(),
+        location: 'Zone',
+      );
+    },
+  );
 }
 
 // Helper to print cached errors from previous runs

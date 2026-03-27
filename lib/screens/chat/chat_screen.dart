@@ -61,6 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _isSendingNotifier.value = true;
 
     final String localeName = AppLocalizations.of(context).locale.languageCode;
+    debugPrint(' 🌐 ChatScreen sending message: localeName=$localeName');
 
     try {
       await _chatService.sendMessage(message, languageCode: localeName);
@@ -100,171 +101,171 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: 160.h,
-                  pinned: true,
-                  backgroundColor: AppColors.brandPurple,
-                  automaticallyImplyLeading: false,
-                  leading: IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () {
-                      if (widget.onBackToHome != null) {
-                        widget.onBackToHome!();
-                        return;
-                      }
-                      Navigator.pop(context);
-                    },
-                  ),
-                  elevation: 0,
-                  scrolledUnderElevation: 0,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _chatStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  _scrollToBottom();
+                }
+
+                Widget? stateWidget;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  stateWidget = const ChatScreenSkeleton();
+                } else if (snapshot.hasError) {
+                  stateWidget = Center(
+                    child: Text(
+                      '${l10n.translate('error_loading_messages')}: ${snapshot.error}',
                     ),
-                  ),
-                  flexibleSpace: FlexibleSpaceBar(
-                    expandedTitleScale: 1.0,
-                    titlePadding: EdgeInsets.zero,
-                    title: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final isCollapsed =
-                            constraints.maxHeight <=
-                            kToolbarHeight +
-                                MediaQuery.of(context).padding.top +
-                                10;
-                        return AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          padding: EdgeInsets.only(
-                            left: isCollapsed ? 0 : 24.w,
-                            right: isCollapsed ? 0 : 24.w,
-                            bottom: isCollapsed ? 16.h : 24.h,
-                          ),
-                          alignment: isCollapsed
-                              ? Alignment.bottomCenter
-                              : Alignment.bottomLeft,
-                          child: isCollapsed
-                              ? Text(
-                                  l10n.chat,
-                                  style: TextStyle(
-                                    fontSize: 18.fSize,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.chat_bubble_outline,
-                                          color: Colors.white,
-                                          size: 28.adaptSize,
-                                        ),
-                                        SizedBox(width: 12.w),
-                                        Text(
-                                          l10n.chat,
-                                          style: TextStyle(
-                                            fontSize: 32.fSize,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 4.h),
-                                    Text(
-                                      l10n.aiCompanion,
-                                      style: TextStyle(
-                                        color: Colors.white.withOpacity(0.9),
-                                        fontSize: 14.fSize,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                        );
-                      },
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  stateWidget = Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(24.adaptSize),
+                      child: Text(
+                        l10n.aiGreeting,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16.fSize,
+                        ),
+                      ),
                     ),
-                    background: Container(
-                      decoration: const BoxDecoration(
-                        color: AppColors.brandPurple,
+                  );
+                }
+
+                return CustomScrollView(
+                  controller: _scrollController,
+                  slivers: [
+                    SliverAppBar(
+                      expandedHeight: 160.h,
+                      pinned: true,
+                      backgroundColor: AppColors.brandPurple,
+                      automaticallyImplyLeading: false,
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () {
+                          if (widget.onBackToHome != null) {
+                            widget.onBackToHome!();
+                            return;
+                          }
+                          Navigator.pop(context);
+                        },
+                      ),
+                      elevation: 0,
+                      scrolledUnderElevation: 0,
+                      shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(40),
                           bottomRight: Radius.circular(40),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                StreamBuilder<QuerySnapshot>(
-                  stream: _chatStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      _scrollToBottom();
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: ChatScreenSkeleton(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Text(
-                            '${l10n.translate('error_loading_messages')}: ${snapshot.error}',
-                          ),
-                        ),
-                      );
-                    } else if (!snapshot.hasData ||
-                        snapshot.data!.docs.isEmpty) {
-                      return SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(24.adaptSize),
-                            child: Text(
-                              l10n.aiGreeting,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 16.fSize,
+                      flexibleSpace: FlexibleSpaceBar(
+                        expandedTitleScale: 1.0,
+                        titlePadding: EdgeInsets.zero,
+                        title: LayoutBuilder(
+                          builder: (context, constraints) {
+                            final isCollapsed =
+                                constraints.maxHeight <=
+                                kToolbarHeight +
+                                    MediaQuery.of(context).padding.top +
+                                    10;
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              padding: EdgeInsets.only(
+                                left: isCollapsed ? 0 : 24.w,
+                                right: isCollapsed ? 0 : 24.w,
+                                bottom: isCollapsed ? 16.h : 24.h,
                               ),
+                              alignment: isCollapsed
+                                  ? Alignment.bottomCenter
+                                  : Alignment.bottomLeft,
+                              child: isCollapsed
+                                  ? Text(
+                                      l10n.chat,
+                                      style: TextStyle(
+                                        fontSize: 18.fSize,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.chat_bubble_outline,
+                                              color: Colors.white,
+                                              size: 28.adaptSize,
+                                            ),
+                                            SizedBox(width: 12.w),
+                                            Text(
+                                              l10n.chat,
+                                              style: TextStyle(
+                                                fontSize: 32.fSize,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        Text(
+                                          l10n.aiCompanion,
+                                          style: TextStyle(
+                                            color:
+                                                Colors.white.withOpacity(0.9),
+                                            fontSize: 14.fSize,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            );
+                          },
+                        ),
+                        background: Container(
+                          decoration: const BoxDecoration(
+                            color: AppColors.brandPurple,
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(40),
+                              bottomRight: Radius.circular(40),
                             ),
                           ),
                         ),
-                      );
-                    }
-
-                    return SliverPadding(
-                      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final messages = snapshot.data!.docs;
-                          final messageData =
-                              messages[index].data() as Map<String, dynamic>;
-                          final isUser = messageData['isUser'] ?? false;
-                          final message = messageData['message'] ?? '';
-
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: 16.h),
-                            child: isUser
-                                ? _buildUserMessage(message)
-                                : _buildAIMessage(message),
-                          );
-                        }, childCount: snapshot.data!.docs.length),
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                    if (stateWidget != null)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: stateWidget,
+                      )
+                    else
+                      SliverPadding(
+                        padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
+                        sliver: SliverList(
+                          delegate:
+                              SliverChildBuilderDelegate((context, index) {
+                            final messages = snapshot.data!.docs;
+                            final messageData =
+                                messages[index].data() as Map<String, dynamic>;
+                            final isUser = messageData['isUser'] ?? false;
+                            final message = messageData['message'] ?? '';
+
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 16.h),
+                              child: isUser
+                                  ? _buildUserMessage(message)
+                                  : _buildAIMessage(message),
+                            );
+                          }, childCount: snapshot.data!.docs.length),
+                        ),
+                      ),
+                  ],
+                );
+              },
             ),
           ),
           _buildChatFooter(),

@@ -264,7 +264,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w500,
-                            fontSize: 14.fSize,
+                            fontSize: 11.fSize,
                           ),
                         ),
                       ],
