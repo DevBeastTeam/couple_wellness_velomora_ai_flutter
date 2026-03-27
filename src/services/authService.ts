@@ -16,25 +16,42 @@ const DEV_LOGIN_KEY = 'dev_login_mode';
 
 export const authService = {
     login: async (email: string, pass: string) => {
-        // Developer shortcut login: dev@gmail.com / 12345678
         const normalizedEmail = email.trim().toLowerCase();
-        if (normalizedEmail === 'dev@gmail.com' && pass === '12345678') {
+
+        // 1. Fetch current admin credentials from Firestore
+        let adminEmail = 'dev@gmail.com';
+        let adminPassword = '12345678';
+
+        try {
+            const adminDoc = await getDoc(doc(db, 'admin', 'credentials'));
+            if (adminDoc.exists()) {
+                const data = adminDoc.data();
+                adminEmail = data.adminEmail || adminEmail;
+                adminPassword = data.adminPassword || adminPassword;
+            }
+        } catch (e) {
+            console.log('Using default dev credentials (could not fetch from Firestore)');
+        }
+
+        // 2. Developer/Local shortcut login check
+        if ((normalizedEmail === 'dev@gmail.com' && pass === '12345678') ||
+            (normalizedEmail === adminEmail.trim().toLowerCase() && pass === adminPassword)) {
+
             localStorage.setItem(SESSION_KEY, Date.now().toString());
             localStorage.setItem(DEV_LOGIN_KEY, 'true');
+
             // Create a mock user for dev mode
             return {
                 user: {
                     uid: 'dev-user',
-                    email: 'dev@gmail.com',
-                    displayName: 'dev',
+                    email: normalizedEmail,
+                    displayName: 'Local Admin',
                 }
             };
-
         }
 
-        // Real admin login via Firebase
+        // 3. Real Firebase Authentication fallback
         localStorage.removeItem(DEV_LOGIN_KEY);
-        // Set session timestamp before Firebase login to avoid race condition with AuthContext
         localStorage.setItem(SESSION_KEY, Date.now().toString());
 
         const result = await signInWithEmailAndPassword(auth, email, pass);

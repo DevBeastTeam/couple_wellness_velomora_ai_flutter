@@ -23,7 +23,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onDrawerToggle }) => {
-    const { user, role } = useAuth();
+    const { user, role, logout } = useAuth();
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [remainingTime, setRemainingTime] = useState<number>(0);
 
@@ -48,7 +48,7 @@ const Header: React.FC<HeaderProps> = ({ onDrawerToggle }) => {
     };
 
     const handleLogout = async () => {
-        await authService.logout();
+        await logout();
         handleClose();
     };
 

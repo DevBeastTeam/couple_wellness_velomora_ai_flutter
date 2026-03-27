@@ -270,7 +270,7 @@ const Dashboard: React.FC = () => {
             {loading ? (
                 <SkeletonLoader type="dashboard" />
             ) : (
-                <Grid container spacing={2.5}>
+                <Grid container rowSpacing={2.5} columnSpacing={0}>
                     <Grid item xs={12} sm={6} lg={3}>
                         <MetricCard
                             title="Total Users"
@@ -314,7 +314,7 @@ const Dashboard: React.FC = () => {
                 </Grid>
             )}
 
-            <Grid container spacing={2.5}>
+            <Grid container rowSpacing={2.5} columnSpacing={0}>
                 <Grid item xs={12} lg={4}>
                     <Card sx={{ borderRadius: 3, height: '100%', border: '1px solid', borderColor: 'divider' }}>
                         <CardContent>

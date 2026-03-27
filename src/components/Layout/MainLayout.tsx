@@ -40,8 +40,10 @@ const MainLayout: React.FC = () => {
                 onClick={handleContentClick}
                 sx={{
                     flexGrow: 1,
-                    p: { xs: 2, sm: 3 },
-                    width: '100%'
+                    p: { xs: 2.5, sm: 3 },
+                    minHeight: '100vh',
+                    minWidth: 0, // Critical for flex children to not overflow
+                    overflowX: 'hidden',
                 }}
             >
                 <Toolbar />
