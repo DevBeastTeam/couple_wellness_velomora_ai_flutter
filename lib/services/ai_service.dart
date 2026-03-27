@@ -18,8 +18,9 @@ class AIService {
 
   // Gemini API configuration
   String? _apiKey;
+  String _model = 'gemini-2.5-flash';
   String _apiUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
   // AI Settings from Firestore
   Map<String, dynamic> _aiSettings = {};
@@ -56,16 +57,26 @@ class AIService {
         _apiKey = _aiSettings['apiKey'] as String?;
 
         // Override API URL if custom model is set
-        String? model = _aiSettings['model'] as String?;
-        if (model != null && model.isNotEmpty) {
+        final rawModel = _aiSettings['model'];
+        debugPrint(
+          '🔍 Raw model from Firestore: $rawModel (type: ${rawModel.runtimeType})',
+        );
+        String? model = rawModel as String?;
+        if (model != null && model.trim().isNotEmpty) {
           model = model.trim();
-          // Remove 'models/' prefix if it's already there to avoid duplicates in the URL
+          // Strip any 'models/' prefix to avoid duplication, then re-add it
           if (model.startsWith('models/')) {
             model = model.replaceFirst('models/', '');
           }
-          _apiUrl =
-              'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent';
+          _model = model;
+        } else {
+          _model = 'gemini-2.5-flash';
         }
+
+        // Build API URL — model goes ONLY in the URL path, NOT in request body
+        _apiUrl =
+            'https://generativelanguage.googleapis.com/v1beta/models/$_model:generateContent';
+        debugPrint('🌐 Gemini API URL: $_apiUrl');
       }
 
       // Fallback: If no config in Firestore, set to null
@@ -142,7 +153,7 @@ class AIService {
   /// Generate AI response using Gemini API
   ///
   /// Returns the AI response text or throws an exception on error
-  Future<String> generateResponse(String userMessage) async {
+  Future<String> generateResponse(String userMessage, {String? languageCode}) async {
     // Always reload config to get latest system instruction from admin
     await _loadAIConfig();
 
@@ -160,7 +171,7 @@ class AIService {
     try {
       // Get conversation history and language
       final history = await _getConversationHistory();
-      final language = await _getUserLanguage();
+      final language = languageCode ?? await _getUserLanguage();
 
       // Get user profile context (names)
       String userContext = '';
@@ -188,8 +199,10 @@ class AIService {
       final response = await _callGeminiAPI(requestBody);
 
       return response;
-    } catch (e) {
-      debugPrint('AI generation error: $e');
+    } catch (e, stackTrace) {
+      debugPrint(
+        'generateResponse: 💥 AI generation error: $e , st: $stackTrace',
+      );
       throw Exception('Failed to generate response. Please try again.');
     }
   }
@@ -258,7 +271,7 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
         'BLOCK_MEDIUM_AND_ABOVE';
 
     return {
-      'system_instruction': {
+      'systemInstruction': {
         'parts': [
           {'text': fullSystemInstruction},
         ],
@@ -291,6 +304,11 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
       throw Exception('API key not configured');
     }
 
+    // Remove 'model' from body if accidentally included — model is URL-only
+    debugPrint('📡 Calling Gemini API: $_apiUrl');
+    debugPrint('🔑 API Key present: ${_apiKey!.isNotEmpty}');
+    debugPrint('📦 Request body keys: ${requestBody.keys.join(", ")}');
+
     try {
       final url = Uri.parse('$_apiUrl?key=$_apiKey');
 
@@ -299,6 +317,9 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(requestBody),
       );
+
+      debugPrint('📥 Response status: ${response.statusCode}');
+      debugPrint('📥 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -316,10 +337,17 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
       } else {
         final errorData = jsonDecode(response.body);
         final errorMessage = errorData['error']?['message'] ?? 'Unknown error';
-        debugPrint('Gemini API error (${response.statusCode}): $errorMessage');
+        debugPrint(
+          '❌ Gemini API error (${response.statusCode}): $errorMessage',
+        );
+        debugPrint('❌ Full error response: ${response.body}');
 
         if (response.statusCode == 403) {
-          throw Exception('API key invalid or expired');
+          throw Exception(
+            'API key invalid or expired. Please check your API key in admin panel.',
+          );
+        } else if (response.statusCode == 400) {
+          throw Exception('Invalid request: $errorMessage');
         } else if (response.statusCode == 429) {
           throw Exception('Rate limit exceeded. Please try again later.');
         } else {
@@ -327,6 +355,7 @@ IMPORTANT: You MUST respond in $languageName. This is the user's preferred langu
         }
       }
     } catch (e) {
+      debugPrint('💥 Exception in _callGeminiAPI: $e');
       if (e is Exception) rethrow;
       throw Exception('Network error. Please check your connection.');
     }

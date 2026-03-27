@@ -11,7 +11,7 @@ class AIConfigSetup {
   static Future<void> setupAIConfig({
     required String apiKey,
     bool enabled = true,
-    String model = 'gemini-2.0-flash',
+    String model = 'gemini-2.5-flash',
   }) async {
     try {
       debugPrint('Setting up AI configuration in Firestore...');

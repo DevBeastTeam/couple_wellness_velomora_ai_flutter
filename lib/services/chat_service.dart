@@ -34,7 +34,7 @@ class ChatService {
   }
 
   /// Send a message
-  Future<void> sendMessage(String message) async {
+  Future<void> sendMessage(String message, {String? languageCode}) async {
     if (currentUserId == null || message.trim().isEmpty) return;
 
     try {
@@ -67,7 +67,7 @@ class ChatService {
       await _analyticsService.logChatMessage(false, message.length);
 
       // Generate AI response
-      await _generateAIResponse(message.trim());
+      await _generateAIResponse(message.trim(), languageCode: languageCode);
 
       // Record rate limit action
       await _rateLimitService.recordAction(
@@ -90,19 +90,23 @@ class ChatService {
   }
 
   /// Generate AI response using Gemini AI via Firebase Cloud Functions
-  Future<void> _generateAIResponse(String userMessage) async {
+  Future<void> _generateAIResponse(String userMessage, {String? languageCode}) async {
     if (currentUserId == null) return;
 
     String aiResponse;
 
     String language = 'en';
     try {
-      // Get user language for localization
-      final userDoc = await _firestore.collection('users').doc(currentUserId).get();
-      language = userDoc.data()?['preferredLanguage'] ?? 'en';
+      if (languageCode != null) {
+        language = languageCode;
+      } else {
+        // Get user language for localization
+        final userDoc = await _firestore.collection('users').doc(currentUserId).get();
+        language = userDoc.data()?['preferredLanguage'] ?? 'en';
+      }
 
       // Call real AI service
-      aiResponse = await _aiService.generateResponse(userMessage);
+      aiResponse = await _aiService.generateResponse(userMessage, languageCode: language);
     } catch (e, st) {
       debugPrint(' 💥 AI service failed: $e, st:$st');
 

@@ -22,14 +22,23 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   final ScrollController _scrollController = ScrollController();
   final FocusNode _messageFocusNode = FocusNode();
-  bool _isSending = false;
-  bool _showDisclaimer = true;
+  late Stream<QuerySnapshot> _chatStream;
+  final ValueNotifier<bool> _isSendingNotifier = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> _showDisclaimerNotifier = ValueNotifier<bool>(true);
+
+  @override
+  void initState() {
+    super.initState();
+    _chatStream = _chatService.getChatMessages();
+  }
 
   @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
     _messageFocusNode.dispose();
+    _isSendingNotifier.dispose();
+    _showDisclaimerNotifier.dispose();
     super.dispose();
   }
 
@@ -47,14 +56,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> _sendMessage() async {
     final message = _messageController.text.trim();
-    if (message.isEmpty || _isSending) return;
+    if (message.isEmpty || _isSendingNotifier.value) return;
 
-    setState(() {
-      _isSending = true;
-    });
+    _isSendingNotifier.value = true;
+
+    final String localeName = AppLocalizations.of(context).locale.languageCode;
 
     try {
-      await _chatService.sendMessage(message);
+      await _chatService.sendMessage(message, languageCode: localeName);
       _messageController.clear();
       _scrollToBottom();
     } catch (e) {
@@ -70,9 +79,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }
     } finally {
       if (mounted) {
-        setState(() {
-          _isSending = false;
-        });
+        _isSendingNotifier.value = false;
       }
     }
   }
@@ -93,174 +100,171 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _chatService.getChatMessages(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  _scrollToBottom();
-                }
-
-                Widget? stateWidget;
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const ChatScreenSkeleton();
-                } else if (snapshot.hasError) {
-                  stateWidget = Center(
-                    child: Text(
-                      '${l10n.translate('error_loading_messages')}: ${snapshot.error}',
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  expandedHeight: 160.h,
+                  pinned: true,
+                  backgroundColor: AppColors.brandPurple,
+                  automaticallyImplyLeading: false,
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () {
+                      if (widget.onBackToHome != null) {
+                        widget.onBackToHome!();
+                        return;
+                      }
+                      Navigator.pop(context);
+                    },
+                  ),
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(40),
+                      bottomRight: Radius.circular(40),
                     ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  stateWidget = Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(24.adaptSize),
-                      child: Text(
-                        l10n.aiGreeting,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 16.fSize,
-                        ),
-                      ),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    expandedTitleScale: 1.0,
+                    titlePadding: EdgeInsets.zero,
+                    title: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final isCollapsed =
+                            constraints.maxHeight <=
+                            kToolbarHeight +
+                                MediaQuery.of(context).padding.top +
+                                10;
+                        return AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: EdgeInsets.only(
+                            left: isCollapsed ? 0 : 24.w,
+                            right: isCollapsed ? 0 : 24.w,
+                            bottom: isCollapsed ? 16.h : 24.h,
+                          ),
+                          alignment: isCollapsed
+                              ? Alignment.bottomCenter
+                              : Alignment.bottomLeft,
+                          child: isCollapsed
+                              ? Text(
+                                  l10n.chat,
+                                  style: TextStyle(
+                                    fontSize: 18.fSize,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          Icons.chat_bubble_outline,
+                                          color: Colors.white,
+                                          size: 28.adaptSize,
+                                        ),
+                                        SizedBox(width: 12.w),
+                                        Text(
+                                          l10n.chat,
+                                          style: TextStyle(
+                                            fontSize: 32.fSize,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Text(
+                                      l10n.aiCompanion,
+                                      style: TextStyle(
+                                        color: Colors.white.withOpacity(0.9),
+                                        fontSize: 14.fSize,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                        );
+                      },
                     ),
-                  );
-                }
-
-                return CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    SliverAppBar(
-                      expandedHeight: 160.h,
-                      pinned: true,
-                      backgroundColor: AppColors.brandPurple,
-                      automaticallyImplyLeading: false,
-                      leading: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () {
-                          if (widget.onBackToHome != null) {
-                            widget.onBackToHome!();
-                            return;
-                          }
-                          Navigator.pop(context);
-                        },
-                      ),
-                      elevation: 0,
-                      scrolledUnderElevation: 0,
-                      shape: const RoundedRectangleBorder(
+                    background: Container(
+                      decoration: const BoxDecoration(
+                        color: AppColors.brandPurple,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(40),
                           bottomRight: Radius.circular(40),
                         ),
                       ),
-                      flexibleSpace: FlexibleSpaceBar(
-                        expandedTitleScale: 1.0,
-                        titlePadding: EdgeInsets.zero,
-                        title: LayoutBuilder(
-                          builder: (context, constraints) {
-                            final isCollapsed =
-                                constraints.maxHeight <=
-                                kToolbarHeight +
-                                    MediaQuery.of(context).padding.top +
-                                    10;
-                            return AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              padding: EdgeInsets.only(
-                                left: isCollapsed ? 0 : 24.w,
-                                right: isCollapsed ? 0 : 24.w,
-                                bottom: isCollapsed ? 16.h : 24.h,
-                              ),
-                              alignment: isCollapsed
-                                  ? Alignment.bottomCenter
-                                  : Alignment.bottomLeft,
-                              child: isCollapsed
-                                  ? Text(
-                                      l10n.chat,
-                                      style: TextStyle(
-                                        fontSize: 18.fSize,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  : Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.chat_bubble_outline,
-                                              color: Colors.white,
-                                              size: 28.adaptSize,
-                                            ),
-                                            SizedBox(width: 12.w),
-                                            Text(
-                                              l10n.chat,
-                                              style: TextStyle(
-                                                fontSize: 32.fSize,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Text(
-                                          l10n.aiCompanion,
-                                          style: TextStyle(
-                                            color: Colors.white.withOpacity(
-                                              0.9,
-                                            ),
-                                            fontSize: 14.fSize,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            );
-                          },
+                    ),
+                  ),
+                ),
+                StreamBuilder<QuerySnapshot>(
+                  stream: _chatStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      _scrollToBottom();
+                    }
+
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: ChatScreenSkeleton(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Text(
+                            '${l10n.translate('error_loading_messages')}: ${snapshot.error}',
+                          ),
                         ),
-                        background: Container(
-                          decoration: const BoxDecoration(
-                            color: AppColors.brandPurple,
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(40),
-                              bottomRight: Radius.circular(40),
+                      );
+                    } else if (!snapshot.hasData ||
+                        snapshot.data!.docs.isEmpty) {
+                      return SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(24.adaptSize),
+                            child: Text(
+                              l10n.aiGreeting,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 16.fSize,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    if (stateWidget != null)
-                      SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: stateWidget,
-                      )
-                    else
-                      SliverPadding(
-                        padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate((
-                            context,
-                            index,
-                          ) {
-                            final messages = snapshot.data!.docs;
-                            final messageData =
-                                messages[index].data() as Map<String, dynamic>;
-                            final isUser = messageData['isUser'] ?? false;
-                            final message = messageData['message'] ?? '';
+                      );
+                    }
 
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 16.h),
-                              child: isUser
-                                  ? _buildUserMessage(message)
-                                  : _buildAIMessage(message),
-                            );
-                          }, childCount: snapshot.data!.docs.length),
-                        ),
+                    return SliverPadding(
+                      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                          final messages = snapshot.data!.docs;
+                          final messageData =
+                              messages[index].data() as Map<String, dynamic>;
+                          final isUser = messageData['isUser'] ?? false;
+                          final message = messageData['message'] ?? '';
+
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 16.h),
+                            child: isUser
+                                ? _buildUserMessage(message)
+                                : _buildAIMessage(message),
+                          );
+                        }, childCount: snapshot.data!.docs.length),
                       ),
-                  ],
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           _buildChatFooter(),
@@ -362,56 +366,59 @@ class _ChatScreenState extends State<ChatScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           // Medical Disclaimer Box
-          if (_showDisclaimer)
-            Stack(
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.all(12.adaptSize),
-                  margin: EdgeInsets.only(bottom: 16.h),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF9E6), // Pale Yellow
-                    borderRadius: BorderRadius.circular(12.adaptSize),
-                    border: Border.all(color: Colors.orange.shade100),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        color: Colors.orange,
-                        size: 18.adaptSize,
-                      ),
-                      SizedBox(width: 8.w),
-                      Expanded(
-                        child: Text(
-                          AppLocalizations.of(context).chatDisclaimer,
-                          style: TextStyle(
-                            color: Colors.orange.shade900,
-                            fontSize: 12.fSize,
+          ValueListenableBuilder<bool>(
+            valueListenable: _showDisclaimerNotifier,
+            builder: (context, showDisclaimer, child) {
+              if (!showDisclaimer) return const SizedBox.shrink();
+              return Stack(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(12.adaptSize),
+                    margin: EdgeInsets.only(bottom: 16.h),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF9E6), // Pale Yellow
+                      borderRadius: BorderRadius.circular(12.adaptSize),
+                      border: Border.all(color: Colors.orange.shade100),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.orange,
+                          size: 18.adaptSize,
+                        ),
+                        SizedBox(width: 8.w),
+                        Expanded(
+                          child: Text(
+                            AppLocalizations.of(context).chatDisclaimer,
+                            style: TextStyle(
+                              color: Colors.orange.shade900,
+                              fontSize: 12.fSize,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 1.5,
-                  right: 1.5,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _showDisclaimer = false;
-                      });
-                    },
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.orange.shade300,
-                      size: 18.adaptSize,
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                  Positioned(
+                    top: 1.5,
+                    right: 1.5,
+                    child: GestureDetector(
+                      onTap: () {
+                        _showDisclaimerNotifier.value = false;
+                      },
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.orange.shade300,
+                        size: 18.adaptSize,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
 
           // Text Input Field
           Row(
@@ -447,32 +454,37 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               SizedBox(width: 12.w),
               // Send Button
-              GestureDetector(
-                onTap: _isSending ? null : _sendMessage,
-                child: Container(
-                  height: 54.h,
-                  width: 54.h,
-                  decoration: BoxDecoration(
-                    color: _isSending
-                        ? AppColors.brandPurple.withOpacity(0.5)
-                        : AppColors.brandPurple,
-                    shape: BoxShape.circle,
-                  ),
-                  child: _isSending
-                      ? Padding(
-                          padding: EdgeInsets.all(15.adaptSize),
-                          child: const AppCircularLoader(
-                            size: 20,
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Icon(
-                          Icons.send_rounded,
-                          color: Colors.white,
-                          size: 24.adaptSize,
-                        ),
-                ),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isSendingNotifier,
+                builder: (context, isSending, child) {
+                  return GestureDetector(
+                    onTap: isSending ? null : _sendMessage,
+                    child: Container(
+                      height: 54.h,
+                      width: 54.h,
+                      decoration: BoxDecoration(
+                        color: isSending
+                            ? AppColors.brandPurple.withOpacity(0.5)
+                            : AppColors.brandPurple,
+                        shape: BoxShape.circle,
+                      ),
+                      child: isSending
+                          ? Padding(
+                              padding: EdgeInsets.all(15.adaptSize),
+                              child: const AppCircularLoader(
+                                size: 20,
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Icon(
+                              Icons.send_rounded,
+                              color: Colors.white,
+                              size: 24.adaptSize,
+                            ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

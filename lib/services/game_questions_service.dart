@@ -142,7 +142,7 @@ class GameQuestionsService {
     Map<String, dynamic> aiConfig,
   ) async {
     try {
-      final model = aiConfig['model'] as String? ?? 'gemini-2.0-flash';
+      final model = aiConfig['model'] as String? ?? 'gemini-2.5-flash';
       final apiUrl =
           'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey';
 

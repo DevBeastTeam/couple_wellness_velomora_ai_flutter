@@ -34,7 +34,7 @@ class AIConfigModel {
   AIConfigModel({
     this.apiKey,
     this.enabled = true,
-    this.model = 'gemini-2.0-flash',
+    this.model = 'gemini-2.5-flash',
     this.maxTokens = 500,
     this.temperature = 0.7,
     this.topK = 40,
@@ -53,7 +53,7 @@ class AIConfigModel {
     return AIConfigModel(
       apiKey: data['apiKey'] as String?,
       enabled: data['enabled'] as bool? ?? true,
-      model: data['model'] as String? ?? 'gemini-2.0-flash',
+      model: data['model'] as String? ?? 'gemini-2.5-flash',
       maxTokens: data['maxTokens'] as int? ?? 500,
       temperature: (data['temperature'] as num?)?.toDouble() ?? 0.7,
       topK: data['topK'] as int? ?? 40,
