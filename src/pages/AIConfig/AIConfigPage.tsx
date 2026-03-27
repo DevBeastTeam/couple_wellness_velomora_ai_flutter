@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
     Box, Typography, TextField, Button, Paper, Grid,
-    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton, Switch, FormControlLabel, Stack
+    CircularProgress, Alert, MenuItem, Divider, InputAdornment, IconButton, Switch, FormControlLabel, Stack, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
-import { Save, Refresh, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Save, Refresh, Visibility, VisibilityOff, CheckCircle } from '@mui/icons-material';
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../services/firebase';
 import SkeletonLoader from '../../components/Layout/SkeletonLoader';
@@ -31,7 +31,7 @@ const defaultConfig: AIConfig = {
     enabled: true,
     apiKey: 'PLACEHOLDER_KEY',
     maxTokens: 500,
-    model: 'gemini-2.0-flash',
+    model: 'gemini-2.5-flash',
     safetySettings: {
         dangerousContent: 'BLOCK_MEDIUM_AND_ABOVE',
         harassment: 'BLOCK_MEDIUM_AND_ABOVE',
@@ -58,6 +58,9 @@ const AIConfigPage: React.FC = () => {
     const [success, setSuccess] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [showApiKey, setShowApiKey] = useState(false);
+    const [testing, setTesting] = useState(false);
+    const [testDialogOpen, setTestDialogOpen] = useState(false);
+    const [testResponse, setTestResponse] = useState<string>('');
 
     useEffect(() => {
         loadConfig();
@@ -100,6 +103,55 @@ const AIConfigPage: React.FC = () => {
         }
     };
 
+    const handleTestAPI = async () => {
+        setTesting(true);
+        setError(null);
+        setTestResponse('');
+
+        try {
+            // Remove 'models/' prefix if present
+            let modelName = config.model;
+            if (modelName.startsWith('models/')) {
+                modelName = modelName.replace('models/', '');
+            }
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${config.apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            parts: [
+                                {
+                                    text: 'Say "Hey" to test the connection.',
+                                },
+                            ],
+                        },
+                    ],
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response';
+                setTestResponse(aiResponse);
+                setTestDialogOpen(true);
+            } else {
+                const errorData = await response.json();
+                const errorMessage = errorData.error?.message || 'Unknown error';
+                setError(`API Test Failed: ${errorMessage}`);
+            }
+        } catch (e: any) {
+            setError(`API Test Failed: ${e.message}`);
+        } finally {
+            setTesting(false);
+        }
+    };
+
     if (loading) {
         return <SkeletonLoader type="details" />;
     }
@@ -120,6 +172,21 @@ const AIConfigPage: React.FC = () => {
 
             {success && <Alert severity="success" onClose={() => setSuccess(null)} sx={{ mb: 3 }}>{success}</Alert>}
             {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 3 }}>{error}</Alert>}
+
+            {/* Quota Warning */}
+            <Alert severity="info" sx={{ mb: 3 }}>
+                <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    Important: API Setup & Model Information
+                </Typography>
+                <Typography variant="body2" component="div">
+                    • <strong>Get API Key:</strong> <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>https://aistudio.google.com/apikey</a><br/>
+                    • <strong>View Available Models:</strong> <a href="https://ai.google.dev/gemini-api/docs/models" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>Gemini Models Documentation</a><br/>
+                    • <strong>Enable Billing (if quota exceeded):</strong> <a href="https://console.cloud.google.com/billing" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>Google Cloud Console</a><br/>
+                    • <strong>Rate Limits Info:</strong> <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>Rate Limits Documentation</a><br/>
+                    • <strong>Recommended:</strong> gemini-2.5-flash (best price/performance for production)<br/>
+                    • <strong>Note:</strong> If quota exceeded, create a NEW API key or enable billing
+                </Typography>
+            </Alert>
 
             <Paper sx={{ p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
                 <Grid container spacing={3}>
@@ -153,7 +220,7 @@ const AIConfigPage: React.FC = () => {
                             label="API Key"
                             value={config.apiKey}
                             onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-                            helperText="Your Gemini API key"
+                            helperText="Your Gemini API key (Get it from https://aistudio.google.com/apikey)"
                             type={showApiKey ? 'text' : 'password'}
                             InputProps={{
                                 endAdornment: (
@@ -177,14 +244,29 @@ const AIConfigPage: React.FC = () => {
                             label="Model Selection"
                             value={config.model}
                             onChange={(e) => setConfig({ ...config, model: e.target.value })}
-                            helperText="Gemini model to use"
+                            helperText="Select Gemini model (Stable models recommended for production)"
                         >
-                            <MenuItem value="gemini-2.0-flash">gemini-2.0-flash (Recommended, Fast)</MenuItem>
-                            <MenuItem value="gemini-2.0-pro-exp-02-05">gemini-2.0-pro-exp-02-05 (Experimental Pro)</MenuItem>
-                            <MenuItem value="gemini-1.5-pro">gemini-1.5-pro (Complex tasks)</MenuItem>
-                            <MenuItem value="gemini-1.5-flash">gemini-1.5-flash (Legacy Fast)</MenuItem>
-                            <MenuItem value="gemini-1.5-flash-8b">gemini-1.5-flash-8b</MenuItem>
+                            <MenuItem value="gemini-2.5-flash">gemini-2.5-flash (Recommended - Best price/performance)</MenuItem>
+                            <MenuItem value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (Fastest & Budget-friendly)</MenuItem>
+                            <MenuItem value="gemini-2.5-pro">gemini-2.5-pro (Most Advanced - Complex tasks)</MenuItem>
+                            <MenuItem value="gemini-3-flash">gemini-3-flash (Preview - Frontier performance)</MenuItem>
+                            <MenuItem value="gemini-1.5-flash">gemini-1.5-flash (Legacy - Stable)</MenuItem>
+                            <MenuItem value="gemini-1.5-pro">gemini-1.5-pro (Legacy - Stable)</MenuItem>
                         </TextField>
+                    </Grid>
+
+                    {/* Test API Button */}
+                    <Grid item xs={12}>
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            startIcon={testing ? <CircularProgress size={20} /> : <CheckCircle />}
+                            onClick={handleTestAPI}
+                            disabled={testing || !config.apiKey}
+                            sx={{ mt: 1 }}
+                        >
+                            {testing ? 'Testing API...' : 'Test API Key'}
+                        </Button>
                     </Grid>
 
                     {/* Generation Parameters */}
@@ -348,6 +430,27 @@ const AIConfigPage: React.FC = () => {
                     </Grid>
                 </Grid>
             </Paper>
+
+            {/* Test Response Dialog */}
+            <Dialog open={testDialogOpen} onClose={() => setTestDialogOpen(false)} maxWidth="sm" fullWidth>
+                <DialogTitle>API Test Successful</DialogTitle>
+                <DialogContent>
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                        API Key and Model are working correctly!
+                    </Alert>
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
+                        Response from AI:
+                    </Typography>
+                    <Paper sx={{ p: 2, bgcolor: 'grey.100' }}>
+                        <Typography variant="body1">{testResponse}</Typography>
+                    </Paper>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setTestDialogOpen(false)} variant="contained">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };

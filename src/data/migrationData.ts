@@ -403,7 +403,7 @@ export const migrationData: MigrationDataDefinition = {
                 enabled: true,
                 apiKey: 'PLACEHOLDER_KEY',
                 maxTokens: 500,
-                model: 'gemini-2.0-flash',
+                model: 'gemini-2.5-flash',
                 safetySettings: {
                     dangerousContent: 'BLOCK_MEDIUM_AND_ABOVE',
                     harassment: 'BLOCK_MEDIUM_AND_ABOVE',
