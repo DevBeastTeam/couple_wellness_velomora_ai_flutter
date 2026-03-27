@@ -25,11 +25,25 @@ class _ChatScreenState extends State<ChatScreen> {
   late Stream<QuerySnapshot> _chatStream;
   final ValueNotifier<bool> _isSendingNotifier = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _showDisclaimerNotifier = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _isAtBottomNotifier = ValueNotifier<bool>(true);
 
   @override
   void initState() {
     super.initState();
     _chatStream = _chatService.getChatMessages();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.hasClients) {
+      // If we are within 100 pixels of the bottom, consider it "at bottom"
+      final bool isBottom =
+          _scrollController.offset >=
+          _scrollController.position.maxScrollExtent - 100;
+      if (_isAtBottomNotifier.value != isBottom) {
+        _isAtBottomNotifier.value = isBottom;
+      }
+    }
   }
 
   @override
@@ -39,6 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _messageFocusNode.dispose();
     _isSendingNotifier.dispose();
     _showDisclaimerNotifier.dispose();
+    _isAtBottomNotifier.dispose();
     super.dispose();
   }
 
@@ -215,8 +230,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                         Text(
                                           l10n.aiCompanion,
                                           style: TextStyle(
-                                            color:
-                                                Colors.white.withOpacity(0.9),
+                                            color: Colors.white.withOpacity(
+                                              0.9,
+                                            ),
                                             fontSize: 14.fSize,
                                             fontWeight: FontWeight.w400,
                                           ),
@@ -246,8 +262,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       SliverPadding(
                         padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 20.h),
                         sliver: SliverList(
-                          delegate:
-                              SliverChildBuilderDelegate((context, index) {
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
                             final messages = snapshot.data!.docs;
                             final messageData =
                                 messages[index].data() as Map<String, dynamic>;
@@ -270,6 +288,39 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           _buildChatFooter(),
         ],
+      ),
+      floatingActionButton: ValueListenableBuilder<bool>(
+        valueListenable: _showDisclaimerNotifier,
+        builder: (context, showDisclaimer, child) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: _isAtBottomNotifier,
+            builder: (context, isAtBottom, child) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: showDisclaimer ? 120.h : 50.h),
+                child: FloatingActionButton.small(
+                  onPressed: () {
+                    if (isAtBottom) {
+                      _scrollController.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    } else {
+                      _scrollToBottom();
+                    }
+                  },
+                  backgroundColor: AppColors.brandPurple.withOpacity(0.8),
+                  elevation: 4,
+                  child: Icon(
+                    isAtBottom ? Icons.arrow_upward : Icons.arrow_downward,
+                    color: Colors.white,
+                    size: 20.adaptSize,
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
