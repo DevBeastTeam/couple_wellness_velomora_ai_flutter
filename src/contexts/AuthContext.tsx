@@ -2,7 +2,6 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import { authService, AdminUser } from '../services/authService';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
     user: AdminUser | null;
@@ -78,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
                 console.log('AuthContext: onAuthStateChanged fired', { hasUser: !!firebaseUser });
                 setLoading(true);
-                
+
                 if (firebaseUser) {
                     if (!authService.isSessionValid()) {
                         console.log('AuthContext: Session invalid in listener. Logging out...');

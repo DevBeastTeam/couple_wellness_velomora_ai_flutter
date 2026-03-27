@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "predeploy": "CI=true npm run build",
+    "site": "together-wellness",
     "public": "dist",
     "ignore": [
       "firebase.json",
