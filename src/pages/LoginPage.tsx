@@ -11,8 +11,8 @@ import {
     InputAdornment,
     IconButton
 } from '@mui/material';
-import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
-import { authService } from '../services/authService';
+import { LockOutlined, Visibility, VisibilityOff } from '@mui/icons-material';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
@@ -21,6 +21,7 @@ const LoginPage: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -29,7 +30,12 @@ const LoginPage: React.FC = () => {
         setError('');
 
         try {
-            await authService.login(email, password);
+            console.log('Logging in...');
+            console.log('Email:', email);
+            console.log('Password:', password);
+            await login(email, password);
+            console.log('Login successful');
+            console.log('Navigating to /');
             navigate('/');
         } catch (err: any) {
             setError(err.message || 'Failed to login. Please check your credentials.');
@@ -72,9 +78,9 @@ const LoginPage: React.FC = () => {
                         <Typography variant="body2" color="text.secondary">
                             Sign in to manage the Velmora ecosystem
                         </Typography>
-                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                        {/* <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                             Default: admin@gmail.com / 12345678
-                        </Typography>
+                        </Typography> */}
                     </Box>
 
                     {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
