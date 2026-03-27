@@ -173,11 +173,18 @@ const AIConfigPage: React.FC = () => {
                     <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth
-                            label="Model"
+                            select
+                            label="Model Selection"
                             value={config.model}
                             onChange={(e) => setConfig({ ...config, model: e.target.value })}
                             helperText="Gemini model to use"
-                        />
+                        >
+                            <MenuItem value="gemini-2.0-flash">gemini-2.0-flash (Recommended, Fast)</MenuItem>
+                            <MenuItem value="gemini-2.0-pro-exp-02-05">gemini-2.0-pro-exp-02-05 (Experimental Pro)</MenuItem>
+                            <MenuItem value="gemini-1.5-pro">gemini-1.5-pro (Complex tasks)</MenuItem>
+                            <MenuItem value="gemini-1.5-flash">gemini-1.5-flash (Legacy Fast)</MenuItem>
+                            <MenuItem value="gemini-1.5-flash-8b">gemini-1.5-flash-8b</MenuItem>
+                        </TextField>
                     </Grid>
 
                     {/* Generation Parameters */}
